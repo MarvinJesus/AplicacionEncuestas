@@ -259,3 +259,13 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/WebApi/DataAccess/Crud/TemaCrudFactory.cs
+/WebApi/DataAccess/Crud/AppMessagesCrudFactory.cs
+/WebApi/DataAccess/Mapper/AppMessageMapper.cs
+/WebApi/DataAccess/Mapper/TemaMapper.cs
+/WebApi/Entities-POJO/ApplicationMessage.cs
+/WebApi/Entities-POJO/Tema.cs
+/WebApi/Entities-POJO/Respuesta.cs
+/WebApi/Entities-POJO/Pregunta.cs
+/WebApi/Exceptions/BussinessException.cs
+/WebApi/Exceptions/ExceptionManager.cs
