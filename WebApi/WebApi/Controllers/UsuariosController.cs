@@ -1,39 +1,58 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using CoreApi;
+using DataAccess.Factories;
+using Dtos;
+using Exceptions;
+using System;
 using System.Web.Http;
 
 namespace WebApi.Controllers
 {
+    [RoutePrefix("api")]
     public class UsuariosController : ApiController
     {
-        // GET: api/Usuarios
-        public IEnumerable<string> Get()
+        private IUsuarioManager _manager { get; set; }
+
+        public UsuariosController(IUsuarioManager usuarioManager)
         {
-            return new string[] { "value1", "value2" };
+            _manager = usuarioManager;
         }
 
-        // GET: api/Usuarios/5
-        public string Get(int id)
+        [HttpPost]
+        [AllowAnonymous]
+        public IHttpActionResult PostUsuario([FromBody]UsuarioDto usuarioDto)
         {
-            return "value";
-        }
+            try
+            {
+                if (usuarioDto == null)
+                    return BadRequest();
 
-        // POST: api/Usuarios
-        public void Post([FromBody]string value)
-        {
-        }
+                var result = _manager.RegistrarUsuario(usuarioDto);
 
-        // PUT: api/Usuarios/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
+                if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Created)
+                {
+                    return Created<UsuarioDto>
+                        (Request.RequestUri + "/" + result.Entity.Id.ToString(), UsuarioFactory.CreateUsuario(result.Entity));
+                }
 
-        // DELETE: api/Usuarios/5
-        public void Delete(int id)
-        {
+                if (result.Exception != null)
+                {
+                    if (result.Exception.Code == 1)
+                    {
+                        return InternalServerError();
+                    }
+                    else
+                    {
+                        return BadRequest(result.Exception.AppMessage.Message);
+                    }
+                }
+
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                ExceptionManager.GetInstance().Process(ex);
+                return InternalServerError();
+            }
         }
     }
 }
