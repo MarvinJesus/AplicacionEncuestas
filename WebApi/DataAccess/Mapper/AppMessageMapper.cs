@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DataAccess.Dao;
+﻿using DataAccess.Dao;
 using Entities_POJO;
+using System;
+using System.Collections.Generic;
 
 namespace DataAccess.Mapper
 {
     public class AppMessageMapper : EntityMapper, ISqlStaments, IObjectMapper
     {
-        private const string DB_COL_ID = "Id_Excepcion";
-        private const string DB_COL_TEXT = "Mensaje";
+        private const string DB_COL_ID = "CODE";
+        private const string DB_COL_TEXT = "MESSAGE";
 
         public BaseEntity BuildObject(Dictionary<string, object> row)
         {
@@ -49,7 +46,7 @@ namespace DataAccess.Mapper
 
         public SqlOperation GetRetriveAllStatement()
         {
-            var operation = new SqlOperation { ProcedureName = "Select_All_Exceptions" };
+            var operation = new SqlOperation { ProcedureName = "RET_ALL_EXCEPTIONS" };
             return operation;
         }
 

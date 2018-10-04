@@ -4,16 +4,11 @@ using Entities_POJO;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Execptions
+namespace Exceptions
 {
-   public class ExceptionManager
+    public class ExceptionManager
     {
-       
-
         private static ExceptionManager instance;
 
         private static Dictionary<int, ApplicationMessage> messages = new Dictionary<int, ApplicationMessage>();
@@ -31,7 +26,7 @@ namespace Execptions
             return instance;
         }
 
-        public void Process(Exception ex)
+        public BussinessException Process(Exception ex)
 
         {
             var bex = new BussinessException();
@@ -42,13 +37,13 @@ namespace Execptions
             }
             else
             {
-                bex = new BussinessException(0, ex);
+                bex = new BussinessException(1, ex);
             }
 
-            ProcessBussinesException(bex);
+            return ProcessBussinesException(bex);
         }
 
-        private void ProcessBussinesException(BussinessException bex)
+        private BussinessException ProcessBussinesException(BussinessException bex)
         {
             var today = string.Format("{0:yyyy-MM-dd_HH_mm_ss}_log.txt", DateTime.Now);
 
@@ -58,26 +53,29 @@ namespace Execptions
             if (bex.InnerException != null)
                 message += bex.InnerException.Message + "\n" + bex.InnerException.StackTrace;
 
-          
+
             bex.AppMessage = GetMessage(bex);
 
             RegisterException(bex);
 
-            throw bex;
+            return bex;
         }
 
         public void RegisterException(BussinessException ex)
         {
-            var operation = new SqlOperation { ProcedureName = "INS_Exception" };
+            var operation = new SqlOperation { ProcedureName = "CRE_EXCEPTION" };
 
-            operation.AddVarcharParam("Dia", DateTime.Now.ToString("yyyy-MM-dd"));
-            operation.AddVarcharParam("Hora", DateTime.Now.ToString("HH:mm:ss"));
-            operation.AddVarcharParam("Mensaje", ex.Message);
+            operation.AddVarcharParam("EXC_DAY", DateTime.Now.ToString("yyyy-MM-dd"));
+            operation.AddVarcharParam("EXC_HOUR", DateTime.Now.ToString("HH:mm:ss"));
+            operation.AddVarcharParam("MESSAGE", ex.Message);
 
-            if(ex.StackTrace != null) {
-                operation.AddVarcharParam("Pila", ex.StackTrace);
-            } else {
-                operation.AddVarcharParam("Pila", "No hay pila");
+            if (ex.StackTrace != null)
+            {
+                operation.AddVarcharParam("STACK_TRACE", ex.StackTrace);
+            }
+            else
+            {
+                operation.AddVarcharParam("STACK_TRACE", "No hay pila");
             }
 
             SqlDao.GetInstance().ExecuteProcedure(operation);
@@ -85,11 +83,13 @@ namespace Execptions
 
         public ApplicationMessage GetMessage(BussinessException bex)
         {
-            var appMessage = new ApplicationMessage();
-            appMessage.Message = "Message not found!";
+            var appMessage = new ApplicationMessage
+            {
+                Message = "Message not found!"
+            };
 
-            if (messages.ContainsKey(bex.ExceptionId))
-                appMessage = messages[bex.ExceptionId];
+            if (messages.ContainsKey(bex.Code))
+                appMessage = messages[bex.Code];
 
             return appMessage;
         }
@@ -114,6 +114,5 @@ namespace Execptions
             w.WriteLine("  :{0}", logMessage);
             w.WriteLine("-------------------------------");
         }
-
     }
 }

@@ -1,30 +1,24 @@
 ﻿using Entities_POJO;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Execptions
+namespace Exceptions
 {
-  public  class BussinessException : Exception
+    public class BussinessException : Exception
     {
-        public int ExceptionId;
+        public int Code;
         public ApplicationMessage AppMessage { get; set; }
 
         public BussinessException()
         {
-
         }
 
         public BussinessException(int exceptionId)
         {
-            ExceptionId = exceptionId;
+            Code = exceptionId;
         }
 
-        public BussinessException(int exceptionId, Exception innerException)
+        public BussinessException(int exceptionId, Exception innerException) : this(exceptionId)
         {
-            ExceptionId = exceptionId;
         }
     }
 }

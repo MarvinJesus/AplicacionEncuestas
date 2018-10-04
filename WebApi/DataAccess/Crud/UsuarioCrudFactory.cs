@@ -31,7 +31,7 @@ namespace DataAccess.Crud
             return default(T);
         }
 
-        public override void Delete(BaseEntity entity)
+        public override int Delete(BaseEntity entity)
         {
             throw new System.NotImplementedException();
         }
@@ -55,7 +55,7 @@ namespace DataAccess.Crud
             throw new System.NotImplementedException();
         }
 
-        public override void Update(BaseEntity entity)
+        public override int Update(BaseEntity entity)
         {
             throw new System.NotImplementedException();
         }

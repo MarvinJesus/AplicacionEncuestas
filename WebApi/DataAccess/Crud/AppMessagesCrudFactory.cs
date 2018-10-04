@@ -20,7 +20,7 @@ namespace DataAccess.Crud
             throw new NotImplementedException();
         }
 
-        public override void Delete(BaseEntity entity)
+        public override int Delete(BaseEntity entity)
         {
             throw new NotImplementedException();
         }
@@ -48,7 +48,7 @@ namespace DataAccess.Crud
             return lstAppMessage;
         }
 
-        public override void Update(BaseEntity entity)
+        public override int Update(BaseEntity entity)
         {
             throw new NotImplementedException();
         }

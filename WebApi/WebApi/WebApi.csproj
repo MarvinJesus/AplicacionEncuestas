@@ -140,6 +140,10 @@
       <Project>{D2A404F9-FD9E-4A28-9827-5F7663F150E2}</Project>
       <Name>Entities-POJO</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Exceptions\Exceptions.csproj">
+      <Project>{EB460B4D-EADB-447D-A9FE-72FA4765E61D}</Project>
+      <Name>Exceptions</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

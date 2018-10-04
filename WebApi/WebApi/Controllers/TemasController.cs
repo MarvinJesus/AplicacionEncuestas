@@ -1,5 +1,6 @@
 ﻿using CoreApi;
 using Entities_POJO;
+using Exceptions;
 using System;
 using System.Web.Http;
 
@@ -18,49 +19,66 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        [Route("usuario/{id}/temas")]
-        public IHttpActionResult PostTemas(int id, [FromBody] Tema tema)
+        [Route("temas")]
+        public IHttpActionResult PostTopic([FromBody] Tema tema)
         {
             try
             {
-                var usuario = _usuarioManager.GetUsuario(new Usuario { Id = id });
-
-                if (usuario == null)
-                    NotFound();
-
                 if (tema == null)
                     return BadRequest();
 
-                var newTema = _manager.RegistrarTema(tema);
+                var result = _manager.RegistrarTema(tema);
 
-                if (newTema != null)
+                if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Created)
+                    return Created(Request.RequestUri + "/" + result.Entity.Id.ToString(), result.Entity);
+
+                if (result.Exception != null)
                 {
-                    return Created(Request.RequestUri + "/" + newTema.Id.ToString(), newTema);
+                    if (result.Exception.Code == 1)
+                    {
+                        return InternalServerError();
+                    }
+                    else
+                    {
+                        return BadRequest(result.Exception.AppMessage.Message);
+                    }
                 }
-
                 return BadRequest();
-
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ExceptionManager.GetInstance().Process(ex);
                 return InternalServerError();
             }
         }
 
-        // GET api/<controller>/5
-        public string Get(int id)
+        [HttpPut]
+        [Route("temas/{id}")]
+        public IHttpActionResult PutTopic(int id, [FromBody]Tema topic)
         {
-            return "value";
-        }
+            try
+            {
+                if (topic == null)
+                    return BadRequest();
 
-        // PUT api/<controller>/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
+                var result = _manager.ActualizarTema(topic);
 
-        // DELETE api/<controller>/5
-        public void Delete(int id)
-        {
+                if (result.Status == CoreApi.ActionResult.ManagerActionStatus.NotFound)
+                    return NotFound();
+
+                if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Updated)
+                    return Ok(result.Entity);
+
+                if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Error)
+                    return InternalServerError();
+
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                ExceptionManager.GetInstance().Process(ex);
+                return InternalServerError();
+            }
         }
     }
 }

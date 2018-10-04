@@ -33,10 +33,10 @@ namespace CoreApi
             return default(T);
         }
 
-        public override void Delete(BaseEntity entity)
+        public override int Delete(BaseEntity entity)
         {
             var tema = (Tema)entity;
-            dao.ExecuteProcedure(_mapper.GetDeleteStatement(tema));
+            return dao.ExecuteProcedure(_mapper.GetDeleteStatement(tema));
         }
 
         public override T Retrieve<T>(BaseEntity entity)
@@ -71,10 +71,10 @@ namespace CoreApi
             return lstTemas;
         }
 
-        public override void Update(BaseEntity entity)
+        public override int Update(BaseEntity entity)
         {
             var usuario = (Tema)entity;
-            dao.ExecuteProcedure(_mapper.GetUpdateStatement(usuario));
+            return dao.ExecuteProcedure(_mapper.GetUpdateStatement(usuario));
         }
 
         public List<T> GetAllTemasByUser<T>(BaseEntity entity)

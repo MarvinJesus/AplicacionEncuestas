@@ -1,11 +1,13 @@
 ﻿using CoreApi;
 using DataAccess.Factories;
 using Dtos;
+using Exceptions;
 using System;
 using System.Web.Http;
 
 namespace WebApi.Controllers
 {
+    [RoutePrefix("api")]
     public class UsuariosController : ApiController
     {
         private IUsuarioManager _manager { get; set; }
@@ -16,6 +18,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public IHttpActionResult PostUsuario([FromBody]UsuarioDto usuarioDto)
         {
             try
@@ -23,32 +26,33 @@ namespace WebApi.Controllers
                 if (usuarioDto == null)
                     return BadRequest();
 
-                var usuario = UsuarioFactory.CreateUsuario(usuarioDto);
+                var result = _manager.RegistrarUsuario(usuarioDto);
 
-                var newUsuario = _manager.RegistrarUsuario(usuario);
-
-                if (newUsuario != null)
+                if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Created)
                 {
                     return Created<UsuarioDto>
-                        (Request.RequestUri + "/" + newUsuario.Id.ToString(), UsuarioFactory.CreateUsuario(newUsuario));
+                        (Request.RequestUri + "/" + result.Entity.Id.ToString(), UsuarioFactory.CreateUsuario(result.Entity));
+                }
+
+                if (result.Exception != null)
+                {
+                    if (result.Exception.Code == 1)
+                    {
+                        return InternalServerError();
+                    }
+                    else
+                    {
+                        return BadRequest(result.Exception.AppMessage.Message);
+                    }
                 }
 
                 return BadRequest();
             }
             catch (Exception ex)
             {
+                ExceptionManager.GetInstance().Process(ex);
                 return InternalServerError();
             }
-        }
-
-        // PUT: api/Usuarios/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE: api/Usuarios/5
-        public void Delete(int id)
-        {
         }
     }
 }

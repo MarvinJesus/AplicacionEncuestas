@@ -40,6 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionResult\ManagerActionResult.cs" />
+    <Compile Include="ActionResult\ManagerActionStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TemaManager.cs" />
     <Compile Include="UsuarioManager.cs" />
@@ -49,9 +51,17 @@
       <Project>{AC581ED0-9974-4AE6-B134-87B286D925E3}</Project>
       <Name>DataAccess</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Dtos\Dtos.csproj">
+      <Project>{673E8CF5-7A3A-48B0-ACB5-51C98ABAC830}</Project>
+      <Name>Dtos</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Entities-POJO\Entities-POJO.csproj">
       <Project>{D2A404F9-FD9E-4A28-9827-5F7663F150E2}</Project>
       <Name>Entities-POJO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Exceptions\Exceptions.csproj">
+      <Project>{EB460B4D-EADB-447D-A9FE-72FA4765E61D}</Project>
+      <Name>Exceptions</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

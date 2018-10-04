@@ -6,7 +6,8 @@ namespace DataAccess.Dao
 {
     public class SqlDao
     {
-        private const string CONNECTION_STRING = "database=DB_ENCUESTA;integrated security=true";//@"Data Source=DESKTOP-IEHSMVG\SQLEXPRESS;Initial Catalog=DB_ENCUESTA;Integrated Security=True";
+        private const string CONNECTION_STRING = "database=DB_ENCUESTA;integrated security=true";
+        //@"Data Source=DESKTOP-IEHSMVG\SQLEXPRESS;Initial Catalog=DB_ENCUESTA;Integrated Security=True";
 
         private static SqlDao instance;
 
@@ -21,7 +22,7 @@ namespace DataAccess.Dao
 
             return instance;
         }
-        public void ExecuteProcedure(SqlOperation sqlOperation)
+        public int ExecuteProcedure(SqlOperation sqlOperation)
         {
             using (var conn = new SqlConnection(CONNECTION_STRING))
             using (var command = new SqlCommand(sqlOperation.ProcedureName, conn)
@@ -35,7 +36,7 @@ namespace DataAccess.Dao
                 }
 
                 conn.Open();
-                command.ExecuteNonQuery();
+                return command.ExecuteNonQuery();
             }
         }
         public List<Dictionary<string, object>> ExecuteQueryProcedure(SqlOperation sqlOperation)

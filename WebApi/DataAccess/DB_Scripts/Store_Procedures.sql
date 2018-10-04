@@ -1,3 +1,70 @@
+/********** RETRIVE ALL EXCEPTIONS ************/
+/*********************************************/
+CREATE PROCEDURE RET_ALL_EXCEPTIONS
+
+AS
+BEGIN
+	SET NOCOUNT ON;
+	SELECT * FROM TBL_EXCEPTION;
+END
+GO
+
+
+
+/********** REGISTER EXCEPTION **********/
+/***************************************/
+CREATE PROCEDURE CRE_EXCEPTION
+	@P_MESSAGE		VARCHAR(500),
+	@P_EXC_HOUR		TIME,
+	@P_EXC_DAY		DATE,
+	@P_STACK_TRACE	VARCHAR(MAX)
+AS
+	BEGIN
+		SET NOCOUNT ON;
+		INSERT INTO TBL_UNCONTROLLED_EXCEPTION VALUES(@P_MESSAGE,@P_EXC_HOUR,@P_EXC_DAY,@P_STACK_TRACE);
+	END
+GO
+
+
+
+/********** RETRIVE TOPIC BY ID ************/
+/******************************************/
+CREATE PROCEDURE RET_TOPIC
+	@P_TOPIC_ID			INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+	SELECT * FROM TBL_TOPIC  WHERE @P_TOPIC_ID = TOPIC_ID;
+END
+GO
+
+
+
+/********** RETRIVE TOPIC BY USER ID ************/
+/***********************************************/
+CREATE PROCEDURE RET_TOPIC_BY_USER_ID
+	@P_USER_ID			INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+	SELECT * FROM TBL_TOPIC  WHERE @P_USER_ID = USER_ID;
+END
+GO
+
+
+
+/********** RETRIVE ALL TOPICS ************/
+/*****************************************/
+CREATE PROCEDURE RET_ALL_TOPICS
+
+AS
+BEGIN
+	SET NOCOUNT ON;
+	SELECT * FROM TBL_TOPIC;
+END
+GO
+
+
 
 /********** REGISTER TOPIC **********/
 /***********************************/
@@ -16,6 +83,48 @@ BEGIN
 
 	DECLARE @P_TOPIC_ID INT = (SELECT IDENT_CURRENT( 'TBL_TOPIC' ));
 	EXEC dbo.RET_TOPIC @P_TOPIC_ID;
+END
+GO
+
+
+
+/********** UPDATE TOPIC **********/
+/***********************************/
+CREATE PROCEDURE UPD_TOPIC
+	@P_TOPIC_ID				INT,
+	@P_TITLE				VARCHAR(100),
+	@P_TOPIC_DESCRIPTION	VARCHAR(500),
+	@P_IMG_URL				VARCHAR(2083)
+
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	DECLARE @P_CREATE_DATE DATE = GETDATE();
+
+	UPDATE TBL_TOPIC
+	SET TITLE = @P_TITLE , TOPIC_DESCRIPTION = @P_TOPIC_DESCRIPTION , IMG_URL = @P_IMG_URL,
+			CREATE_DATE = @P_CREATE_DATE
+	WHERE TOPIC_ID = @P_TOPIC_ID
+
+END
+GO
+
+
+
+/************ DELTE TOPIC ************/
+/************************************/
+CREATE PROCEDURE DEL_TOPIC
+	@P_TOPIC_ID				INT
+
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	DELETE
+	FROM TBL_TOPIC
+	WHERE TOPIC_ID = @P_TOPIC_ID
+
 END
 GO
 
@@ -56,16 +165,4 @@ BEGIN
 END
 GO
 
-
-
-/********** RETRIVE TOPIC BY ID ************/
-/******************************************/
-CREATE PROCEDURE RET_TOPIC
-	@P_TOPIC_ID			INT
-AS
-BEGIN
-	SET NOCOUNT ON;
-	SELECT * FROM TBL_TOPIC  WHERE @P_TOPIC_ID = TOPIC_ID;
-END
-GO
 
