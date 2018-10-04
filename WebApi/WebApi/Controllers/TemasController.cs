@@ -18,7 +18,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        [Route("temas/usuario/{id}/temas")]
+        [Route("usuario/{id}/temas")]
         public IHttpActionResult PostTemas(int id, [FromBody] Tema tema)
         {
             try
@@ -35,7 +35,7 @@ namespace WebApi.Controllers
 
                 if (newTema != null)
                 {
-                    return Created(Request.RequestUri + "/" + newTema.Id, newTema);
+                    return Created(Request.RequestUri + "/" + newTema.Id.ToString(), newTema);
                 }
 
                 return BadRequest();

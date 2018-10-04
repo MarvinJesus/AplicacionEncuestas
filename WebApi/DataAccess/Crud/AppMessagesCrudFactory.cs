@@ -3,13 +3,10 @@ using DataAccess.Mapper;
 using Entities_POJO;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataAccess.Crud
 {
-  public  class AppMessagesCrudFactory : CrudFactory
+    public class AppMessagesCrudFactory : CrudFactory
     {
         AppMessageMapper mapper;
         public AppMessagesCrudFactory()
@@ -18,7 +15,7 @@ namespace DataAccess.Crud
             dao = SqlDao.GetInstance();
         }
 
-        public override void Create(BaseEntity entity)
+        public override T Create<T>(BaseEntity entity)
         {
             throw new NotImplementedException();
         }

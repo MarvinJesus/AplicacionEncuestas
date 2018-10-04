@@ -1,29 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using CoreApi;
+using DataAccess.Factories;
+using Dtos;
+using System;
 using System.Web.Http;
 
 namespace WebApi.Controllers
 {
     public class UsuariosController : ApiController
     {
-        // GET: api/Usuarios
-        public IEnumerable<string> Get()
+        private IUsuarioManager _manager { get; set; }
+
+        public UsuariosController(IUsuarioManager usuarioManager)
         {
-            return new string[] { "value1", "value2" };
+            _manager = usuarioManager;
         }
 
-        // GET: api/Usuarios/5
-        public string Get(int id)
+        [HttpPost]
+        public IHttpActionResult PostUsuario([FromBody]UsuarioDto usuarioDto)
         {
-            return "value";
-        }
+            try
+            {
+                if (usuarioDto == null)
+                    return BadRequest();
 
-        // POST: api/Usuarios
-        public void Post([FromBody]string value)
-        {
+                var usuario = UsuarioFactory.CreateUsuario(usuarioDto);
+
+                var newUsuario = _manager.RegistrarUsuario(usuario);
+
+                if (newUsuario != null)
+                {
+                    return Created<UsuarioDto>
+                        (Request.RequestUri + "/" + newUsuario.Id.ToString(), UsuarioFactory.CreateUsuario(newUsuario));
+                }
+
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError();
+            }
         }
 
         // PUT: api/Usuarios/5

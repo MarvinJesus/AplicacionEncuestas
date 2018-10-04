@@ -12,14 +12,16 @@
 
         public string ImagePath { get; set; }
 
-        public string Contrasenia { get; set; }
+        public byte[] Salt { get; set; }
+
+        public byte[] Contrasenia { get; set; }
 
         public Usuario()
         {
 
         }
 
-        public Usuario(int id, string nombre, string cedula, string correo, string contrasenia, string imagePath)
+        public Usuario(int id, string nombre, string cedula, string correo, byte[] contrasenia, string imagePath, byte[] salt)
         {
             Id = id;
             Nombre = nombre;
@@ -27,6 +29,7 @@
             Correo = Correo;
             Contrasenia = contrasenia;
             ImagePath = imagePath;
+            Salt = salt;
         }
     }
 }

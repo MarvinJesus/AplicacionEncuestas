@@ -7,12 +7,13 @@ namespace DataAccess.Mapper
 {
     public class UsuarioMapper : EntityMapper, ISqlStaments, IObjectMapper
     {
-        private const string DB_COL_ID = "Id";
-        private const string DB_COL_CEDULA = "Cedula";
-        private const string DB_COL_CORREO = "Correo";
-        private const string DB_COL_NOMBRE = "Nombre";
-        private const string DB_COL_IMAGEPATH = "ImagePath";
-        private const string DB_COL_CONTRASENIA = "Contrasenia";
+        private const string DB_COL_ID = "PROFILE_ID";
+        private const string DB_COL_CEDULA = "IDENTIFICATION";
+        private const string DB_COL_CORREO = "EMAIL";
+        private const string DB_COL_NOMBRE = "NAME";
+        private const string DB_COL_IMAGEPATH = "IMG_URL";
+        private const string DB_COL_CONTRASENIA = "PASSWORD";
+        private const string DB_COL_SALT = "SALT";
 
         public BaseEntity BuildObject(Dictionary<string, object> row)
         {
@@ -23,7 +24,8 @@ namespace DataAccess.Mapper
                 Correo = GetStringValue(row, DB_COL_CORREO),
                 Nombre = GetStringValue(row, DB_COL_NOMBRE),
                 ImagePath = GetStringValue(row, DB_COL_IMAGEPATH),
-                Contrasenia = GetStringValue(row, DB_COL_CONTRASENIA)
+                Contrasenia = GetBytesValue(row, DB_COL_CONTRASENIA),
+                Salt = GetBytesValue(row, DB_COL_SALT)
             };
             return usuario;
         }
@@ -39,9 +41,19 @@ namespace DataAccess.Mapper
             return lstResults;
         }
 
-        SqlOperation ISqlStaments.GetCreateStatement(BaseEntity entity)
+        public SqlOperation GetCreateStatement(BaseEntity entity)
         {
-            throw new NotImplementedException();
+            var usuario = (Usuario)entity;
+            var operation = new SqlOperation { ProcedureName = "CRE_PROFILE" };
+
+            operation.AddVarcharParam(DB_COL_CEDULA, usuario.Cedula);
+            operation.AddVarcharParam(DB_COL_CORREO, usuario.Correo);
+            operation.AddVarcharParam(DB_COL_NOMBRE, usuario.Nombre);
+            operation.AddVarcharParam(DB_COL_IMAGEPATH, usuario.ImagePath);
+            operation.AddVarBinaryParam(DB_COL_CONTRASENIA, usuario.Contrasenia);
+            operation.AddVarBinaryParam(DB_COL_SALT, usuario.Salt);
+
+            return operation;
         }
 
         SqlOperation ISqlStaments.GetDeleteStatement(BaseEntity entity)
@@ -56,7 +68,7 @@ namespace DataAccess.Mapper
 
         public SqlOperation GetRetriveStatement(BaseEntity entity)
         {
-            var operation = new SqlOperation { ProcedureName = "RET_USUARIO" };
+            var operation = new SqlOperation { ProcedureName = "RET_PROFILE" };
             var usuario = (Usuario)entity;
             operation.AddIntParam(DB_COL_ID, usuario.Id);
             return operation;

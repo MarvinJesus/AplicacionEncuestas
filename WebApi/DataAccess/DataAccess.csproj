@@ -46,6 +46,7 @@
     <Compile Include="Crud\UsuarioCrudFactory.cs" />
     <Compile Include="Dao\SqlDao.cs" />
     <Compile Include="Dao\SqlOperation.cs" />
+    <Compile Include="Factories\UsuarioFactory.cs" />
     <Compile Include="Mapper\AppMessageMapper.cs" />
     <Compile Include="Mapper\EntityMapper.cs" />
     <Compile Include="Mapper\IObjectMapper.cs" />
@@ -55,10 +56,23 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Dtos\Dtos.csproj">
+      <Project>{673E8CF5-7A3A-48B0-ACB5-51C98ABAC830}</Project>
+      <Name>Dtos</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Entities-POJO\Entities-POJO.csproj">
       <Project>{D2A404F9-FD9E-4A28-9827-5F7663F150E2}</Project>
       <Name>Entities-POJO</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Util\Util.csproj">
+      <Project>{63CDD880-2933-4382-AC72-0899288C2670}</Project>
+      <Name>Util</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="DB_Scripts\DB_Encuesta.sql" />
+    <Content Include="DB_Scripts\Store_Procedures.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataAccess.Mapper
 {
-   public abstract class EntityMapper
+    public abstract class EntityMapper
     {
         protected string GetStringValue(Dictionary<string, object> dic, string attName)
         {
@@ -39,6 +36,14 @@ namespace DataAccess.Mapper
                 return (DateTime)dic[attName];
 
             return DateTime.Now;
+        }
+        protected byte[] GetBytesValue(Dictionary<string, object> dic, string attName)
+        {
+            var val = dic[attName];
+            if (dic.ContainsKey(attName) && val is byte[])
+                return (byte[])dic[attName];
+
+            return new byte[0];
         }
     }
 }

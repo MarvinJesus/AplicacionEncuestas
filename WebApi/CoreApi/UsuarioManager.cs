@@ -16,10 +16,16 @@ namespace CoreApi
         {
             return _crudFactory.Retrieve<Usuario>(usuario);
         }
+
+        Usuario IUsuarioManager.RegistrarUsuario(Usuario usuario)
+        {
+            return _crudFactory.Create<Usuario>(usuario);
+        }
     }
 
     public interface IUsuarioManager
     {
         Usuario GetUsuario(Usuario usuario);
+        Usuario RegistrarUsuario(Usuario usuario);
     }
 }

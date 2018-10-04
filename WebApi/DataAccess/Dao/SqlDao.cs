@@ -1,20 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataAccess.Dao
 {
-   public class SqlDao
+    public class SqlDao
     {
-        //CONN DB AWS
-        private const string CONNECTION_STRING = @"Data Source=pillars.clwmjzpy2f9x.us-east-2.rds.amazonaws.com, 1433;Initial Catalog=DB_PROYECTO2;User ID=Pillars;Password=ProyectoPillars";
-
-        //CONN DB LOCAL.
-        //private const string CONNECTION_STRING = @"Data Source=DESKTOP-C0VB9PD\SQLEXPRESS;Initial Catalog=DB_PROYECTO2;Integrated Security=True";
+        private const string CONNECTION_STRING = "database=DB_ENCUESTA;integrated security=true";//@"Data Source=DESKTOP-IEHSMVG\SQLEXPRESS;Initial Catalog=DB_ENCUESTA;Integrated Security=True";
 
         private static SqlDao instance;
 

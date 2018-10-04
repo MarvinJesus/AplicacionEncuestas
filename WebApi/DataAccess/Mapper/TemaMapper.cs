@@ -6,23 +6,21 @@ namespace DataAccess.Mapper
 {
     public class TemaMapper : EntityMapper, ISqlStaments, IObjectMapper
     {
-        private const string DB_COL_ID = "Id";
-        private const string DB_COL_TITULO = "Titulo";
-        private const string DB_COL_DESCRIPCION = "Descripcion";
-        private const string DB_COL_FECHADECREACION = "FechaDeCreacion";
-        private const string DB_COL_IMAGEPATH = "ImagePath";
-        private const string DB_COL_USUARIOID = "UsuarioId";
+        private const string DB_COL_ID = "TOPIC_ID";
+        private const string DB_COL_TITULO = "TITLE";
+        private const string DB_COL_DESCRIPCION = "TOPIC_DESCRIPTION";
+        private const string DB_COL_IMAGEPATH = "IMG_URL";
+        private const string DB_COL_USUARIOID = "USER_ID";
 
 
         public SqlOperation GetCreateStatement(BaseEntity entity)
         {
-            var operation = new SqlOperation { ProcedureName = "CREATE_TEMA" };
+            var operation = new SqlOperation { ProcedureName = "CRE_TOPIC" };
 
             var tema = (Tema)entity;
 
             operation.AddVarcharParam(DB_COL_TITULO, tema.Titulo);
             operation.AddVarcharParam(DB_COL_DESCRIPCION, tema.Descripcion);
-            operation.AddDateParam(DB_COL_FECHADECREACION, tema.FechaDeCreacion);
             operation.AddVarcharParam(DB_COL_IMAGEPATH, tema.ImagePath);
             operation.AddIntParam(DB_COL_USUARIOID, tema.UsuarioId);
 
@@ -33,7 +31,7 @@ namespace DataAccess.Mapper
 
         public SqlOperation GetRetriveStatement(BaseEntity entity)
         {
-            var operation = new SqlOperation { ProcedureName = "RET_TEMA" };
+            var operation = new SqlOperation { ProcedureName = "RET_TOPIC" };
             var tema = (Tema)entity;
             operation.AddIntParam(DB_COL_ID, tema.Id);
             return operation;
@@ -64,7 +62,6 @@ namespace DataAccess.Mapper
             operation.AddIntParam(DB_COL_ID, tema.Id);
             operation.AddVarcharParam(DB_COL_TITULO, tema.Titulo);
             operation.AddVarcharParam(DB_COL_DESCRIPCION, tema.Descripcion);
-            operation.AddDateParam(DB_COL_FECHADECREACION, tema.FechaDeCreacion);
             operation.AddVarcharParam(DB_COL_IMAGEPATH, tema.ImagePath);
             operation.AddIntParam(DB_COL_USUARIOID, tema.UsuarioId);
 
@@ -101,7 +98,6 @@ namespace DataAccess.Mapper
                 Id = GetIntValue(row, DB_COL_ID),
                 Titulo = GetStringValue(row, DB_COL_TITULO),
                 Descripcion = GetStringValue(row, DB_COL_DESCRIPCION),
-                FechaDeCreacion = GetDateValue(row, DB_COL_FECHADECREACION),
                 ImagePath = GetStringValue(row, DB_COL_IMAGEPATH),
                 UsuarioId = GetIntValue(row, DB_COL_USUARIOID)
 

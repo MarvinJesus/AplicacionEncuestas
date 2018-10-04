@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataAccess.Dao
 {
-  public class SqlOperation
+    public class SqlOperation
     {
         public string ProcedureName { get; set; }
         public List<SqlParameter> Parameters { get; set; }
@@ -19,6 +16,14 @@ namespace DataAccess.Dao
         public void AddVarcharParam(string paramName, string paramValue)
         {
             var param = new SqlParameter("@P_" + paramName, SqlDbType.VarChar)
+            {
+                Value = paramValue
+            };
+            Parameters.Add(param);
+        }
+        public void AddVarBinaryParam(string paramName, byte[] paramValue)
+        {
+            var param = new SqlParameter("@P_" + paramName, SqlDbType.VarBinary)
             {
                 Value = paramValue
             };
