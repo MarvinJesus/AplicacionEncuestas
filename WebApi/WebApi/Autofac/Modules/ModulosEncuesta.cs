@@ -8,6 +8,7 @@ namespace WebApi.Autofac.Modules
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<TemaManager>().AsImplementedInterfaces().AsSelf();
+            builder.RegisterType<UsuarioManager>().AsImplementedInterfaces().AsSelf();
 
             base.Load(builder);
         }

@@ -9,35 +9,44 @@ namespace CoreApi
 {
     public class TemaCrudFactory : CrudFactory
     {
-        private TemaMapper TemaMapper { get; set; }
+        private TemaMapper _mapper { get; set; }
 
         public TemaCrudFactory()
         {
-            TemaMapper = new TemaMapper();
+            _mapper = new TemaMapper();
             dao = SqlDao.GetInstance();
         }
 
-        public override void Create(BaseEntity entity)
+        public override T Create<T>(BaseEntity entity)
         {
             var tema = (Tema)entity;
-            var sqlOperation = TemaMapper.GetCreateStatement(tema);
-            dao.ExecuteProcedure(sqlOperation);
+            var lstResult = dao.ExecuteQueryProcedure(_mapper.GetCreateStatement(tema));
+
+            var dic = new Dictionary<string, object>();
+            if (lstResult.Count > 0)
+            {
+                dic = lstResult[0];
+                var objs = _mapper.BuildObject(dic);
+                return (T)Convert.ChangeType(objs, typeof(T));
+            }
+
+            return default(T);
         }
 
         public override void Delete(BaseEntity entity)
         {
             var tema = (Tema)entity;
-            dao.ExecuteProcedure(TemaMapper.GetDeleteStatement(tema));
+            dao.ExecuteProcedure(_mapper.GetDeleteStatement(tema));
         }
 
         public override T Retrieve<T>(BaseEntity entity)
         {
-            var lstResult = dao.ExecuteQueryProcedure(TemaMapper.GetRetriveStatement(entity));
+            var lstResult = dao.ExecuteQueryProcedure(_mapper.GetRetriveStatement(entity));
             var dic = new Dictionary<string, object>();
             if (lstResult.Count > 0)
             {
                 dic = lstResult[0];
-                var objs = TemaMapper.BuildObject(dic);
+                var objs = _mapper.BuildObject(dic);
                 return (T)Convert.ChangeType(objs, typeof(T));
             }
 
@@ -48,11 +57,11 @@ namespace CoreApi
         {
             var lstTemas = new List<T>();
 
-            var lstResult = dao.ExecuteQueryProcedure(TemaMapper.GetRetriveAllStatement());
+            var lstResult = dao.ExecuteQueryProcedure(_mapper.GetRetriveAllStatement());
             var dic = new Dictionary<string, object>();
             if (lstResult.Count > 0)
             {
-                var objs = TemaMapper.BuildObjects(lstResult);
+                var objs = _mapper.BuildObjects(lstResult);
                 foreach (var c in objs)
                 {
                     lstTemas.Add((T)Convert.ChangeType(c, typeof(T)));
@@ -65,18 +74,18 @@ namespace CoreApi
         public override void Update(BaseEntity entity)
         {
             var usuario = (Tema)entity;
-            dao.ExecuteProcedure(TemaMapper.GetUpdateStatement(usuario));
+            dao.ExecuteProcedure(_mapper.GetUpdateStatement(usuario));
         }
 
         public List<T> GetAllTemasByUser<T>(BaseEntity entity)
         {
             var lstTemas = new List<T>();
 
-            var lstResult = dao.ExecuteQueryProcedure(TemaMapper.GetRetriveTemasByUser(entity));
+            var lstResult = dao.ExecuteQueryProcedure(_mapper.GetRetriveTemasByUser(entity));
             var dic = new Dictionary<string, object>();
             if (lstResult.Count > 0)
             {
-                var objs = TemaMapper.BuildObjects(lstResult);
+                var objs = _mapper.BuildObjects(lstResult);
                 foreach (var c in objs)
                 {
                     lstTemas.Add((T)Convert.ChangeType(c, typeof(T)));

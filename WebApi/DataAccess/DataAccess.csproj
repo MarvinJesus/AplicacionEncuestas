@@ -43,6 +43,7 @@
     <Compile Include="Crud\AppMessagesCrudFactory.cs" />
     <Compile Include="Crud\CrudFactory.cs" />
     <Compile Include="Crud\TemaCrudFactory.cs" />
+    <Compile Include="Crud\UsuarioCrudFactory.cs" />
     <Compile Include="Dao\SqlDao.cs" />
     <Compile Include="Dao\SqlOperation.cs" />
     <Compile Include="Mapper\AppMessageMapper.cs" />
@@ -50,6 +51,7 @@
     <Compile Include="Mapper\IObjectMapper.cs" />
     <Compile Include="Mapper\ISqlStaments.cs" />
     <Compile Include="Mapper\TemaMapper.cs" />
+    <Compile Include="Mapper\UsuarioMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

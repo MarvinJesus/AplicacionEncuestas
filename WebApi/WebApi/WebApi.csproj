@@ -103,7 +103,7 @@
     <Compile Include="App_Start\Startup.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Autofac\Modules\ModulosEncuesta.cs" />
-    <Compile Include="Controllers\TemaController.cs" />
+    <Compile Include="Controllers\TemasController.cs" />
     <Compile Include="Controllers\UsuariosController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -127,6 +127,10 @@
     <ProjectReference Include="..\CoreApi\CoreApi.csproj">
       <Project>{F5EFB5E8-A66F-4037-B819-31E420151C8A}</Project>
       <Name>CoreApi</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Entities-POJO\Entities-POJO.csproj">
+      <Project>{D2A404F9-FD9E-4A28-9827-5F7663F150E2}</Project>
+      <Name>Entities-POJO</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
