@@ -30,7 +30,7 @@ namespace DataAccess.Crud
             throw new NotImplementedException();
         }
 
-        public override List<T> RetrieveAll<T>()
+        public override ICollection<T> RetrieveAll<T>()
         {
             var lstAppMessage = new List<T>();
 

@@ -53,7 +53,7 @@ namespace CoreApi
             return default(T);
         }
 
-        public override List<T> RetrieveAll<T>()
+        public override ICollection<T> RetrieveAll<T>()
         {
             var lstTemas = new List<T>();
 
@@ -77,7 +77,7 @@ namespace CoreApi
             return dao.ExecuteProcedure(_mapper.GetUpdateStatement(usuario));
         }
 
-        public List<T> GetAllTemasByUser<T>(BaseEntity entity)
+        public ICollection<T> GetAllTemasByUser<T>(BaseEntity entity)
         {
             var lstTemas = new List<T>();
 

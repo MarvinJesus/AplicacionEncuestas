@@ -110,8 +110,9 @@ BEGIN
 END
 GO
 
+EXEC UPD_TOPIC 1,'NEW TITLE','IT IS THE NEW DESCRIPTION','DEFAULT.PNG'
 
-
+SELECT * FROM TBL_TOPIC
 /************ DELTE TOPIC ************/
 /************************************/
 CREATE PROCEDURE DEL_TOPIC

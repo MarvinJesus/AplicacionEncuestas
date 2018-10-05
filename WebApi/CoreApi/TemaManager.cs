@@ -2,6 +2,7 @@
 using DataAccess.Crud;
 using Entities_POJO;
 using Exceptions;
+using System.Collections.Generic;
 
 namespace CoreApi
 {
@@ -66,7 +67,7 @@ namespace CoreApi
             {
                 Tema existingTopic = _crudFactory.Retrieve<Tema>(tema);
 
-                if (existingTopic == null)
+                if (existingTopic != null)
                 {
                     var result = _crudFactory.Update(tema);
 
@@ -89,6 +90,79 @@ namespace CoreApi
                 return new ManagerActionResult<Tema>(null, ManagerActionStatus.Error, exception);
             }
         }
+
+        public ManagerActionResult<Tema> DeleteTopic(int id, int userId)
+        {
+            try
+            {
+                var topicToDelete = new Tema { Id = id };
+
+                Tema existingTopic = _crudFactory.Retrieve<Tema>(new Tema { Id = id });
+
+                if (existingTopic != null)
+                {
+                    if (existingTopic.UsuarioId == userId)
+                    {
+                        var result = _crudFactory.Delete(topicToDelete);
+
+                        if (result != 0)
+                        {
+                            return new ManagerActionResult<Tema>(null, ManagerActionStatus.Deleted);
+                        }
+                        else
+                        {
+                            return new ManagerActionResult<Tema>(null, ManagerActionStatus.NothingModified);
+                        }
+                    }
+
+                    return new ManagerActionResult<Tema>(null, ManagerActionStatus.Error, null);
+                }
+
+                return new ManagerActionResult<Tema>(null, ManagerActionStatus.NotFound);
+            }
+            catch (System.Exception ex)
+            {
+                var exception = ExceptionManager.GetInstance().Process(ex);
+
+                return new ManagerActionResult<Tema>(null, ManagerActionStatus.Error, exception);
+            }
+        }
+
+        public Tema GetTopic(int id)
+        {
+            try
+            {
+                return _crudFactory.Retrieve<Tema>(new Tema { Id = id });
+            }
+            catch (System.Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public ICollection<Tema> GetTopicsByUser(int userId)
+        {
+            try
+            {
+                return _crudFactory.GetAllTemasByUser<Tema>(new Tema { UsuarioId = userId });
+            }
+            catch (System.Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public ICollection<Tema> GetTopics()
+        {
+            try
+            {
+                return _crudFactory.RetrieveAll<Tema>();
+            }
+            catch (System.Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 
 
@@ -97,5 +171,9 @@ namespace CoreApi
     {
         ManagerActionResult<Tema> RegistrarTema(Tema tema);
         ManagerActionResult<Tema> ActualizarTema(Tema tema);
+        Tema GetTopic(int id);
+        ICollection<Tema> GetTopicsByUser(int userId);
+        ICollection<Tema> GetTopics();
+        ManagerActionResult<Tema> DeleteTopic(int id, int userId);
     }
 }

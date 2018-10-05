@@ -50,7 +50,7 @@ namespace DataAccess.Crud
             return default(T);
         }
 
-        public override List<T> RetrieveAll<T>()
+        public override ICollection<T> RetrieveAll<T>()
         {
             throw new System.NotImplementedException();
         }
