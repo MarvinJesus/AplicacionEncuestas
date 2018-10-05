@@ -12,5 +12,16 @@ namespace Entities_POJO
 
         public ICollection<Respuesta> Repuestas { get; set; }
 
+        public Pregunta()
+        {
+        }
+
+        public Pregunta(int id, string descripcion, int idTema)
+        {
+            Id = id;
+            Descripcion = descripcion;
+            IdTema = idTema;
+        }
+
     }
 }

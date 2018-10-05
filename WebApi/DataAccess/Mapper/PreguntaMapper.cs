@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DataAccess.Dao;
+﻿using DataAccess.Dao;
 using Entities_POJO;
+using System;
+using System.Collections.Generic;
 
 namespace DataAccess.Mapper
 {
-   public class PreguntaMapper : EntityMapper, ISqlStaments, IObjectMapper
+    public class PreguntaMapper : EntityMapper, ISqlStaments, IObjectMapper
     {
-        private const string BD_COL_ID = "QUESTION_ID";
-        private const string DB_COL_DESCRIPCION = "DESCRIPTION";
-        private const string BD_COL_ID_TOPIC = "TOPIC_ID";
-       
+        private const string DB_COL_ID = "QUESTION_ID";
+        private const string DB_COL_DESCRIPCION = "QUESTION_DESCRIPTION";
+        private const string DB_COL_ID_TOPIC = "TOPIC_ID";
+
 
         public SqlOperation GetCreateStatement(BaseEntity entity)
         {
@@ -22,14 +19,17 @@ namespace DataAccess.Mapper
 
         public SqlOperation GetRetriveStatement(BaseEntity entity)
         {
-            throw new NotImplementedException();
+            var operation = new SqlOperation { ProcedureName = "RET_QUESTION" };
+            var question = (Pregunta)entity;
+            operation.AddIntParam(DB_COL_ID, question.Id);
+            return operation;
         }
 
         public SqlOperation GetRetriveAllStatement()
         {
             var operation = new SqlOperation
             {
-                ProcedureName= "RET_ALL_QUESTIONS"
+                ProcedureName = "RET_ALL_QUESTIONS"
             };
             return operation;
         }
@@ -59,9 +59,9 @@ namespace DataAccess.Mapper
         {
             var Pregunta = new Pregunta
             {
-                Id= GetIntValue(row, BD_COL_ID),
-                Descripcion = GetStringValue(row,DB_COL_DESCRIPCION),
-                IdTema = GetIntValue(row, BD_COL_ID_TOPIC)
+                Id = GetIntValue(row, DB_COL_ID),
+                Descripcion = GetStringValue(row, DB_COL_DESCRIPCION),
+                IdTema = GetIntValue(row, DB_COL_ID_TOPIC)
             };
             return Pregunta;
         }

@@ -1,11 +1,10 @@
-using DataAccess.Crud;
 using DataAccess.Dao;
 using DataAccess.Mapper;
 using Entities_POJO;
 using System;
 using System.Collections.Generic;
 
-namespace CoreApi
+namespace DataAccess.Crud
 {
     public class TemaCrudFactory : CrudFactory
     {

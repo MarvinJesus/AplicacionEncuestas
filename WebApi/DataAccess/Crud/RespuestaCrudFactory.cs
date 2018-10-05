@@ -75,7 +75,7 @@ namespace DataAccess.Crud
             return dao.ExecuteProcedure(_mapper.GetUpdateStatement(answer));
         }
 
-        public ICollection<T> GetAllTemasByUser<T>(BaseEntity entity)
+        public ICollection<T> GetAllAnswersByQuestion<T>(BaseEntity entity)
         {
             var lstAnswer = new List<T>();
 

@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DataAccess.Crud;
+﻿using DataAccess.Crud;
 using Entities_POJO;
+using System;
+using System.Collections.Generic;
 
 namespace CoreApi
 {
-   public class PreguntaManager
+    public class PreguntaManager : IPreguntaManager
     {
         private PreguntaCrudFactory Preguntacrud { get; set; }
 
@@ -25,10 +22,14 @@ namespace CoreApi
             }
             catch (Exception e)
             {
-              
+
                 throw e;
             }
         }
     }
-    
+
+    public interface IPreguntaManager
+    {
+        ICollection<Pregunta> GetAllQuestions();
+    }
 }
