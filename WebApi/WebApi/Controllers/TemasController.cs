@@ -53,6 +53,26 @@ namespace WebApi.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("usuarios/{userId}/temas")]
+        public IHttpActionResult GetTopicsByUser(int userId)
+        {
+            try
+            {
+                var topics = _manager.GetTopicsByUser(userId);
+
+                if (topics.Count > 0)
+                    return Ok(topics);
+
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                ExceptionManager.GetInstance().Process(ex);
+                return InternalServerError();
+            }
+        }
+
         [HttpPost]
         [Route("temas")]
         public IHttpActionResult PostTopic([FromBody] Tema tema)
