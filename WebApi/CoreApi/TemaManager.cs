@@ -114,6 +114,18 @@ namespace CoreApi
                 throw ex;
             }
         }
+
+        public ICollection<Tema> GetTopics()
+        {
+            try
+            {
+                return _crudFactory.RetrieveAll<Tema>();
+            }
+            catch (System.Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 
 
@@ -124,5 +136,6 @@ namespace CoreApi
         ManagerActionResult<Tema> ActualizarTema(Tema tema);
         Tema GetTopic(int id);
         ICollection<Tema> GetTopicsByUser(int userId);
+        ICollection<Tema> GetTopics();
     }
 }

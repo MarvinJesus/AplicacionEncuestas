@@ -73,6 +73,23 @@ namespace WebApi.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("temas")]
+        public IHttpActionResult GetTopics()
+        {
+            try
+            {
+                var topics = _manager.GetTopics();
+
+                return Ok(topics);
+            }
+            catch (Exception ex)
+            {
+                ExceptionManager.GetInstance().Process(ex);
+                return InternalServerError();
+            }
+        }
+
         [HttpPost]
         [Route("temas")]
         public IHttpActionResult PostTopic([FromBody] Tema tema)
