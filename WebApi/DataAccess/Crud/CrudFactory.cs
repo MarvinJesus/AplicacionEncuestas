@@ -11,7 +11,7 @@ namespace DataAccess.Crud
 
         public abstract T Create<T>(BaseEntity entity);
         public abstract T Retrieve<T>(BaseEntity entity);
-        public abstract List<T> RetrieveAll<T>();
+        public abstract ICollection<T> RetrieveAll<T>();
         public abstract int Update(BaseEntity entity);
         public abstract int Delete(BaseEntity entity);
     }

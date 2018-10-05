@@ -2,6 +2,7 @@
 using DataAccess.Crud;
 using Entities_POJO;
 using Exceptions;
+using System.Collections.Generic;
 
 namespace CoreApi
 {
@@ -89,6 +90,30 @@ namespace CoreApi
                 return new ManagerActionResult<Tema>(null, ManagerActionStatus.Error, exception);
             }
         }
+
+        public Tema GetTopic(int id)
+        {
+            try
+            {
+                return _crudFactory.Retrieve<Tema>(new Tema { Id = id });
+            }
+            catch (System.Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public ICollection<Tema> GetTopicsByUser(int userId)
+        {
+            try
+            {
+                return _crudFactory.GetAllTemasByUser<Tema>(new Tema { UsuarioId = userId });
+            }
+            catch (System.Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 
 
@@ -97,5 +122,7 @@ namespace CoreApi
     {
         ManagerActionResult<Tema> RegistrarTema(Tema tema);
         ManagerActionResult<Tema> ActualizarTema(Tema tema);
+        Tema GetTopic(int id);
+        ICollection<Tema> GetTopicsByUser(int userId);
     }
 }

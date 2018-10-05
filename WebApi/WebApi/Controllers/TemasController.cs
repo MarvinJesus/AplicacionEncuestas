@@ -2,6 +2,8 @@
 using Entities_POJO;
 using Exceptions;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Web.Http;
 
 namespace WebApi.Controllers
@@ -16,6 +18,39 @@ namespace WebApi.Controllers
         {
             _manager = manager;
             _usuarioManager = usuarioManager;
+        }
+
+        [HttpGet]
+        [Route("usuarios/{userId}/temas/{topicId}")]
+        [Route("temas/{topicId}")]
+        public IHttpActionResult GetTopic(int topicId, int? userId = null)
+        {
+            try
+            {
+                Tema topic = null;
+
+                if (userId == null)
+                {
+                    topic = _manager.GetTopic(topicId);
+                }
+                else
+                {
+                    ICollection<Tema> topics = _manager.GetTopicsByUser((int)userId);
+
+                    if (topics != null)
+                        topic = topics.FirstOrDefault(t => t.Id == topicId);
+                }
+
+                if (topic != null)
+                    return Ok(topic);
+
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                ExceptionManager.GetInstance().Process(ex);
+                return InternalServerError();
+            }
         }
 
         [HttpPost]
