@@ -68,16 +68,36 @@ namespace WebApi.Controllers
                 {
                     ICollection<Respuesta> answers = _manager.GetAnswersByQuestionId((int)answerId);
 
-                    if (answers.Count > 0)
+                    if (answers?.Count > 0)
                     {
                         answer = answers.FirstOrDefault(a => a.Id == id);
                     }
                 }
 
-                if (answer == null)
-                    return NotFound();
+                if (answer != null)
+                    return Ok(answer);
 
-                return Ok(answer);
+                return NotFound();
+            }
+            catch (System.Exception ex)
+            {
+                ExceptionManager.GetInstance().Process(ex);
+                return InternalServerError();
+            }
+        }
+
+        [HttpGet]
+        [Route("preguntas/{id}/respuestas")]
+        public IHttpActionResult GetAnswersbyQuestion(int id)
+        {
+            try
+            {
+                var answers = _manager.GetAnswersByQuestionId(id);
+
+                if (answers?.Count > 0)
+                    return Ok(answers);
+
+                return NotFound();
             }
             catch (System.Exception ex)
             {
