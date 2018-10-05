@@ -9,6 +9,8 @@ namespace WebApi.Autofac.Modules
         {
             builder.RegisterType<TemaManager>().AsImplementedInterfaces().AsSelf();
             builder.RegisterType<UsuarioManager>().AsImplementedInterfaces().AsSelf();
+            builder.RegisterType<PreguntaManager>().AsImplementedInterfaces().AsSelf();
+            builder.RegisterType<RespuestaManager>().AsImplementedInterfaces().AsSelf();
 
             base.Load(builder);
         }
