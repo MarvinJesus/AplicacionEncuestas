@@ -67,7 +67,7 @@ namespace CoreApi
             {
                 Tema existingTopic = _crudFactory.Retrieve<Tema>(tema);
 
-                if (existingTopic == null)
+                if (existingTopic != null)
                 {
                     var result = _crudFactory.Update(tema);
 
@@ -82,6 +82,43 @@ namespace CoreApi
                 }
 
                 return new ManagerActionResult<Tema>(tema, ManagerActionStatus.NotFound);
+            }
+            catch (System.Exception ex)
+            {
+                var exception = ExceptionManager.GetInstance().Process(ex);
+
+                return new ManagerActionResult<Tema>(null, ManagerActionStatus.Error, exception);
+            }
+        }
+
+        public ManagerActionResult<Tema> DeleteTopic(int id, int userId)
+        {
+            try
+            {
+                var topicToDelete = new Tema { Id = id };
+
+                Tema existingTopic = _crudFactory.Retrieve<Tema>(new Tema { Id = id });
+
+                if (existingTopic != null)
+                {
+                    if (existingTopic.UsuarioId == userId)
+                    {
+                        var result = _crudFactory.Delete(topicToDelete);
+
+                        if (result != 0)
+                        {
+                            return new ManagerActionResult<Tema>(null, ManagerActionStatus.Deleted);
+                        }
+                        else
+                        {
+                            return new ManagerActionResult<Tema>(null, ManagerActionStatus.NothingModified);
+                        }
+                    }
+
+                    return new ManagerActionResult<Tema>(null, ManagerActionStatus.Error, null);
+                }
+
+                return new ManagerActionResult<Tema>(null, ManagerActionStatus.NotFound);
             }
             catch (System.Exception ex)
             {
@@ -137,5 +174,6 @@ namespace CoreApi
         Tema GetTopic(int id);
         ICollection<Tema> GetTopicsByUser(int userId);
         ICollection<Tema> GetTopics();
+        ManagerActionResult<Tema> DeleteTopic(int id, int userId);
     }
 }
