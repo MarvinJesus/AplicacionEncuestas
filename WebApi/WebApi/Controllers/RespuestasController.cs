@@ -66,7 +66,7 @@ namespace WebApi.Controllers
                 }
                 else
                 {
-                    ICollection<Respuesta> answers = _manager.GetAnswersByQuestionId((int)answerId);
+                    ICollection<Respuesta> answers = _manager.GetAnswersByQuestion((int)answerId);
 
                     if (answers?.Count > 0)
                     {
@@ -92,12 +92,35 @@ namespace WebApi.Controllers
         {
             try
             {
-                var answers = _manager.GetAnswersByQuestionId(id);
+                var answers = _manager.GetAnswersByQuestion(id);
 
                 if (answers?.Count > 0)
                     return Ok(answers);
 
                 return NotFound();
+            }
+            catch (System.Exception ex)
+            {
+                ExceptionManager.GetInstance().Process(ex);
+                return InternalServerError();
+            }
+        }
+
+        [HttpDelete]
+        [Route("preguntas/{questionId}/respuestas/{id}")]
+        public IHttpActionResult DeleteAnswer(int id, int questionId)
+        {
+            try
+            {
+                var result = _manager.DeleteAnswer(id, questionId);
+
+                if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Deleted)
+                    return StatusCode(System.Net.HttpStatusCode.NoContent);
+
+                if (result.Status == CoreApi.ActionResult.ManagerActionStatus.NotFound)
+                    return NotFound();
+
+                return BadRequest();
             }
             catch (System.Exception ex)
             {

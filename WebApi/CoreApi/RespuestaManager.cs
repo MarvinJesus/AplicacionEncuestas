@@ -76,7 +76,7 @@ namespace CoreApi
             }
         }
 
-        public ICollection<Respuesta> GetAnswersByQuestionId(int answerId)
+        public ICollection<Respuesta> GetAnswersByQuestion(int answerId)
         {
             try
             {
@@ -87,12 +87,53 @@ namespace CoreApi
                 throw ex;
             }
         }
+
+        public ManagerActionResult<Respuesta> DeleteAnswer(int id, int questionId)
+        {
+            try
+            {
+                var answer = new Respuesta { Id = id };
+
+                var existingAnswer = _crudFactory.Retrieve<Respuesta>(answer);
+
+                if (existingAnswer != null)
+                {
+                    if (existingAnswer.IdPregunta == questionId)
+                    {
+                        var result = _crudFactory.Delete(existingAnswer);
+
+                        if (result != 0)
+                        {
+                            return new ManagerActionResult<Respuesta>(null, ManagerActionStatus.Deleted);
+                        }
+                        else
+                        {
+                            return new ManagerActionResult<Respuesta>(null, ManagerActionStatus.NothingModified);
+                        }
+                    }
+                    else
+                    {
+                        return new ManagerActionResult<Respuesta>(null, ManagerActionStatus.Error, null);
+                    }
+                }
+                else
+                {
+                    return new ManagerActionResult<Respuesta>(null, ManagerActionStatus.NotFound, null);
+                }
+            }
+            catch (System.Exception ex)
+            {
+                var exception = ExceptionManager.GetInstance().Process(ex);
+                return new ManagerActionResult<Respuesta>(null, ManagerActionStatus.Error, exception);
+            }
+        }
     }
 
     public interface IRespuestaManager
     {
         Respuesta GetAnswer(int id);
-        ICollection<Respuesta> GetAnswersByQuestionId(int answerId);
+        ICollection<Respuesta> GetAnswersByQuestion(int answerId);
         ManagerActionResult<Respuesta> RegisterAnswer(Respuesta answer);
+        ManagerActionResult<Respuesta> DeleteAnswer(int id, int questionId);
     }
 }
