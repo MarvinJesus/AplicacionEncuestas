@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="ActionResult\ManagerActionResult.cs" />
     <Compile Include="ActionResult\ManagerActionStatus.cs" />
+    <Compile Include="PreguntaManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TemaManager.cs" />
     <Compile Include="UsuarioManager.cs" />
