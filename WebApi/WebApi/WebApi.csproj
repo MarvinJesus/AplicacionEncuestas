@@ -104,6 +104,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Autofac\Modules\ModulosEncuesta.cs" />
     <Compile Include="Controllers\PreguntasController.cs" />
+    <Compile Include="Controllers\RespuestaController.cs" />
     <Compile Include="Controllers\TemasController.cs" />
     <Compile Include="Controllers\UsuariosController.cs" />
     <Compile Include="Global.asax.cs">

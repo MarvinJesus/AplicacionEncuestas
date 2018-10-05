@@ -49,6 +49,23 @@ END;
 
 
 
+/************ TABLE ANSWER ************/
+/*************************************/
+IF (NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE 
+TABLE_NAME = 'TBL_ANSWER'))
+BEGIN
+
+  CREATE TABLE TBL_ANSWER(
+    ANSWER_ID			INT NOT NULL IDENTITY(1,1),
+	ANSWER_DESCRIPTION	VARCHAR(500) NOT NULL,
+	QUESTION_ID				INT NOT NULL,
+    PRIMARY KEY(ANSWER_ID)
+  )
+
+END;
+
+
+
 /************ TABLE EXCEPTION ************/
 /****************************************/
 IF (NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE 

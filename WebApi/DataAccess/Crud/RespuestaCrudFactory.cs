@@ -1,26 +1,24 @@
-using DataAccess.Crud;
-using DataAccess.Dao;
-using DataAccess.Mapper;
+﻿using DataAccess.Mapper;
 using Entities_POJO;
 using System;
 using System.Collections.Generic;
 
-namespace CoreApi
+namespace DataAccess.Crud
 {
-    public class TemaCrudFactory : CrudFactory
+    public class RespuestaCrudFactory : CrudFactory
     {
-        private TemaMapper _mapper { get; set; }
+        private RespuestaMapper _mapper { get; set; }
 
-        public TemaCrudFactory()
+        public RespuestaCrudFactory()
         {
-            _mapper = new TemaMapper();
-            dao = SqlDao.GetInstance();
+            _mapper = new RespuestaMapper();
+            dao = Dao.SqlDao.GetInstance();
         }
 
         public override T Create<T>(BaseEntity entity)
         {
-            var tema = (Tema)entity;
-            var lstResult = dao.ExecuteQueryProcedure(_mapper.GetCreateStatement(tema));
+            var answer = (Respuesta)entity;
+            var lstResult = dao.ExecuteQueryProcedure(_mapper.GetCreateStatement(answer));
 
             var dic = new Dictionary<string, object>();
             if (lstResult.Count > 0)
@@ -35,8 +33,8 @@ namespace CoreApi
 
         public override int Delete(BaseEntity entity)
         {
-            var tema = (Tema)entity;
-            return dao.ExecuteProcedure(_mapper.GetDeleteStatement(tema));
+            var answer = (Respuesta)entity;
+            return dao.ExecuteProcedure(_mapper.GetDeleteStatement(answer));
         }
 
         public override T Retrieve<T>(BaseEntity entity)
@@ -55,7 +53,7 @@ namespace CoreApi
 
         public override ICollection<T> RetrieveAll<T>()
         {
-            var lstTemas = new List<T>();
+            var lstAnswer = new List<T>();
 
             var lstResult = dao.ExecuteQueryProcedure(_mapper.GetRetriveAllStatement());
             var dic = new Dictionary<string, object>();
@@ -64,35 +62,35 @@ namespace CoreApi
                 var objs = _mapper.BuildObjects(lstResult);
                 foreach (var c in objs)
                 {
-                    lstTemas.Add((T)Convert.ChangeType(c, typeof(T)));
+                    lstAnswer.Add((T)Convert.ChangeType(c, typeof(T)));
                 }
             }
 
-            return lstTemas;
+            return lstAnswer;
         }
 
         public override int Update(BaseEntity entity)
         {
-            var topic = (Tema)entity;
-            return dao.ExecuteProcedure(_mapper.GetUpdateStatement(topic));
+            var answer = (Respuesta)entity;
+            return dao.ExecuteProcedure(_mapper.GetUpdateStatement(answer));
         }
 
         public ICollection<T> GetAllTemasByUser<T>(BaseEntity entity)
         {
-            var lstTemas = new List<T>();
+            var lstAnswer = new List<T>();
 
-            var lstResult = dao.ExecuteQueryProcedure(_mapper.GetRetriveTemasByUser(entity));
+            var lstResult = dao.ExecuteQueryProcedure(_mapper.GetRetriveAnswersByQuestion(entity));
             var dic = new Dictionary<string, object>();
             if (lstResult.Count > 0)
             {
                 var objs = _mapper.BuildObjects(lstResult);
                 foreach (var c in objs)
                 {
-                    lstTemas.Add((T)Convert.ChangeType(c, typeof(T)));
+                    lstAnswer.Add((T)Convert.ChangeType(c, typeof(T)));
                 }
             }
 
-            return lstTemas;
+            return lstAnswer;
         }
     }
 }
