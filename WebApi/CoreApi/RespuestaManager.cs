@@ -2,6 +2,7 @@
 using DataAccess.Crud;
 using Entities_POJO;
 using Exceptions;
+using System.Collections.Generic;
 
 namespace CoreApi
 {
@@ -63,10 +64,35 @@ namespace CoreApi
             }
         }
 
+        public Respuesta GetAnswer(int id)
+        {
+            try
+            {
+                return _crudFactory.Retrieve<Respuesta>(new Respuesta { Id = id });
+            }
+            catch (System.Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public ICollection<Respuesta> GetAnswersByQuestionId(int answerId)
+        {
+            try
+            {
+                return _crudFactory.GetAllAnswersByQuestion<Respuesta>(new Respuesta { IdPregunta = answerId });
+            }
+            catch (System.Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 
     public interface IRespuestaManager
     {
+        Respuesta GetAnswer(int id);
+        ICollection<Respuesta> GetAnswersByQuestionId(int answerId);
         ManagerActionResult<Respuesta> RegisterAnswer(Respuesta answer);
     }
 }

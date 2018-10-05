@@ -1,6 +1,8 @@
 ﻿using CoreApi;
 using Entities_POJO;
 using Exceptions;
+using System.Collections.Generic;
+using System.Linq;
 using System.Web.Http;
 
 namespace WebApi.Controllers
@@ -41,6 +43,41 @@ namespace WebApi.Controllers
                     }
                 }
                 return BadRequest();
+            }
+            catch (System.Exception ex)
+            {
+                ExceptionManager.GetInstance().Process(ex);
+                return InternalServerError();
+            }
+        }
+
+        [HttpGet]
+        [Route("preguntas/{answerId}/respuestas/{id}")]
+        [Route("respuestas/{id}")]
+        public IHttpActionResult GetRespuesta(int id, int? answerId = null)
+        {
+            try
+            {
+                Respuesta answer = null;
+
+                if (answerId == null)
+                {
+                    answer = _manager.GetAnswer(id);
+                }
+                else
+                {
+                    ICollection<Respuesta> answers = _manager.GetAnswersByQuestionId((int)answerId);
+
+                    if (answers.Count > 0)
+                    {
+                        answer = answers.FirstOrDefault(a => a.Id == id);
+                    }
+                }
+
+                if (answer == null)
+                    return NotFound();
+
+                return Ok(answer);
             }
             catch (System.Exception ex)
             {
