@@ -127,6 +127,34 @@ namespace CoreApi
                 return new ManagerActionResult<Respuesta>(null, ManagerActionStatus.Error, exception);
             }
         }
+
+        public ManagerActionResult<Respuesta> UpdateAnswer(Respuesta answer)
+        {
+            try
+            {
+                Respuesta existingAnswer = _crudFactory.Retrieve<Respuesta>(answer);
+
+                if (existingAnswer != null)
+                {
+                    var result = _crudFactory.Update(answer);
+
+                    if (result != 0)
+                    {
+                        return new ManagerActionResult<Respuesta>(answer, ManagerActionStatus.Updated);
+                    }
+                    else
+                    {
+                        return new ManagerActionResult<Respuesta>(answer, ManagerActionStatus.NothingModified);
+                    }
+                }
+                return new ManagerActionResult<Respuesta>(answer, ManagerActionStatus.NotFound);
+            }
+            catch (System.Exception ex)
+            {
+                return new ManagerActionResult<Respuesta>(null, ManagerActionStatus.Error,
+                    ExceptionManager.GetInstance().Process(ex));
+            }
+        }
     }
 
     public interface IRespuestaManager
@@ -135,5 +163,6 @@ namespace CoreApi
         ICollection<Respuesta> GetAnswersByQuestion(int answerId);
         ManagerActionResult<Respuesta> RegisterAnswer(Respuesta answer);
         ManagerActionResult<Respuesta> DeleteAnswer(int id, int questionId);
+        ManagerActionResult<Respuesta> UpdateAnswer(Respuesta answer);
     }
 }

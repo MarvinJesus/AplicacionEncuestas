@@ -18,7 +18,18 @@ namespace DataAccess.Crud
 
         public override T Create<T>(BaseEntity entity)
         {
-            throw new NotImplementedException();
+            var question = (Pregunta)entity;
+            var lstResult = dao.ExecuteQueryProcedure(_mapper.GetCreateStatement(question));
+
+            var dic = new Dictionary<string, object>();
+            if (lstResult.Count > 0)
+            {
+                dic = lstResult[0];
+                var objs = _mapper.BuildObject(dic);
+                return (T)Convert.ChangeType(objs, typeof(T));
+            }
+
+            return default(T);
         }
 
         public override T Retrieve<T>(BaseEntity entity)
@@ -33,6 +44,24 @@ namespace DataAccess.Crud
             }
 
             return default(T);
+        }
+
+        public ICollection<T> GetAllQuestionsByTopic<T>(BaseEntity entity)
+        {
+            var lstQuestion = new List<T>();
+
+            var lstResult = dao.ExecuteQueryProcedure(_mapper.GetRetriveQuestionsByTopic(entity));
+            var dic = new Dictionary<string, object>();
+            if (lstResult.Count > 0)
+            {
+                var objs = _mapper.BuildObjects(lstResult);
+                foreach (var c in objs)
+                {
+                    lstQuestion.Add((T)Convert.ChangeType(c, typeof(T)));
+                }
+            }
+
+            return lstQuestion;
         }
 
         public override ICollection<T> RetrieveAll<T>()
@@ -54,12 +83,14 @@ namespace DataAccess.Crud
 
         public override int Update(BaseEntity entity)
         {
-            throw new NotImplementedException();
+            var question = (Pregunta)entity;
+            return dao.ExecuteProcedure(_mapper.GetUpdateStatement(question));
         }
 
         public override int Delete(BaseEntity entity)
         {
-            throw new NotImplementedException();
+            var question = (Pregunta)entity;
+            return dao.ExecuteProcedure(_mapper.GetDeleteStatement(question));
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using DataAccess.Dao;
 using Entities_POJO;
-using System;
 using System.Collections.Generic;
 
 namespace DataAccess.Mapper
@@ -14,7 +13,14 @@ namespace DataAccess.Mapper
 
         public SqlOperation GetCreateStatement(BaseEntity entity)
         {
-            throw new NotImplementedException();
+            var operation = new SqlOperation { ProcedureName = "CRE_QUESTION" };
+
+            var question = (Pregunta)entity;
+
+            operation.AddVarcharParam(DB_COL_DESCRIPCION, question.Descripcion);
+            operation.AddIntParam(DB_COL_ID_TOPIC, question.IdTema);
+
+            return operation;
         }
 
         public SqlOperation GetRetriveStatement(BaseEntity entity)
@@ -22,6 +28,14 @@ namespace DataAccess.Mapper
             var operation = new SqlOperation { ProcedureName = "RET_QUESTION" };
             var question = (Pregunta)entity;
             operation.AddIntParam(DB_COL_ID, question.Id);
+            return operation;
+        }
+
+        public SqlOperation GetRetriveQuestionsByTopic(BaseEntity entity)
+        {
+            var operation = new SqlOperation { ProcedureName = "RET_QUESTIONS_BY_TOPIC_ID" };
+            var question = (Pregunta)entity;
+            operation.AddIntParam(DB_COL_ID_TOPIC, question.IdTema);
             return operation;
         }
 
@@ -36,12 +50,22 @@ namespace DataAccess.Mapper
 
         public SqlOperation GetUpdateStatement(BaseEntity entity)
         {
-            throw new NotImplementedException();
+            var operation = new SqlOperation { ProcedureName = "UPD_QUESTION" };
+
+            var question = (Pregunta)entity;
+
+            operation.AddIntParam(DB_COL_ID, question.Id);
+            operation.AddVarcharParam(DB_COL_DESCRIPCION, question.Descripcion);
+
+            return operation;
         }
 
         public SqlOperation GetDeleteStatement(BaseEntity entity)
         {
-            throw new NotImplementedException();
+            var operation = new SqlOperation { ProcedureName = "DEL_QUESTION" };
+            var question = (Pregunta)entity;
+            operation.AddIntParam(DB_COL_ID, question.Id);
+            return operation;
         }
 
         public List<BaseEntity> BuildObjects(List<Dictionary<string, object>> lstRows)

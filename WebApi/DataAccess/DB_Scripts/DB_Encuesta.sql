@@ -138,3 +138,4 @@ INSERT INTO TBL_EXCEPTION VALUES(2,'Por favor completar los campos requeridos');
 INSERT INTO TBL_EXCEPTION VALUES(3,'Por favor ingrese un correo o numero de cedula diferente, ya se encuentran registrado');
 INSERT INTO TBL_EXCEPTION VALUES(4,'El usuario no existe');
 INSERT INTO TBL_EXCEPTION VALUES(5,'La pregunta no existe');
+INSERT INTO TBL_EXCEPTION VALUES(6,'El tema no existe');
