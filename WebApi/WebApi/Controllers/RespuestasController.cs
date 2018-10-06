@@ -106,6 +106,35 @@ namespace WebApi.Controllers
             }
         }
 
+        [HttpPut]
+        [Route("respuestas/{id}")]
+        public IHttpActionResult PutAnswer(int id, [FromBody]Respuesta answer)
+        {
+            try
+            {
+                if (answer == null)
+                    return BadRequest();
+
+                var result = _manager.UpdateAnswer(answer);
+
+                if (result.Status == CoreApi.ActionResult.ManagerActionStatus.NotFound)
+                    return NotFound();
+
+                if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Updated)
+                    return Ok(result.Entity);
+
+                if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Error)
+                    return InternalServerError();
+
+                return BadRequest();
+            }
+            catch (System.Exception ex)
+            {
+                ExceptionManager.GetInstance().Process(ex);
+                return InternalServerError();
+            }
+        }
+
         [HttpDelete]
         [Route("preguntas/{questionId}/respuestas/{id}")]
         public IHttpActionResult DeleteAnswer(int id, int questionId)
