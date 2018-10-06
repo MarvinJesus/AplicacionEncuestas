@@ -77,9 +77,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var topics = _manager.GetTopics();
-
-                return Ok(topics);
+                return base.Ok(_manager.GetTopics());
             }
             catch (Exception ex)
             {
