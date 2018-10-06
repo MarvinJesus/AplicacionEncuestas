@@ -3,6 +3,7 @@ using Entities_POJO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Results;
 using WebApi.Controllers;
@@ -13,16 +14,14 @@ namespace Survey_Integration_Test
     public class TopicControllerTest
     {
         private Mock<ITemaManager> _mockTopicManager;
-        private Mock<IUsuarioManager> _mockUserManager;
         private TemasController _controller;
 
         [TestInitialize]
         public void TestInitialize()
         {
             _mockTopicManager = new Mock<ITemaManager>();
-            _mockUserManager = new Mock<IUsuarioManager>();
 
-            _controller = new TemasController(_mockTopicManager.Object, _mockUserManager.Object);
+            _controller = new TemasController(_mockTopicManager.Object);
         }
 
         [TestMethod]
@@ -79,6 +78,52 @@ namespace Survey_Integration_Test
             var result = _controller.GetTopic(7, 6);
 
             Assert.IsInstanceOfType(result, typeof(NotFoundResult));
+        }
+
+        [TestMethod]
+        public void GetTopicsByUser_TopicsExisting_ShouldBeReturnOk()
+        {
+            _mockTopicManager.Setup(t => t.GetTopicsByUser(1))
+                .Returns(new List<Tema> {
+                    new Tema{ Id = 1, UsuarioId = 1},
+                    new Tema{Id = 2, UsuarioId = 1}
+                });
+
+            var actionResult = _controller.GetTopicsByUser(1);
+            var contentResult = actionResult as OkNegotiatedContentResult<ICollection<Tema>>;
+
+            Assert.IsNotNull(contentResult);
+            Assert.IsNotNull(contentResult.Content);
+            Assert.IsTrue(contentResult.Content
+                .Select(t => t.UsuarioId)
+                .CompareList(1));
+        }
+
+        [TestMethod]
+        public void GetTopicsByUser_TopicsNotExistin_ShouldReturnNotFound()
+        {
+            _mockTopicManager.Setup(tc => tc.GetTopicsByUser(1))
+                .Returns(new List<Tema>());
+
+            var actionResult = _controller.GetTopicsByUser(1);
+            Assert.IsInstanceOfType(actionResult, typeof(NotFoundResult));
+        }
+    }
+
+    public static class CompareIntValues
+    {
+        //This mesthod return true whether the list is equals value
+        public static bool CompareList(this IEnumerable<int> numbers, int value)
+        {
+            var result = true;
+
+            foreach (var number in numbers)
+            {
+                if (number != value)
+                    result = false;
+            }
+
+            return result;
         }
     }
 }

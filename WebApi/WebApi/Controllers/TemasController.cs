@@ -12,12 +12,10 @@ namespace WebApi.Controllers
     public class TemasController : ApiController
     {
         private ITemaManager _manager { get; set; }
-        private IUsuarioManager _usuarioManager { get; set; }
 
-        public TemasController(ITemaManager manager, IUsuarioManager usuarioManager)
+        public TemasController(ITemaManager manager)
         {
             _manager = manager;
-            _usuarioManager = usuarioManager;
         }
 
         [HttpGet]
