@@ -265,6 +265,51 @@ namespace Survey_Integration_Test
 
             Assert.IsInstanceOfType(result, typeof(BadRequestResult));
         }
+
+        [TestMethod]
+        public void DeleteTopic_TopicDeleteSuccessfully_ShouldReturnNoContent()
+        {
+            _mockTopicManager.Setup(tc => tc.DeleteTopic(1, 1))
+                .Returns(new ManagerActionResult<Tema>(null, ManagerActionStatus.Deleted));
+
+            var result = _controller.DeleteTopic(1, 1);
+
+            Assert.IsInstanceOfType(result, typeof(StatusCodeResult));
+            Assert.AreEqual((result as StatusCodeResult).StatusCode, System.Net.HttpStatusCode.NoContent);
+        }
+
+        [TestMethod]
+        public void DeleteTopic_TopicDeleteFailedDueToDoesNotExist_ShoulReturNotFound()
+        {
+            _mockTopicManager.Setup(tc => tc.DeleteTopic(1, 1))
+               .Returns(new ManagerActionResult<Tema>(null, ManagerActionStatus.NotFound));
+
+            var result = _controller.DeleteTopic(1, 1);
+
+            Assert.IsInstanceOfType(result, typeof(NotFoundResult));
+        }
+
+        [TestMethod]
+        public void DeleteTopic_TopicDeleteFailedDueToUserIdDoesNotMatchWithUserIdFromTopicinDataBase_ShouldReturnBadRequest()
+        {
+            _mockTopicManager.Setup(tc => tc.DeleteTopic(1, 1))
+               .Returns(new ManagerActionResult<Tema>(null, ManagerActionStatus.Error));
+
+            var result = _controller.DeleteTopic(1, 1);
+
+            Assert.IsInstanceOfType(result, typeof(BadRequestResult));
+        }
+
+        [TestMethod]
+        public void DeleteTopic_TopicDeleteFailedDueToSystemError_ShouldReturnInternalServerError()
+        {
+            _mockTopicManager.Setup(tc => tc.DeleteTopic(1, 1))
+                .Returns(new ManagerActionResult<Tema>(null, ManagerActionStatus.Error, new BussinessException()));
+
+            var result = _controller.DeleteTopic(1, 1);
+
+            Assert.IsInstanceOfType(result, typeof(InternalServerErrorResult));
+        }
     }
 
 

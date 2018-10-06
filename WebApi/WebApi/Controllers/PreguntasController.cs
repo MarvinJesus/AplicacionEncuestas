@@ -165,6 +165,9 @@ namespace WebApi.Controllers
                 if (result.Status == CoreApi.ActionResult.ManagerActionStatus.NotFound)
                     return NotFound();
 
+                if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Error && result.Exception != null)
+                    return InternalServerError();
+
                 return BadRequest();
             }
             catch (System.Exception ex)
