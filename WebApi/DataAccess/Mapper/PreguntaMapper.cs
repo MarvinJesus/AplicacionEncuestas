@@ -14,7 +14,14 @@ namespace DataAccess.Mapper
 
         public SqlOperation GetCreateStatement(BaseEntity entity)
         {
-            throw new NotImplementedException();
+            var operation = new SqlOperation { ProcedureName = "CRE_QUESTION" };
+
+            var question = (Pregunta)entity;
+
+            operation.AddVarcharParam(DB_COL_DESCRIPCION, question.Descripcion);
+            operation.AddIntParam(DB_COL_ID_TOPIC, question.IdTema);
+
+            return operation;
         }
 
         public SqlOperation GetRetriveStatement(BaseEntity entity)

@@ -18,7 +18,18 @@ namespace DataAccess.Crud
 
         public override T Create<T>(BaseEntity entity)
         {
-            throw new NotImplementedException();
+            var question = (Pregunta)entity;
+            var lstResult = dao.ExecuteQueryProcedure(_mapper.GetCreateStatement(question));
+
+            var dic = new Dictionary<string, object>();
+            if (lstResult.Count > 0)
+            {
+                dic = lstResult[0];
+                var objs = _mapper.BuildObject(dic);
+                return (T)Convert.ChangeType(objs, typeof(T));
+            }
+
+            return default(T);
         }
 
         public override T Retrieve<T>(BaseEntity entity)
