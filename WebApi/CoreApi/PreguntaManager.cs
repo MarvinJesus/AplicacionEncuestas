@@ -131,6 +131,45 @@ namespace CoreApi
                     ExceptionManager.GetInstance().Process(ex));
             }
         }
+
+        public ManagerActionResult<Pregunta> DeleteQuestion(int id, int topicId)
+        {
+            try
+            {
+                var existingQuestion = _questionCrudFactory.Retrieve<Pregunta>(
+                    new Pregunta { Id = id });
+
+                if (existingQuestion != null)
+                {
+                    if (existingQuestion.IdTema == topicId)
+                    {
+                        var result = _questionCrudFactory.Delete(existingQuestion);
+
+                        if (result != 0)
+                        {
+                            return new ManagerActionResult<Pregunta>(null, ManagerActionStatus.Deleted);
+                        }
+                        else
+                        {
+                            return new ManagerActionResult<Pregunta>(null, ManagerActionStatus.NothingModified);
+                        }
+                    }
+                    else
+                    {
+                        return new ManagerActionResult<Pregunta>(null, ManagerActionStatus.Error, null);
+                    }
+                }
+                else
+                {
+                    return new ManagerActionResult<Pregunta>(null, ManagerActionStatus.NotFound, null);
+                }
+            }
+            catch (System.Exception ex)
+            {
+                return new ManagerActionResult<Pregunta>(null, ManagerActionStatus.Error,
+                    ExceptionManager.GetInstance().Process(ex));
+            }
+        }
     }
 
     public interface IPreguntaManager
@@ -140,5 +179,6 @@ namespace CoreApi
         ICollection<Pregunta> GetQuestionsByTopic(int topicId);
         Pregunta GetQuestion(int id);
         ManagerActionResult<Pregunta> UpdateQuestion(Pregunta question);
+        ManagerActionResult<Pregunta> DeleteQuestion(int id, int topicId);
     }
 }

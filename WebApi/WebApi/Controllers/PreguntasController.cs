@@ -150,5 +150,28 @@ namespace WebApi.Controllers
                 return InternalServerError();
             }
         }
+
+        [HttpDelete]
+        [Route("temas/{topicId}/preguntas/{id}")]
+        public IHttpActionResult DeleteAnswer(int id, int topicId)
+        {
+            try
+            {
+                var result = _manager.DeleteQuestion(id, topicId);
+
+                if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Deleted)
+                    return StatusCode(System.Net.HttpStatusCode.NoContent);
+
+                if (result.Status == CoreApi.ActionResult.ManagerActionStatus.NotFound)
+                    return NotFound();
+
+                return BadRequest();
+            }
+            catch (System.Exception ex)
+            {
+                ExceptionManager.GetInstance().Process(ex);
+                return InternalServerError();
+            }
+        }
     }
 }

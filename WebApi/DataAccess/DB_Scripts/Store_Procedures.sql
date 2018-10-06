@@ -356,3 +356,21 @@ BEGIN
 
 END
 GO
+
+
+
+/************ DELETE QUESTION ************/
+/**************************************/
+CREATE PROCEDURE DEL_QUESTION
+	@P_QUESTION_ID		INT
+
+AS
+	BEGIN
+		SET NOCOUNT ON;
+
+		DELETE
+		FROM TBL_QUESTION
+		WHERE QUESTION_ID = @P_QUESTION_ID
+
+	END
+GO

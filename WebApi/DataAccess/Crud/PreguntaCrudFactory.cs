@@ -89,7 +89,8 @@ namespace DataAccess.Crud
 
         public override int Delete(BaseEntity entity)
         {
-            throw new NotImplementedException();
+            var question = (Pregunta)entity;
+            return dao.ExecuteProcedure(_mapper.GetDeleteStatement(question));
         }
     }
 }

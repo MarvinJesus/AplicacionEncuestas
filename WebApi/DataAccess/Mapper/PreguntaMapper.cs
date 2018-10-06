@@ -1,6 +1,5 @@
 ﻿using DataAccess.Dao;
 using Entities_POJO;
-using System;
 using System.Collections.Generic;
 
 namespace DataAccess.Mapper
@@ -63,7 +62,10 @@ namespace DataAccess.Mapper
 
         public SqlOperation GetDeleteStatement(BaseEntity entity)
         {
-            throw new NotImplementedException();
+            var operation = new SqlOperation { ProcedureName = "DEL_QUESTION" };
+            var question = (Pregunta)entity;
+            operation.AddIntParam(DB_COL_ID, question.Id);
+            return operation;
         }
 
         public List<BaseEntity> BuildObjects(List<Dictionary<string, object>> lstRows)
