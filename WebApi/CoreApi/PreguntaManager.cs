@@ -90,6 +90,18 @@ namespace CoreApi
                 throw e;
             }
         }
+
+        public Pregunta GetQuestion(int id)
+        {
+            try
+            {
+                return _questionCrudFactory.Retrieve<Pregunta>(new Pregunta { Id = id });
+            }
+            catch (System.Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 
     public interface IPreguntaManager
@@ -97,5 +109,6 @@ namespace CoreApi
         ICollection<Pregunta> GetAllQuestions();
         ManagerActionResult<Pregunta> RegisterQuestion(Pregunta question);
         ICollection<Pregunta> GetQuestionsByTopic(int topicId);
+        Pregunta GetQuestion(int id);
     }
 }

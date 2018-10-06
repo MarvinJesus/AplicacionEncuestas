@@ -2,6 +2,8 @@
 using Entities_POJO;
 using Exceptions;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Web.Http;
 
 namespace WebApi.Controllers
@@ -75,6 +77,41 @@ namespace WebApi.Controllers
 
                 if (questions?.Count > 0)
                     return Ok(questions);
+
+                return NotFound();
+            }
+            catch (System.Exception ex)
+            {
+                ExceptionManager.GetInstance().Process(ex);
+                return InternalServerError();
+            }
+        }
+
+        [HttpGet]
+        [Route("temas/{topicId}/preguntas/{id}")]
+        [Route("preguntas/{id}")]
+        public IHttpActionResult GetQuestion(int id, int? topicId = null)
+        {
+            try
+            {
+                Pregunta question = null;
+
+                if (topicId == null)
+                {
+                    question = _manager.GetQuestion(id);
+                }
+                else
+                {
+                    ICollection<Pregunta> questions = _manager.GetQuestionsByTopic((int)topicId);
+
+                    if (questions?.Count > 0)
+                    {
+                        question = questions.FirstOrDefault(a => a.Id == id);
+                    }
+                }
+
+                if (question != null)
+                    return Ok(question);
 
                 return NotFound();
             }
