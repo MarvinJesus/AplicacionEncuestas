@@ -1,5 +1,7 @@
 ﻿using CoreApi;
+using CoreApi.ActionResult;
 using Entities_POJO;
+using Exceptions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Collections.Generic;
@@ -131,18 +133,88 @@ namespace Survey_Integration_Test
             Assert.IsNotNull(content);
             Assert.IsNull(content.Content);
         }
+
+        [TestMethod]
+        public void PostTopic_RegisterTopicSuccessfully_ShoulReturnCreated()
+        {
+            var topic = new Tema
+            {
+                Id = 1,
+                Descripcion = "topic description",
+                ImagePath = "Defualt.png",
+                Titulo = "topic title",
+                UsuarioId = 1
+            };
+
+            _mockTopicManager.Setup(tc => tc.RegistrarTema(topic))
+                .Returns(new ManagerActionResult<Tema>(topic, ManagerActionStatus.Created));
+
+            _controller.Request = new System.Net.Http.HttpRequestMessage(
+                new System.Net.Http.HttpMethod("Post"),
+                "http://localhost:57696/api/temas");
+
+            var actionResult = _controller.PostTopic(topic);
+            var content = actionResult as CreatedNegotiatedContentResult<Tema>;
+
+            Assert.IsNotNull(content);
+            Assert.IsNotNull(content.Content);
+        }
+
+        [TestMethod]
+        public void PostTopic_RegisterTopicFailedDueToNullTopic_ShouldReturnBadRequest()
+        {
+            var result = _controller.PostTopic(null);
+
+            Assert.IsInstanceOfType(result, typeof(BadRequestResult));
+        }
+
+        [TestMethod]
+        public void PostTopic_RegisterTopicFailedDueToSystemError_ShoulReturnInternalServerError()
+        {
+            var topic = new Tema();
+
+            _mockTopicManager.Setup(tc => tc.RegistrarTema(topic))
+                .Returns(new ManagerActionResult<Tema>(null, ManagerActionStatus.Error, new BussinessException(1)));
+
+            var result = _controller.PostTopic(topic);
+
+            Assert.IsInstanceOfType(result, typeof(InternalServerErrorResult));
+        }
+
+        [TestMethod]
+        public void PostTopic_RegisterTopicFailedDueToIncompleteFields()
+        {
+            var topic = new Tema();
+
+            _mockTopicManager.Setup(tc => tc.RegistrarTema(topic))
+                .Returns(new ManagerActionResult<Tema>(topic, ManagerActionStatus.Error,
+                new BussinessException
+                {
+                    Code = 2,
+                    AppMessage = new ApplicationMessage
+                    {
+                        Id = 2,
+                        Message = "Por favor complete los campos requeridos",
+                    }
+                }));
+
+            var result = _controller.PostTopic(topic);
+
+            Assert.IsInstanceOfType(result, typeof(BadRequestErrorMessageResult));
+        }
     }
+
 
     public static class CompareIntValues
     {
         //This mesthod return true whether the list is equals value
-        public static bool CompareList(this IEnumerable<int> numbers, int value)
+        public static bool CompareList(this IEnumerable<int> numbers, int numbertoCompare)
         {
             var result = true;
 
             foreach (var number in numbers)
             {
-                if (number != value)
+                if (number != numbertoCompare)
                     result = false;
             }
 
