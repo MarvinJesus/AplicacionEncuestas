@@ -64,5 +64,25 @@ namespace WebApi.Controllers
                 return InternalServerError();
             }
         }
+
+        [HttpGet]
+        [Route("temas/{id}/preguntas")]
+        public IHttpActionResult GetQuestionsbyTopic(int id)
+        {
+            try
+            {
+                var questions = _manager.GetQuestionsByTopic(id);
+
+                if (questions?.Count > 0)
+                    return Ok(questions);
+
+                return NotFound();
+            }
+            catch (System.Exception ex)
+            {
+                ExceptionManager.GetInstance().Process(ex);
+                return InternalServerError();
+            }
+        }
     }
 }

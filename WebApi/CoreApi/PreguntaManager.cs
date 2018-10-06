@@ -66,6 +66,18 @@ namespace CoreApi
             }
         }
 
+        public ICollection<Pregunta> GetQuestionsByTopic(int topicId)
+        {
+            try
+            {
+                return _questionCrudFactory.GetAllQuestionsByTopic<Pregunta>(new Pregunta { IdTema = topicId });
+            }
+            catch (System.Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public ICollection<Pregunta> GetAllQuestions()
         {
             try
@@ -84,5 +96,6 @@ namespace CoreApi
     {
         ICollection<Pregunta> GetAllQuestions();
         ManagerActionResult<Pregunta> RegisterQuestion(Pregunta question);
+        ICollection<Pregunta> GetQuestionsByTopic(int topicId);
     }
 }

@@ -32,6 +32,14 @@ namespace DataAccess.Mapper
             return operation;
         }
 
+        public SqlOperation GetRetriveQuestionsByTopic(BaseEntity entity)
+        {
+            var operation = new SqlOperation { ProcedureName = "RET_QUESTIONS_BY_TOPIC_ID" };
+            var question = (Pregunta)entity;
+            operation.AddIntParam(DB_COL_ID_TOPIC, question.IdTema);
+            return operation;
+        }
+
         public SqlOperation GetRetriveAllStatement()
         {
             var operation = new SqlOperation

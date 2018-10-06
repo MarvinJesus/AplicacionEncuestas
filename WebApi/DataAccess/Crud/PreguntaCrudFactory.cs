@@ -46,6 +46,24 @@ namespace DataAccess.Crud
             return default(T);
         }
 
+        public ICollection<T> GetAllQuestionsByTopic<T>(BaseEntity entity)
+        {
+            var lstQuestion = new List<T>();
+
+            var lstResult = dao.ExecuteQueryProcedure(_mapper.GetRetriveQuestionsByTopic(entity));
+            var dic = new Dictionary<string, object>();
+            if (lstResult.Count > 0)
+            {
+                var objs = _mapper.BuildObjects(lstResult);
+                foreach (var c in objs)
+                {
+                    lstQuestion.Add((T)Convert.ChangeType(c, typeof(T)));
+                }
+            }
+
+            return lstQuestion;
+        }
+
         public override ICollection<T> RetrieveAll<T>()
         {
             var questionList = new List<T>();
