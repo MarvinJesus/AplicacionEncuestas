@@ -12,7 +12,7 @@ namespace WebApi.Controllers
     public class TemasController : ApiController
     {
         private ITemaManager _manager { get; set; }
-        public IUsuarioManager _usuarioManager { get; set; }
+        private IUsuarioManager _usuarioManager { get; set; }
 
         public TemasController(ITemaManager manager, IUsuarioManager usuarioManager)
         {

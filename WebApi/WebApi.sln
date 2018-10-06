@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Util", "Util\Util.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dtos", "Dtos\Dtos.csproj", "{673E8CF5-7A3A-48B0-ACB5-51C98ABAC830}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Survey_Integration_Test", "Survey_Integration_Test\Survey_Integration_Test.csproj", "{E7FDEFD1-68D5-4467-AD78-F3285B5C226F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{673E8CF5-7A3A-48B0-ACB5-51C98ABAC830}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{673E8CF5-7A3A-48B0-ACB5-51C98ABAC830}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{673E8CF5-7A3A-48B0-ACB5-51C98ABAC830}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7FDEFD1-68D5-4467-AD78-F3285B5C226F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7FDEFD1-68D5-4467-AD78-F3285B5C226F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7FDEFD1-68D5-4467-AD78-F3285B5C226F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7FDEFD1-68D5-4467-AD78-F3285B5C226F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
