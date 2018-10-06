@@ -121,5 +121,34 @@ namespace WebApi.Controllers
                 return InternalServerError();
             }
         }
+
+        [HttpPut]
+        [Route("preguntas/{id}")]
+        public IHttpActionResult PutQuestion(int id, [FromBody]Pregunta question)
+        {
+            try
+            {
+                if (question == null)
+                    return BadRequest();
+
+                var result = _manager.UpdateQuestion(question);
+
+                if (result.Status == CoreApi.ActionResult.ManagerActionStatus.NotFound)
+                    return NotFound();
+
+                if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Updated)
+                    return Ok(result.Entity);
+
+                if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Error)
+                    return InternalServerError();
+
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                ExceptionManager.GetInstance().Process(ex);
+                return InternalServerError();
+            }
+        }
     }
 }

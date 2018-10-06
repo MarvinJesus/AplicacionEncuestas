@@ -61,8 +61,8 @@ namespace CoreApi
             }
             catch (System.Exception ex)
             {
-                var exception = ExceptionManager.GetInstance().Process(ex);
-                return new ManagerActionResult<Pregunta>(null, ManagerActionStatus.Error, exception);
+                return new ManagerActionResult<Pregunta>(null, ManagerActionStatus.Error,
+                    ExceptionManager.GetInstance().Process(ex));
             }
         }
 
@@ -102,6 +102,35 @@ namespace CoreApi
                 throw ex;
             }
         }
+
+        public ManagerActionResult<Pregunta> UpdateQuestion(Pregunta question)
+        {
+            try
+            {
+                Pregunta existingQuestion = _questionCrudFactory.Retrieve<Pregunta>(question);
+
+                if (existingQuestion != null)
+                {
+                    var result = _questionCrudFactory.Update(question);
+
+                    if (result != 0)
+                    {
+                        return new ManagerActionResult<Pregunta>(question, ManagerActionStatus.Updated);
+                    }
+                    else
+                    {
+                        return new ManagerActionResult<Pregunta>(question, ManagerActionStatus.NothingModified);
+                    }
+                }
+
+                return new ManagerActionResult<Pregunta>(question, ManagerActionStatus.NotFound);
+            }
+            catch (System.Exception ex)
+            {
+                return new ManagerActionResult<Pregunta>(null, ManagerActionStatus.Error,
+                    ExceptionManager.GetInstance().Process(ex));
+            }
+        }
     }
 
     public interface IPreguntaManager
@@ -110,5 +139,6 @@ namespace CoreApi
         ManagerActionResult<Pregunta> RegisterQuestion(Pregunta question);
         ICollection<Pregunta> GetQuestionsByTopic(int topicId);
         Pregunta GetQuestion(int id);
+        ManagerActionResult<Pregunta> UpdateQuestion(Pregunta question);
     }
 }

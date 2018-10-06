@@ -82,7 +82,7 @@ namespace DataAccess.Mapper
 
             var answer = (Respuesta)entity;
 
-            operation.AddIntParam(DB_COL_ID, answer.IdPregunta);
+            operation.AddIntParam(DB_COL_ID, answer.Id);
             operation.AddVarcharParam(DB_COL_DESCRIPCION, answer.Descripcion);
 
             return operation;

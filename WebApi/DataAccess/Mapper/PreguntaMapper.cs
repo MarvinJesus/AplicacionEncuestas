@@ -51,7 +51,14 @@ namespace DataAccess.Mapper
 
         public SqlOperation GetUpdateStatement(BaseEntity entity)
         {
-            throw new NotImplementedException();
+            var operation = new SqlOperation { ProcedureName = "UPD_QUESTION" };
+
+            var question = (Pregunta)entity;
+
+            operation.AddIntParam(DB_COL_ID, question.Id);
+            operation.AddVarcharParam(DB_COL_DESCRIPCION, question.Descripcion);
+
+            return operation;
         }
 
         public SqlOperation GetDeleteStatement(BaseEntity entity)

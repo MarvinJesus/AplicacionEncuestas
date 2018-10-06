@@ -83,7 +83,8 @@ namespace DataAccess.Crud
 
         public override int Update(BaseEntity entity)
         {
-            throw new NotImplementedException();
+            var question = (Pregunta)entity;
+            return dao.ExecuteProcedure(_mapper.GetUpdateStatement(question));
         }
 
         public override int Delete(BaseEntity entity)
