@@ -182,7 +182,7 @@ namespace Survey_Integration_Test
         }
 
         [TestMethod]
-        public void PostTopic_RegisterTopicFailedDueToIncompleteFields()
+        public void PostTopic_RegisterTopicFailedDueToIncompleteFields_ShouldReturnBadRequest()
         {
             var topic = new Tema();
 
@@ -201,6 +201,69 @@ namespace Survey_Integration_Test
             var result = _controller.PostTopic(topic);
 
             Assert.IsInstanceOfType(result, typeof(BadRequestErrorMessageResult));
+        }
+
+
+        [TestMethod]
+        public void PutTopic_TopicUpdateFailedDueToNullTopic_ShouldReturnBadRequest()
+        {
+            var result = _controller.PutTopic(1, null);
+
+            Assert.IsInstanceOfType(result, typeof(BadRequestResult));
+        }
+
+        [TestMethod]
+        public void PutTopic_TopicUpdateSuccessfully_ShouldReturnOk()
+        {
+            var topic = new Tema();
+            _mockTopicManager.Setup(tc => tc.ActualizarTema(topic))
+                .Returns(new ManagerActionResult<Tema>(topic, ManagerActionStatus.Updated));
+
+            var actionResult = _controller.PutTopic(1, topic);
+            var content = actionResult as OkNegotiatedContentResult<Tema>;
+
+            Assert.IsNotNull(content);
+            Assert.IsNotNull(content.Content);
+            Assert.AreEqual(content.Content, topic);
+        }
+
+        [TestMethod]
+        public void PutTopic_TopicUpdateFailedDueToDoesNotExist_ShouldReturnNotFound()
+        {
+            var topic = new Tema();
+
+            _mockTopicManager.Setup(tc => tc.ActualizarTema(topic))
+                .Returns(new ManagerActionResult<Tema>(topic, ManagerActionStatus.NotFound));
+
+            var result = _controller.PutTopic(1, topic);
+
+            Assert.IsInstanceOfType(result, typeof(NotFoundResult));
+        }
+
+        [TestMethod]
+        public void PutTopic_TopicUpdateFailedDueToSystemError_ShouldReturnInternalServerError()
+        {
+            var topic = new Tema();
+
+            _mockTopicManager.Setup(tc => tc.ActualizarTema(topic))
+                .Returns(new ManagerActionResult<Tema>(topic, ManagerActionStatus.Error));
+
+            var result = _controller.PutTopic(1, topic);
+
+            Assert.IsInstanceOfType(result, typeof(InternalServerErrorResult));
+        }
+
+        [TestMethod]
+        public void PutTopic_TopicUpdateFailedDueToNothingHappendInTheDataBase_ShoulReturnBadRequest()
+        {
+            var topic = new Tema();
+
+            _mockTopicManager.Setup(tc => tc.ActualizarTema(topic))
+                .Returns(new ManagerActionResult<Tema>(topic, ManagerActionStatus.NothingModified));
+
+            var result = _controller.PutTopic(1, topic);
+
+            Assert.IsInstanceOfType(result, typeof(BadRequestResult));
         }
     }
 
