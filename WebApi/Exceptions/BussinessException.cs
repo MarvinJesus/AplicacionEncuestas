@@ -12,12 +12,12 @@ namespace Exceptions
         {
         }
 
-        public BussinessException(int exceptionId)
+        public BussinessException(int code)
         {
-            Code = exceptionId;
+            Code = code;
         }
 
-        public BussinessException(int exceptionId, Exception innerException) : this(exceptionId)
+        public BussinessException(int code, Exception innerException) : this(code)
         {
         }
     }

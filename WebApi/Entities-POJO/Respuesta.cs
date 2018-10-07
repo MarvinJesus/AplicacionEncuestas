@@ -8,6 +8,15 @@
 
         public int IdPregunta { get; set; }
 
-    
+        public Respuesta()
+        {
+        }
+
+        public Respuesta(int id, string descripcion, int idPregunta)
+        {
+            Id = id;
+            Descripcion = descripcion;
+            IdPregunta = idPregunta;
+        }
     }
 }

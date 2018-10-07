@@ -12,12 +12,10 @@ namespace WebApi.Controllers
     public class TemasController : ApiController
     {
         private ITemaManager _manager { get; set; }
-        public IUsuarioManager _usuarioManager { get; set; }
 
-        public TemasController(ITemaManager manager, IUsuarioManager usuarioManager)
+        public TemasController(ITemaManager manager)
         {
             _manager = manager;
-            _usuarioManager = usuarioManager;
         }
 
         [HttpGet]
@@ -79,9 +77,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var topics = _manager.GetTopics();
-
-                return Ok(topics);
+                return base.Ok(_manager.GetTopics());
             }
             catch (Exception ex)
             {
@@ -166,6 +162,9 @@ namespace WebApi.Controllers
 
                 if (result.Status == CoreApi.ActionResult.ManagerActionStatus.NotFound)
                     return NotFound();
+
+                if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Error && result.Exception != null)
+                    return InternalServerError();
 
                 return BadRequest();
             }

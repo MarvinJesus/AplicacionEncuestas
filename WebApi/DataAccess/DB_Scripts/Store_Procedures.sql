@@ -1,3 +1,7 @@
+/**************************************************************************************************
+								STORE PROCEDURES FOR EXCEPTION
+**************************************************************************************************/
+
 /********** RETRIVE ALL EXCEPTIONS ************/
 /*********************************************/
 CREATE PROCEDURE RET_ALL_EXCEPTIONS
@@ -26,6 +30,10 @@ AS
 GO
 
 
+
+/**************************************************************************************************
+								STORE PROCEDURES FOR TOPIC
+**************************************************************************************************/
 
 /********** RETRIVE TOPIC BY ID ************/
 /******************************************/
@@ -110,9 +118,8 @@ BEGIN
 END
 GO
 
-EXEC UPD_TOPIC 1,'NEW TITLE','IT IS THE NEW DESCRIPTION','DEFAULT.PNG'
 
-SELECT * FROM TBL_TOPIC
+
 /************ DELTE TOPIC ************/
 /************************************/
 CREATE PROCEDURE DEL_TOPIC
@@ -130,6 +137,10 @@ END
 GO
 
 
+
+/**************************************************************************************************
+								STORE PROCEDURES FOR PROFILE
+**************************************************************************************************/
 
 /********** REGISTER PROFILE **********/
 /*************************************/
@@ -167,3 +178,199 @@ END
 GO
 
 
+
+/**************************************************************************************************
+								STORE PROCEDURES FOR ANSWER
+**************************************************************************************************/
+
+/********** RETRIVE ANSWER BY ID ************/
+/******************************************/
+CREATE PROCEDURE RET_ANSWER
+	@P_ANSWER_ID			INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+	SELECT * FROM TBL_ANSWER  WHERE @P_ANSWER_ID = ANSWER_ID;
+END
+GO
+
+
+
+/********** RETRIVE ANSWERS BY QUESTION ID ************/
+/***********************************************/
+CREATE PROCEDURE RET_ANSWERS_BY_QUESTION_ID
+	@P_QUESTION_ID			INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+	SELECT * FROM TBL_ANSWER  WHERE @P_QUESTION_ID = QUESTION_ID;
+END
+GO
+
+
+
+/********** RETRIVE ALL ANSWERS ************/
+/*****************************************/
+CREATE PROCEDURE RET_ALL_ANSWERS
+
+AS
+BEGIN
+	SET NOCOUNT ON;
+	SELECT * FROM TBL_ANSWER;
+END
+GO
+
+
+
+/********** REGISTER ANSWER **********/
+/***********************************/
+CREATE PROCEDURE CRE_ANSWER
+	@P_ANSWER_DESCRIPTION	VARCHAR(500),
+	@P_QUESTION_ID			INT
+
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	INSERT INTO TBL_ANSWER VALUES (@P_ANSWER_DESCRIPTION, @P_QUESTION_ID);
+
+	DECLARE @P_ANSWER_ID INT = (SELECT IDENT_CURRENT( 'TBL_ANSWER' ));
+	EXEC dbo.RET_ANSWER @P_ANSWER_ID;
+END
+GO
+
+
+
+/********** UPDATE ANSWER **********/
+/***********************************/
+CREATE PROCEDURE UPD_ANSWER
+	@P_ANSWER_ID			INT,
+	@P_ANSWER_DESCRIPTION	VARCHAR(500)
+
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	UPDATE TBL_ANSWER
+	SET ANSWER_DESCRIPTION = @P_ANSWER_DESCRIPTION
+	WHERE ANSWER_ID = @P_ANSWER_ID
+
+END
+GO
+
+
+
+/************ DELETE ANSWER ************/
+/**************************************/
+CREATE PROCEDURE DEL_ANSWER
+	@P_ANSWER_ID		INT
+
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	DELETE
+	FROM TBL_ANSWER
+	WHERE ANSWER_ID = @P_ANSWER_ID
+
+END
+GO
+
+
+
+/**************************************************************************************************
+								STORE PROCEDURES FOR QUESTION
+**************************************************************************************************/
+
+/********** RETRIVE QUESTION BY ID ************/
+/*********************************************/
+CREATE PROCEDURE RET_QUESTION
+	@P_QUESTION_ID		INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+	SELECT * FROM TBL_QUESTION  WHERE @P_QUESTION_ID = QUESTION_ID;
+END
+GO
+
+
+
+/********** RETRIVE ALL QUESTION ************/
+/*****************************************/
+CREATE PROCEDURE RET_ALL_QUESTIONS
+
+AS
+BEGIN
+	SET NOCOUNT ON;
+	SELECT * FROM TBL_QUESTION;
+END
+GO
+
+
+
+/********** REGISTER QUESTION **********/
+/**************************************/
+CREATE PROCEDURE CRE_QUESTION
+	@P_QUESTION_DESCRIPTION	VARCHAR(500),
+	@P_TOPIC_ID				INT
+
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	INSERT INTO TBL_QUESTION VALUES (@P_QUESTION_DESCRIPTION, @P_TOPIC_ID);
+
+	DECLARE @P_QUESTION_ID INT = (SELECT IDENT_CURRENT( 'TBL_QUESTION' ));
+	EXEC dbo.RET_QUESTION @P_QUESTION_ID;
+END
+GO
+
+
+
+/********** RETRIVE QUESTIONS BY TOPIC ID ************/
+/***********************************************/
+CREATE PROCEDURE RET_QUESTIONS_BY_TOPIC_ID
+	@P_TOPIC_ID			INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+	SELECT * FROM TBL_QUESTION  WHERE @P_TOPIC_ID = TOPIC_ID;
+END
+GO
+
+
+
+/********** UPDATE QUESTION **********/
+/***********************************/
+CREATE PROCEDURE UPD_QUESTION
+	@P_QUESTION_ID			INT,
+	@P_QUESTION_DESCRIPTION	VARCHAR(500)
+
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	UPDATE TBL_QUESTION
+	SET QUESTION_DESCRIPTION = @P_QUESTION_DESCRIPTION
+	WHERE QUESTION_ID = @P_QUESTION_ID
+
+END
+GO
+
+
+
+/************ DELETE QUESTION ************/
+/**************************************/
+CREATE PROCEDURE DEL_QUESTION
+	@P_QUESTION_ID		INT
+
+AS
+	BEGIN
+		SET NOCOUNT ON;
+
+		DELETE
+		FROM TBL_QUESTION
+		WHERE QUESTION_ID = @P_QUESTION_ID
+
+	END
+GO

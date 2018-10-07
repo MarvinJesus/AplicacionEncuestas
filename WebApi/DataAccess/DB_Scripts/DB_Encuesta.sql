@@ -49,6 +49,40 @@ END;
 
 
 
+/************ TABLE QUESTION ************/
+/***************************************/
+IF (NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE 
+TABLE_NAME = 'TBL_QUESTION'))
+BEGIN
+
+  CREATE TABLE TBL_QUESTION(
+    QUESTION_ID			INT NOT NULL IDENTITY(1,1),
+	QUESTION_DESCRIPTION	VARCHAR(500) NOT NULL,
+	TOPIC_ID				INT NOT NULL,
+    PRIMARY KEY(QUESTION_ID)
+  )
+
+END;
+
+
+
+/************ TABLE ANSWER ************/
+/*************************************/
+IF (NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE 
+TABLE_NAME = 'TBL_ANSWER'))
+BEGIN
+
+  CREATE TABLE TBL_ANSWER(
+    ANSWER_ID			INT NOT NULL IDENTITY(1,1),
+	ANSWER_DESCRIPTION	VARCHAR(500) NOT NULL,
+	QUESTION_ID				INT NOT NULL,
+    PRIMARY KEY(ANSWER_ID)
+  )
+
+END;
+
+
+
 /************ TABLE EXCEPTION ************/
 /****************************************/
 IF (NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE 
@@ -89,11 +123,19 @@ END;
 ALTER TABLE TBL_TOPIC ADD FOREIGN KEY (USER_ID)
 REFERENCES TBL_PROFILE(PROFILE_ID) ON UPDATE CASCADE
 
+ALTER TABLE TBL_QUESTION ADD FOREIGN KEY (TOPIC_ID)
+REFERENCES TBL_TOPIC(TOPIC_ID) ON UPDATE CASCADE
 
-/***************************************************************************/
-/**************************REGISTROS REQUERIDO*****************************/
-/*************************************************************************/
-INSERT INTO TBL_EXCEPTION VALUES(1,'Upps algo fallo');
+ALTER TABLE TBL_ANSWER ADD FOREIGN KEY (QUESTION_ID)
+REFERENCES TBL_QUESTION(QUESTION_ID) ON UPDATE CASCADE
+
+
+/****************************************************************************/
+/**************************REGISTROS REQUERIDOS*****************************/
+/**************************************************************************/
+INSERT INTO TBL_EXCEPTION VALUES(1,'Upps algo fallo!');
 INSERT INTO TBL_EXCEPTION VALUES(2,'Por favor completar los campos requeridos');
 INSERT INTO TBL_EXCEPTION VALUES(3,'Por favor ingrese un correo o numero de cedula diferente, ya se encuentran registrado');
 INSERT INTO TBL_EXCEPTION VALUES(4,'El usuario no existe');
+INSERT INTO TBL_EXCEPTION VALUES(5,'La pregunta no existe');
+INSERT INTO TBL_EXCEPTION VALUES(6,'El tema no existe');
