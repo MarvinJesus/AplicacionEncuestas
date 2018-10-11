@@ -73,7 +73,6 @@
       <Name>Util</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Content Include="DB_Scripts\DB_Encuesta.sql" />
     <Content Include="DB_Scripts\Store_Procedures.sql" />
