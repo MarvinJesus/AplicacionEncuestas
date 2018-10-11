@@ -374,3 +374,146 @@ AS
 
 	END
 GO
+
+
+
+
+/**************************************************************************************************
+								STORE PROCEDURES FOR CATEGORY
+**************************************************************************************************/
+
+/********** RETRIVE CATEGORY BY ID ************/
+/*********************************************/
+CREATE PROCEDURE RET_CATEGORY
+
+	@P_CATEGORY_ID	INT
+
+AS
+	BEGIN
+		
+		SET NOCOUNT ON;
+
+		SELECT * FROM TBL_CATEGORY WHERE CATEGORY_ID = @P_CATEGORY_ID
+	END
+GO
+
+
+
+/********** RETRIVE CATEGORY BY TOPIC ID ************/
+/***************************************************/
+CREATE PROCEDURE RET_CATEGORY_BY_TOPIC
+
+	@P_TOPIC_ID	INT
+
+AS
+	BEGIN
+		
+		SET NOCOUNT ON;
+
+		SELECT CATEGORY.CATEGORY_NAME
+		FROM TBL_CATEGORY_BY_TOPIC AS CAT_BY_TOP
+
+		INNER JOIN  TBL_CATEGORY AS CATEGORY ON
+		CAT_BY_TOP.CATEGORY_ID = CATEGORY.CATEGORY_ID
+
+		INNER JOIN TBL_TOPIC AS TOPIC ON
+		CAT_BY_TOP.TOPIC_ID = TOPIC.TOPIC_ID
+
+		WHERE CAT_BY_TOP.TOPIC_ID = @P_TOPIC_ID
+
+	END
+GO
+
+
+
+/********** RETRIVE ALL CATEGORY ************/
+/*******************************************/
+CREATE PROCEDURE RET_ALL_CATEGORY
+AS
+	BEGIN
+		SELECT * FROM TBL_CATEGORY
+	END
+GO
+
+
+
+/********** DELETE CATEGORY ************/
+/**************************************/
+CREATE PROCEDURE DEL_CATEGORY
+	@P_CATEGORY_ID INT
+AS
+	BEGIN
+		DELETE FROM TBL_CATEGORY WHERE CATEGORY_ID = @P_CATEGORY_ID
+	END
+GO
+
+
+
+/********** UPDATE CATEGORY ************/
+/**************************************/
+CREATE PROCEDURE UPD_CATEGORY
+	@P_CATEGORY_ID		INT,
+	@P_CATEGORY_NAME	VARCHAR(20)
+AS
+	BEGIN
+		UPDATE TBL_CATEGORY
+		SET CATEGORY_NAME = @P_CATEGORY_NAME
+		WHERE CATEGORY_ID = @P_CATEGORY_ID
+	END
+GO
+
+
+
+/********** CREATE CATEGORY ************/
+/**************************************/
+CREATE PROCEDURE CRE_CATEGORY
+	@P_CATEGORY_NAME	VARCHAR(20)
+AS
+	BEGIN
+		INSERT INTO TBL_CATEGORY VALUES(@P_CATEGORY_NAME)
+	END
+GO
+
+
+
+/**************************************************************************************************
+								STORE PROCEDURES FOR CATEGORY BY TOPIC
+**************************************************************************************************/
+
+/********** CREATE CATEGORY BY TOPIC ************/
+/*********************************************/
+CREATE PROCEDURE CRE_CATEGORY_BY_TOPIC
+
+	@P_CATEGORY_ID	INT,
+	@P_TOPIC_ID		INT
+
+AS
+	BEGIN
+		
+		SET NOCOUNT ON;
+
+		INSERT INTO TBL_CATEGORY_BY_TOPIC VALUES(@P_CATEGORY_ID,@P_TOPIC_ID)
+	END
+GO
+
+
+
+/**************************************************************************************************
+								STORE PROCEDURES FOR ROLE BY PROFILE
+**************************************************************************************************/
+
+/********** CREATE CATEGORY BY TOPIC ************/
+/*********************************************/
+CREATE PROCEDURE CRE_ROLE_BY_PROFILE
+
+	@P_ROLE_ID		INT,
+	@P_PROFILE_ID	INT
+
+AS
+	BEGIN
+		
+		SET NOCOUNT ON;
+
+		INSERT INTO TBL_CATEGORY_BY_TOPIC VALUES(@P_ROLE_ID,@P_PROFILE_ID)
+	END
+GO
