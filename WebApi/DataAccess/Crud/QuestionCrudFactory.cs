@@ -6,19 +6,19 @@ using System.Collections.Generic;
 
 namespace DataAccess.Crud
 {
-    public class PreguntaCrudFactory : CrudFactory
+    public class QuestionCrudFactory : CrudFactory
     {
-        private PreguntaMapper _mapper { get; set; }
+        private QuestionMapper _mapper { get; set; }
 
-        public PreguntaCrudFactory()
+        public QuestionCrudFactory()
         {
-            _mapper = new PreguntaMapper();
+            _mapper = new QuestionMapper();
             dao = SqlDao.GetInstance();
         }
 
         public override T Create<T>(BaseEntity entity)
         {
-            var question = (Pregunta)entity;
+            var question = (Question)entity;
             var lstResult = dao.ExecuteQueryProcedure(_mapper.GetCreateStatement(question));
 
             var dic = new Dictionary<string, object>();
@@ -83,13 +83,13 @@ namespace DataAccess.Crud
 
         public override int Update(BaseEntity entity)
         {
-            var question = (Pregunta)entity;
+            var question = (Question)entity;
             return dao.ExecuteProcedure(_mapper.GetUpdateStatement(question));
         }
 
         public override int Delete(BaseEntity entity)
         {
-            var question = (Pregunta)entity;
+            var question = (Question)entity;
             return dao.ExecuteProcedure(_mapper.GetDeleteStatement(question));
         }
     }

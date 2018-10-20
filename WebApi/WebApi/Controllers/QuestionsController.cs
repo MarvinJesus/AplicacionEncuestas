@@ -1,6 +1,7 @@
 ﻿using CoreApi;
 using Entities_POJO;
 using Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
@@ -8,25 +9,40 @@ using System.Web.Http;
 namespace WebApi.Controllers
 {
     [RoutePrefix("api")]
-    public class RespuestasController : ApiController
+    public class QuestionsController : ApiController
     {
-        private IRespuestaManager _manager { get; set; }
+        public IQuestionManager _manager { get; set; }
 
-        public RespuestasController(IRespuestaManager manger)
+        public QuestionsController(IQuestionManager QuestionManager)
         {
-            _manager = manger;
+            _manager = QuestionManager;
         }
 
-        [HttpPost]
-        [Route("respuestas")]
-        public IHttpActionResult PostRespuesta([FromBody]Respuesta answer)
+        [HttpGet]
+        public IHttpActionResult Get()
         {
             try
             {
-                if (answer == null)
+                var questions = _manager.GetAllQuestions();
+                return Ok(questions);
+            }
+            catch (Exception ex)
+            {
+                ExceptionManager.GetInstance().Process(ex);
+                return InternalServerError();
+            }
+        }
+
+        [HttpPost]
+        [Route("questions")]
+        public IHttpActionResult PostQuestion([FromBody]Question question)
+        {
+            try
+            {
+                if (question == null)
                     return BadRequest();
 
-                var result = _manager.RegisterAnswer(answer);
+                var result = _manager.RegisterQuestion(question);
 
                 if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Created)
                     return Created(Request.RequestUri + "/" + result.Entity.Id.ToString(), result.Entity);
@@ -52,30 +68,15 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        [Route("preguntas/{answerId}/respuestas/{id}")]
-        [Route("respuestas/{id}")]
-        public IHttpActionResult GetRespuesta(int id, int? answerId = null)
+        [Route("topics/{id}/questions")]
+        public IHttpActionResult GetQuestionsbyTopic(int id)
         {
             try
             {
-                Respuesta answer = null;
+                var questions = _manager.GetQuestionsByTopic(id);
 
-                if (answerId == null)
-                {
-                    answer = _manager.GetAnswer(id);
-                }
-                else
-                {
-                    ICollection<Respuesta> answers = _manager.GetAnswersByQuestion((int)answerId);
-
-                    if (answers?.Count > 0)
-                    {
-                        answer = answers.FirstOrDefault(a => a.Id == id);
-                    }
-                }
-
-                if (answer != null)
-                    return Ok(answer);
+                if (questions?.Count > 0)
+                    return Ok(questions);
 
                 return NotFound();
             }
@@ -87,15 +88,30 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        [Route("preguntas/{id}/respuestas")]
-        public IHttpActionResult GetAnswersbyQuestion(int id)
+        [Route("topics/{topicId}/questions/{id}")]
+        [Route("questions/{id}")]
+        public IHttpActionResult GetQuestion(int id, int? topicId = null)
         {
             try
             {
-                var answers = _manager.GetAnswersByQuestion(id);
+                Question question = null;
 
-                if (answers?.Count > 0)
-                    return Ok(answers);
+                if (topicId == null)
+                {
+                    question = _manager.GetQuestion(id);
+                }
+                else
+                {
+                    ICollection<Question> questions = _manager.GetQuestionsByTopic((int)topicId);
+
+                    if (questions?.Count > 0)
+                    {
+                        question = questions.FirstOrDefault(a => a.Id == id);
+                    }
+                }
+
+                if (question != null)
+                    return Ok(question);
 
                 return NotFound();
             }
@@ -107,15 +123,15 @@ namespace WebApi.Controllers
         }
 
         [HttpPut]
-        [Route("respuestas/{id}")]
-        public IHttpActionResult PutAnswer(int id, [FromBody]Respuesta answer)
+        [Route("questions/{id}")]
+        public IHttpActionResult PutQuestion(int id, [FromBody]Question question)
         {
             try
             {
-                if (answer == null)
+                if (question == null)
                     return BadRequest();
 
-                var result = _manager.UpdateAnswer(answer);
+                var result = _manager.UpdateQuestion(question);
 
                 if (result.Status == CoreApi.ActionResult.ManagerActionStatus.NotFound)
                     return NotFound();
@@ -128,7 +144,7 @@ namespace WebApi.Controllers
 
                 return BadRequest();
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 ExceptionManager.GetInstance().Process(ex);
                 return InternalServerError();
@@ -136,12 +152,12 @@ namespace WebApi.Controllers
         }
 
         [HttpDelete]
-        [Route("preguntas/{questionId}/respuestas/{id}")]
-        public IHttpActionResult DeleteAnswer(int id, int questionId)
+        [Route("topics/{topicId}/questions/{id}")]
+        public IHttpActionResult DeleteAnswer(int id, int topicId)
         {
             try
             {
-                var result = _manager.DeleteAnswer(id, questionId);
+                var result = _manager.DeleteQuestion(id, topicId);
 
                 if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Deleted)
                     return StatusCode(System.Net.HttpStatusCode.NoContent);

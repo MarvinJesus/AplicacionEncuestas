@@ -4,25 +4,25 @@ using System.Collections.Generic;
 
 namespace DataAccess.Mapper
 {
-    public class TemaMapper : EntityMapper, ISqlStaments, IObjectMapper
+    public class TopicMapper : EntityMapper, ISqlStaments, IObjectMapper
     {
         private const string DB_COL_ID = "TOPIC_ID";
-        private const string DB_COL_TITULO = "TITLE";
-        private const string DB_COL_DESCRIPCION = "TOPIC_DESCRIPTION";
+        private const string DB_COL_TITLE = "TITLE";
+        private const string DB_COL_DESCRIPTION = "TOPIC_DESCRIPTION";
         private const string DB_COL_IMAGEPATH = "IMG_URL";
-        private const string DB_COL_USUARIOID = "USER_ID";
+        private const string DB_COL_USERID = "USER_ID";
 
 
         public SqlOperation GetCreateStatement(BaseEntity entity)
         {
             var operation = new SqlOperation { ProcedureName = "CRE_TOPIC" };
 
-            var tema = (Tema)entity;
+            var Topic = (Topic)entity;
 
-            operation.AddVarcharParam(DB_COL_TITULO, tema.Titulo);
-            operation.AddVarcharParam(DB_COL_DESCRIPCION, tema.Descripcion);
-            operation.AddVarcharParam(DB_COL_IMAGEPATH, tema.ImagePath);
-            operation.AddIntParam(DB_COL_USUARIOID, tema.UsuarioId);
+            operation.AddVarcharParam(DB_COL_TITLE, Topic.Title);
+            operation.AddVarcharParam(DB_COL_DESCRIPTION, Topic.Description);
+            operation.AddVarcharParam(DB_COL_IMAGEPATH, Topic.ImagePath);
+            operation.AddGuidParam(DB_COL_USERID, Topic.UserId);
 
             return operation;
         }
@@ -32,8 +32,8 @@ namespace DataAccess.Mapper
         public SqlOperation GetRetriveStatement(BaseEntity entity)
         {
             var operation = new SqlOperation { ProcedureName = "RET_TOPIC" };
-            var tema = (Tema)entity;
-            operation.AddIntParam(DB_COL_ID, tema.Id);
+            var Topic = (Topic)entity;
+            operation.AddIntParam(DB_COL_ID, Topic.Id);
             return operation;
         }
 
@@ -46,23 +46,23 @@ namespace DataAccess.Mapper
             return operation;
         }
 
-        public SqlOperation GetRetriveTemasByUser(BaseEntity entity)
+        public SqlOperation GetRetriveTopicsByUser(BaseEntity entity)
         {
             var operation = new SqlOperation { ProcedureName = "RET_TOPIC_BY_USER_ID" };
-            var tema = (Tema)entity;
-            operation.AddIntParam(DB_COL_USUARIOID, tema.UsuarioId);
+            var Topic = (Topic)entity;
+            operation.AddGuidParam(DB_COL_USERID, Topic.UserId);
             return operation;
         }
 
         public SqlOperation GetUpdateStatement(BaseEntity entity)
         {
             var operation = new SqlOperation { ProcedureName = "UPD_TOPIC" };
-            var tema = (Tema)entity;
+            var Topic = (Topic)entity;
 
-            operation.AddIntParam(DB_COL_ID, tema.Id);
-            operation.AddVarcharParam(DB_COL_TITULO, tema.Titulo);
-            operation.AddVarcharParam(DB_COL_DESCRIPCION, tema.Descripcion);
-            operation.AddVarcharParam(DB_COL_IMAGEPATH, tema.ImagePath);
+            operation.AddIntParam(DB_COL_ID, Topic.Id);
+            operation.AddVarcharParam(DB_COL_TITLE, Topic.Title);
+            operation.AddVarcharParam(DB_COL_DESCRIPTION, Topic.Description);
+            operation.AddVarcharParam(DB_COL_IMAGEPATH, Topic.ImagePath);
 
             return operation;
         }
@@ -72,8 +72,8 @@ namespace DataAccess.Mapper
         public SqlOperation GetDeleteStatement(BaseEntity entity)
         {
             var operation = new SqlOperation { ProcedureName = "DEL_TOPIC" };
-            var tema = (Tema)entity;
-            operation.AddIntParam(DB_COL_ID, tema.Id);
+            var Topic = (Topic)entity;
+            operation.AddIntParam(DB_COL_ID, Topic.Id);
             return operation;
         }
 
@@ -92,16 +92,16 @@ namespace DataAccess.Mapper
 
         public BaseEntity BuildObject(Dictionary<string, object> row)
         {
-            var Tema = new Tema
+            var Topic = new Topic
             {
                 Id = GetIntValue(row, DB_COL_ID),
-                Titulo = GetStringValue(row, DB_COL_TITULO),
-                Descripcion = GetStringValue(row, DB_COL_DESCRIPCION),
+                Title = GetStringValue(row, DB_COL_TITLE),
+                Description = GetStringValue(row, DB_COL_DESCRIPTION),
                 ImagePath = GetStringValue(row, DB_COL_IMAGEPATH),
-                UsuarioId = GetIntValue(row, DB_COL_USUARIOID)
+                UserId = GetGuidValue(row, DB_COL_USERID)
 
             };
-            return Tema;
+            return Topic;
         }
     }
 }

@@ -5,20 +5,20 @@ using System.Collections.Generic;
 
 namespace DataAccess.Crud
 {
-    public class UsuarioCrudFactory : CrudFactory
+    public class ProfileCrudFactory : CrudFactory
     {
-        private UsuarioMapper _mapper { get; set; }
+        private ProfileMapper _mapper { get; set; }
 
-        public UsuarioCrudFactory()
+        public ProfileCrudFactory()
         {
-            _mapper = new UsuarioMapper();
+            _mapper = new ProfileMapper();
             dao = Dao.SqlDao.GetInstance();
         }
 
         public override T Create<T>(BaseEntity entity)
         {
-            var usuario = (Usuario)entity;
-            var lstResult = dao.ExecuteQueryProcedure(_mapper.GetCreateStatement(usuario));
+            var Profile = (Profile)entity;
+            var lstResult = dao.ExecuteQueryProcedure(_mapper.GetCreateStatement(Profile));
 
             var dic = new Dictionary<string, object>();
             if (lstResult.Count > 0)

@@ -6,38 +6,38 @@ using Exceptions;
 
 namespace CoreApi
 {
-    public class UsuarioManager : IUsuarioManager
+    public class ProfileManager : IProfileManager
     {
-        private UsuarioCrudFactory _crudFactory { get; set; }
+        private ProfileCrudFactory _crudFactory { get; set; }
 
-        public UsuarioManager()
+        public ProfileManager()
         {
-            _crudFactory = new UsuarioCrudFactory();
+            _crudFactory = new ProfileCrudFactory();
         }
 
-        public Usuario GetUsuario(Usuario usuario)
+        public Profile GetProfile(Profile Profile)
         {
-            return _crudFactory.Retrieve<Usuario>(usuario);
+            return _crudFactory.Retrieve<Profile>(Profile);
         }
 
-        public ManagerActionResult<Usuario> RegistrarUsuario(UsuarioDto usuarioDto)
+        public ManagerActionResult<Profile> RegisterProfile(ProfileDto ProfileDto)
         {
             try
             {
-                if (usuarioDto.Contrasenia == null)
-                    throw new BussinessException(2);
+                //if (ProfileDto.Password == null)
+                //    throw new BussinessException(2);
 
-                Usuario usuario = DataAccess.Factories.UsuarioFactory.CreateUsuario(usuarioDto);
+                Profile Profile = DataAccess.Factories.ProfileFactory.CreateProfile(ProfileDto);
 
-                var newUser = _crudFactory.Create<Usuario>(usuario);
+                var newUser = _crudFactory.Create<Profile>(Profile);
 
                 if (newUser != null)
                 {
-                    return new ManagerActionResult<Usuario>(newUser, ManagerActionStatus.Created);
+                    return new ManagerActionResult<Profile>(newUser, ManagerActionStatus.Created);
                 }
                 else
                 {
-                    return new ManagerActionResult<Usuario>(newUser, ManagerActionStatus.NothingModified, null);
+                    return new ManagerActionResult<Profile>(newUser, ManagerActionStatus.NothingModified, null);
                 }
             }
             catch (System.Data.SqlClient.SqlException sqlEx)
@@ -60,21 +60,21 @@ namespace CoreApi
                         break;
                 }
 
-                return new ManagerActionResult<Usuario>(
+                return new ManagerActionResult<Profile>(
                     null, ManagerActionStatus.Error, exception);
             }
             catch (System.Exception ex)
             {
                 var exception = ExceptionManager.GetInstance().Process(ex);
 
-                return new ManagerActionResult<Usuario>(null, ManagerActionStatus.Error, exception);
+                return new ManagerActionResult<Profile>(null, ManagerActionStatus.Error, exception);
             }
         }
     }
 
-    public interface IUsuarioManager
+    public interface IProfileManager
     {
-        Usuario GetUsuario(Usuario usuario);
-        ManagerActionResult<Usuario> RegistrarUsuario(UsuarioDto usuario);
+        Profile GetProfile(Profile Profile);
+        ManagerActionResult<Profile> RegisterProfile(ProfileDto Profile);
     }
 }

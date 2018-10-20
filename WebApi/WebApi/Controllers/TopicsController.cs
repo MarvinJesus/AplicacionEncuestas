@@ -9,23 +9,23 @@ using System.Web.Http;
 namespace WebApi.Controllers
 {
     [RoutePrefix("api")]
-    public class TemasController : ApiController
+    public class TopicsController : ApiController
     {
-        private ITemaManager _manager { get; set; }
+        private ITopicManager _manager { get; set; }
 
-        public TemasController(ITemaManager manager)
+        public TopicsController(ITopicManager manager)
         {
             _manager = manager;
         }
 
         [HttpGet]
-        [Route("usuarios/{userId}/temas/{topicId}")]
-        [Route("temas/{topicId}")]
-        public IHttpActionResult GetTopic(int topicId, int? userId = null)
+        [Route("profiles/{userId}/topics/{topicId}")]
+        [Route("topics/{topicId}")]
+        public IHttpActionResult GetTopic(int topicId, Guid? userId = null)
         {
             try
             {
-                Tema topic = null;
+                Topic topic = null;
 
                 if (userId == null)
                 {
@@ -33,7 +33,7 @@ namespace WebApi.Controllers
                 }
                 else
                 {
-                    ICollection<Tema> topics = _manager.GetTopicsByUser((int)userId);
+                    ICollection<Topic> topics = _manager.GetTopicsByUser((Guid)userId);
 
                     if (topics != null)
                         topic = topics.FirstOrDefault(t => t.Id == topicId);
@@ -52,8 +52,8 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        [Route("usuarios/{userId}/temas")]
-        public IHttpActionResult GetTopicsByUser(int userId)
+        [Route("profiles/{userId}/topics")]
+        public IHttpActionResult GetTopicsByUser(Guid userId)
         {
             try
             {
@@ -72,7 +72,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        [Route("temas")]
+        [Route("topics")]
         public IHttpActionResult GetTopics()
         {
             try
@@ -87,15 +87,15 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        [Route("temas")]
-        public IHttpActionResult PostTopic([FromBody] Tema tema)
+        [Route("topics")]
+        public IHttpActionResult PostTopic([FromBody] Topic Topic)
         {
             try
             {
-                if (tema == null)
+                if (Topic == null)
                     return BadRequest();
 
-                var result = _manager.RegistrarTema(tema);
+                var result = _manager.RegisterTopic(Topic);
 
                 if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Created)
                     return Created(Request.RequestUri + "/" + result.Entity.Id.ToString(), result.Entity);
@@ -121,15 +121,15 @@ namespace WebApi.Controllers
         }
 
         [HttpPut]
-        [Route("temas/{id}")]
-        public IHttpActionResult PutTopic(int id, [FromBody]Tema topic)
+        [Route("topics/{id}")]
+        public IHttpActionResult PutTopic(int id, [FromBody]Topic topic)
         {
             try
             {
                 if (topic == null)
                     return BadRequest();
 
-                var result = _manager.ActualizarTema(topic);
+                var result = _manager.EditTopic(topic);
 
                 if (result.Status == CoreApi.ActionResult.ManagerActionStatus.NotFound)
                     return NotFound();
@@ -150,8 +150,8 @@ namespace WebApi.Controllers
         }
 
         [HttpDelete]
-        [Route("usuarios/{userId}/temas/{id}")]
-        public IHttpActionResult DeleteTopic(int id, int userId)
+        [Route("profiles/{userId}/topics/{id}")]
+        public IHttpActionResult DeleteTopic(int id, Guid userId)
         {
             try
             {

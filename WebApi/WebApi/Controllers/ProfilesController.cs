@@ -8,30 +8,30 @@ using System.Web.Http;
 namespace WebApi.Controllers
 {
     [RoutePrefix("api")]
-    public class UsuariosController : ApiController
+    public class ProfilesController : ApiController
     {
-        private IUsuarioManager _manager { get; set; }
+        private IProfileManager _manager { get; set; }
 
-        public UsuariosController(IUsuarioManager usuarioManager)
+        public ProfilesController(IProfileManager ProfileManager)
         {
-            _manager = usuarioManager;
+            _manager = ProfileManager;
         }
 
         [HttpPost]
         [AllowAnonymous]
-        public IHttpActionResult PostUsuario([FromBody]UsuarioDto usuarioDto)
+        public IHttpActionResult PostProfile([FromBody]ProfileDto ProfileDto)
         {
             try
             {
-                if (usuarioDto == null)
+                if (ProfileDto == null)
                     return BadRequest();
 
-                var result = _manager.RegistrarUsuario(usuarioDto);
+                var result = _manager.RegisterProfile(ProfileDto);
 
                 if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Created)
                 {
-                    return Created<UsuarioDto>
-                        (Request.RequestUri + "/" + result.Entity.Id.ToString(), UsuarioFactory.CreateUsuario(result.Entity));
+                    return Created<ProfileDto>
+                        (Request.RequestUri + "/" + result.Entity.Id.ToString(), ProfileFactory.CreateProfile(result.Entity));
                 }
 
                 if (result.Exception != null)
