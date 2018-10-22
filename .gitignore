@@ -366,3 +366,4 @@ ASALocalRun/
 /WebApi/CoreApi/PictureManager.cs
 /WebApi/WebApi/Helper/GetPictures.cs
 /WebApi/WebApi/Controllers/PicturesController.cs
+/WebApi/WebApi/Helper/CreatePictures.cs
