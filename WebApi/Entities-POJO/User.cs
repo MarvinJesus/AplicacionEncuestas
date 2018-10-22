@@ -2,7 +2,7 @@
 
 namespace Entities_POJO
 {
-    public class User
+    public class User : BaseEntity
     {
         public Guid UserId { get; set; }
         public string Username { get; set; }

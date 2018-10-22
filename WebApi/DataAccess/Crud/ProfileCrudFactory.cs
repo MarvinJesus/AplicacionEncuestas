@@ -59,5 +59,11 @@ namespace DataAccess.Crud
         {
             throw new System.NotImplementedException();
         }
+
+        public int EditPicture(BaseEntity entity)
+        {
+            var profile = (Profile)entity;
+            return dao.ExecuteProcedure(_mapper.GetEditPicture(profile));
+        }
     }
 }

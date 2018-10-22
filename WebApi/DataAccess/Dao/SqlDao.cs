@@ -6,8 +6,8 @@ namespace DataAccess.Dao
 {
     public class SqlDao
     {
-        private const string CONNECTION_STRING = @"Data Source=DESKTOP-CKOCDKQ\SERVIDORSQLMSS;Initial Catalog=DB_ENCUESTA;User ID=marvin;Password=1234567890";
-        //@"Data Source=DESKTOP-IEHSMVG\SQLEXPRESS;Initial Catalog=DB_ENCUESTA;Integrated Security=True";
+        private const string CONNECTION_STRING = @"server=(local);database=DB_ENCUESTA;trusted_connection=yes;";
+        //@"Data Source=DESKTOP-CKOCDKQ\SERVIDORSQLMSS;Initial Catalog=DB_ENCUESTA;User ID=marvin;Password=1234567890";
 
         private static SqlDao instance;
 

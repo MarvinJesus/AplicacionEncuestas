@@ -11,6 +11,7 @@ namespace WebApi.Autofac.Modules
             builder.RegisterType<ProfileManager>().AsImplementedInterfaces().AsSelf();
             builder.RegisterType<QuestionManager>().AsImplementedInterfaces().AsSelf();
             builder.RegisterType<AnswerManager>().AsImplementedInterfaces().AsSelf();
+            builder.RegisterType<UserManager>().AsImplementedInterfaces().AsSelf();
 
             base.Load(builder);
         }

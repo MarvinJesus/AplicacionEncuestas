@@ -1,6 +1,6 @@
-﻿namespace Dtos
+﻿namespace Entities_POJO
 {
-    public class ProfileDto
+    public class ProfileForRegistration
     {
         public string Name { get; set; }
 

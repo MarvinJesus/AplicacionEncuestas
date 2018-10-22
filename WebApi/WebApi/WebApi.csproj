@@ -97,6 +97,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
+    <Content Include="Upload\Images\defaultProfilePicture.png" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -104,12 +105,15 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Autofac\Modules\ModulosEncuesta.cs" />
     <Compile Include="Controllers\AnswersController.cs" />
+    <Compile Include="Controllers\PicturesController.cs" />
     <Compile Include="Controllers\ProfilesController.cs" />
     <Compile Include="Controllers\QuestionsController.cs" />
+    <Compile Include="Controllers\SurveyOnlineController.cs" />
     <Compile Include="Controllers\TopicsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helper\GetPictures.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -135,10 +139,6 @@
       <Project>{AC581ED0-9974-4AE6-B134-87B286D925E3}</Project>
       <Name>DataAccess</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Dtos\Dtos.csproj">
-      <Project>{673E8CF5-7A3A-48B0-ACB5-51C98ABAC830}</Project>
-      <Name>Dtos</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Entities-POJO\Entities-POJO.csproj">
       <Project>{D2A404F9-FD9E-4A28-9827-5F7663F150E2}</Project>
       <Name>Entities-POJO</Name>
@@ -146,6 +146,10 @@
     <ProjectReference Include="..\Exceptions\Exceptions.csproj">
       <Project>{EB460B4D-EADB-447D-A9FE-72FA4765E61D}</Project>
       <Name>Exceptions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Util\Util.csproj">
+      <Project>{63CDD880-2933-4382-AC72-0899288C2670}</Project>
+      <Name>Util</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

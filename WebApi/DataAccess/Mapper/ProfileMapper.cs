@@ -12,8 +12,7 @@ namespace DataAccess.Mapper
         private const string DB_COL_EMAIL = "EMAIL";
         private const string DB_COL_NAME = "NAME";
         private const string DB_COL_IMAGEPATH = "IMG_URL";
-        //private const string DB_COL_PASSWORD = "PASSWORD";
-        //private const string DB_COL_SALT = "SALT";
+        private const string DB_COL_USERID = "USER_ID";
 
         public BaseEntity BuildObject(Dictionary<string, object> row)
         {
@@ -24,8 +23,7 @@ namespace DataAccess.Mapper
                 Email = GetStringValue(row, DB_COL_EMAIL),
                 Name = GetStringValue(row, DB_COL_NAME),
                 ImagePath = GetStringValue(row, DB_COL_IMAGEPATH),
-                //Password = GetBytesValue(row, DB_COL_PASSWORD),
-                //Salt = GetBytesValue(row, DB_COL_SALT)
+                UserId = GetGuidValue(row, DB_COL_USERID)
             };
             return Profile;
         }
@@ -50,8 +48,18 @@ namespace DataAccess.Mapper
             operation.AddVarcharParam(DB_COL_EMAIL, Profile.Email);
             operation.AddVarcharParam(DB_COL_NAME, Profile.Name);
             operation.AddVarcharParam(DB_COL_IMAGEPATH, Profile.ImagePath);
-            //operation.AddVarBinaryParam(DB_COL_PASSWORD, Profile.Password);
-            //operation.AddVarBinaryParam(DB_COL_SALT, Profile.Salt);
+            operation.AddGuidParam(DB_COL_USERID, Profile.UserId);
+
+            return operation;
+        }
+
+        public SqlOperation GetEditPicture(BaseEntity entity)
+        {
+            var profile = (Profile)entity;
+            var operation = new SqlOperation { ProcedureName = "UPD_PROFILE_PICTURE" };
+
+            operation.AddGuidParam(DB_COL_USERID, profile.UserId);
+            operation.AddVarcharParam(DB_COL_IMAGEPATH, profile.ImagePath);
 
             return operation;
         }
@@ -70,7 +78,7 @@ namespace DataAccess.Mapper
         {
             var operation = new SqlOperation { ProcedureName = "RET_PROFILE" };
             var Profile = (Profile)entity;
-            operation.AddGuidParam(DB_COL_ID, Profile.Id);
+            operation.AddGuidParam(DB_COL_ID, Profile.UserId);
             return operation;
         }
 

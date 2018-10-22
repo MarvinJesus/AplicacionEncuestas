@@ -46,9 +46,10 @@
     <Compile Include="Crud\ProfileCrudFactory.cs" />
     <Compile Include="Crud\QuestionCrudFactory.cs" />
     <Compile Include="Crud\TopicCrudFactory.cs" />
+    <Compile Include="Crud\UserCrudFactory.cs" />
     <Compile Include="Dao\SqlDao.cs" />
     <Compile Include="Dao\SqlOperation.cs" />
-    <Compile Include="Factories\ProfileFactory.cs" />
+    <Compile Include="Factory\ProfileFactory.cs" />
     <Compile Include="Mapper\AnswerMapper.cs" />
     <Compile Include="Mapper\AppMessageMapper.cs" />
     <Compile Include="Mapper\EntityMapper.cs" />
@@ -57,13 +58,10 @@
     <Compile Include="Mapper\ProfileMapper.cs" />
     <Compile Include="Mapper\QuestionMapper.cs" />
     <Compile Include="Mapper\TopicMapper.cs" />
+    <Compile Include="Mapper\UserMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Dtos\Dtos.csproj">
-      <Project>{673E8CF5-7A3A-48B0-ACB5-51C98ABAC830}</Project>
-      <Name>Dtos</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Entities-POJO\Entities-POJO.csproj">
       <Project>{D2A404F9-FD9E-4A28-9827-5F7663F150E2}</Project>
       <Name>Entities-POJO</Name>

@@ -363,3 +363,6 @@ ASALocalRun/
 
 
 # End of https://www.gitignore.io/api/windows,visualstudio
+/WebApi/CoreApi/PictureManager.cs
+/WebApi/WebApi/Helper/GetPictures.cs
+/WebApi/WebApi/Controllers/PicturesController.cs

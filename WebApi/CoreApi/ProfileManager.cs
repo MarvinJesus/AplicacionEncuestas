@@ -1,8 +1,10 @@
 ﻿using CoreApi.ActionResult;
 using DataAccess.Crud;
-using Dtos;
+using EncryptPassword;
 using Entities_POJO;
 using Exceptions;
+using System;
+using System.Text;
 
 namespace CoreApi
 {
@@ -15,30 +17,34 @@ namespace CoreApi
             _crudFactory = new ProfileCrudFactory();
         }
 
-        public Profile GetProfile(Profile Profile)
+        public Profile GetProfile(Profile profile)
         {
-            return _crudFactory.Retrieve<Profile>(Profile);
+            return _crudFactory.Retrieve<Profile>(profile);
         }
 
-        public ManagerActionResult<Profile> RegisterProfile(ProfileDto ProfileDto)
+        public ManagerActionResult<Profile> RegisterProfile(ProfileForRegistration profileForRegistration)
         {
             try
             {
-                //if (ProfileDto.Password == null)
-                //    throw new BussinessException(2);
-
-                Profile Profile = DataAccess.Factories.ProfileFactory.CreateProfile(ProfileDto);
-
-                var newUser = _crudFactory.Create<Profile>(Profile);
-
-                if (newUser != null)
+                var user = new User
                 {
-                    return new ManagerActionResult<Profile>(newUser, ManagerActionStatus.Created);
-                }
-                else
-                {
-                    return new ManagerActionResult<Profile>(newUser, ManagerActionStatus.NothingModified, null);
-                }
+                    Username = profileForRegistration.Email,
+                    Salt = Cryptographic.GenerateSalt()
+                };
+                user.Password = Cryptographic.HashPasswordWithSalt(Encoding.UTF8.GetBytes(profileForRegistration.Password), user.Salt);
+
+                var newUser = new UserCrudFactory().Create<User>(user);
+
+                if (newUser == null) return new ManagerActionResult<Profile>(null, ManagerActionStatus.Error);
+
+                var profile = DataAccess.Factory.ProfileFactory.CreateProfile(profileForRegistration);
+                profile.UserId = newUser.UserId;
+
+                var newProfile = _crudFactory.Create<Profile>(profile);
+
+                if (newProfile != null) return new ManagerActionResult<Profile>(newProfile, ManagerActionStatus.Created);
+
+                return new ManagerActionResult<Profile>(null, ManagerActionStatus.NothingModified);
             }
             catch (System.Data.SqlClient.SqlException sqlEx)
             {
@@ -47,34 +53,43 @@ namespace CoreApi
                 switch (sqlEx.Number)
                 {
                     case 201:
-                        //Missing parameters
-                        exception = ExceptionManager.GetInstance().Process(new BussinessException(2));
+                        exception = ExceptionManager.GetInstance().Process(new BussinessException(2));//Missing parameters
                         break;
                     case 2627:
-                        //Existing user
-                        exception = ExceptionManager.GetInstance().Process(new BussinessException(3));
+                        exception = ExceptionManager.GetInstance().Process(new BussinessException(3));//Existing user
                         break;
                     default:
-                        //Uncontrolled exception
-                        exception = ExceptionManager.GetInstance().Process(sqlEx);
-                        break;
+                        throw sqlEx;//Uncontrolled exception
                 }
-
-                return new ManagerActionResult<Profile>(
-                    null, ManagerActionStatus.Error, exception);
+                return new ManagerActionResult<Profile>(null, ManagerActionStatus.Error, exception);
             }
             catch (System.Exception ex)
             {
-                var exception = ExceptionManager.GetInstance().Process(ex);
+                throw ex;
+            }
+        }
 
-                return new ManagerActionResult<Profile>(null, ManagerActionStatus.Error, exception);
+        public ManagerActionResult<Profile> EditPicture(Profile profile)
+        {
+            try
+            {
+                int result = _crudFactory.EditPicture(profile);
+
+                if (result != 0) return new ManagerActionResult<Profile>(profile, ManagerActionStatus.Created);
+
+                return new ManagerActionResult<Profile>(profile, ManagerActionStatus.NothingModified);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
     }
 
     public interface IProfileManager
     {
-        Profile GetProfile(Profile Profile);
-        ManagerActionResult<Profile> RegisterProfile(ProfileDto Profile);
+        ManagerActionResult<Profile> EditPicture(Profile profile);
+        Profile GetProfile(Profile profile);
+        ManagerActionResult<Profile> RegisterProfile(ProfileForRegistration profileForRegistration);
     }
 }
