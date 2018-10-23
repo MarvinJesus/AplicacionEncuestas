@@ -1,8 +1,11 @@
 ﻿using CoreApi;
+using CoreApi.ActionResult;
 using Exceptions;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
+using System.Web;
 using System.Web.Http;
 using WebApi.Helper;
 
@@ -11,6 +14,8 @@ namespace WebApi.Controllers
     public class PicturesController : SurveyOnlineController
     {
         private IProfileManager _profileManager { get; set; }
+        private IList<string> AllowedFilesExtensions = new List<string> { ".png", ".jpg", ".jpeg", ".gif" };
+        private readonly int MaxContentLength = 39072;
 
         public PicturesController(IProfileManager profileManager)
         {
@@ -55,25 +60,57 @@ namespace WebApi.Controllers
             }
         }
 
-        //[HttpPost]
-        //[Route("api/profile/{profileI}/picture")]
-        //public IHttpActionResult PostPicture(Guid profileId)
-        //{
-        //    try
-        //    {
-        //        if (profileId == null) return BadRequest();
+        [HttpPost]
+        [Route("api/profiles/{profileId}/pictures")]
+        public IHttpActionResult PostPicture(Guid profileId)
+        {
+            try
+            {
+                if (profileId == null) return BadRequest();
 
-        //        if (profileId.Equals(GetProfileId())) return Unauthorized();
+                if (!profileId.Equals(GetProfileId())) return Unauthorized();
 
-        //        return Ok();
+                var profile = _profileManager.GetProfile(new Entities_POJO.Profile { UserId = profileId });
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        ExceptionManager.GetInstance().Process(ex);
-        //        return InternalServerError();
-        //    }
-        //}
+                if (profile == null) return NotFound();
 
+                if (!Request.Content.IsMimeMultipartContent()) return StatusCode(System.Net.HttpStatusCode.UnsupportedMediaType);
+
+                var httpRequest = HttpContext.Current.Request;
+
+                if (httpRequest.Files.Count > 0)
+                {
+                    foreach (string filename in httpRequest.Files)
+                    {
+                        var file = httpRequest.Files[filename];
+
+                        if (file.ContentLength > 0 && file.ContentLength <= MaxContentLength)
+                        {
+                            if (AllowedFilesExtensions.Contains(Path.GetExtension(file.FileName)))
+                            {
+                                var result = new CreatePictures().CreatePicture(profile, file);
+
+                                if (result.Status == ManagerActionStatus.Created)
+                                {
+                                    result.Entity.ImagePath = Request.RequestUri.ToString();
+                                    return Created(Request.RequestUri, result.Entity);
+                                }
+                            }
+                            else
+                            {
+                                return BadRequest("File extension is not allowed");
+                            }
+                        }
+                    }
+                }
+
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                ExceptionManager.GetInstance().Process(ex);
+                return InternalServerError();
+            }
+        }
     }
 }

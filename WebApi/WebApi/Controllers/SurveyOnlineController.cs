@@ -8,7 +8,7 @@ namespace WebApi.Controllers
 
         public Guid GetProfileId()
         {
-            return new Guid("d69466ae-e0d9-446a-8ec1-d22f2c9afe8e");
+            return new Guid("B97FACDA-F26E-4AEE-B97D-0AD074018E70");
         }
     }
 }
