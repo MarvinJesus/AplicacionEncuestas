@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Util", "Util\Util.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Survey_Integration_Test", "Survey_Integration_Test\Survey_Integration_Test.csproj", "{E7FDEFD1-68D5-4467-AD78-F3285B5C226F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OAuth", "OAuth\OAuth.csproj", "{0357335B-27CB-45C1-A683-DEFE37F06793}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{E7FDEFD1-68D5-4467-AD78-F3285B5C226F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7FDEFD1-68D5-4467-AD78-F3285B5C226F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7FDEFD1-68D5-4467-AD78-F3285B5C226F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0357335B-27CB-45C1-A683-DEFE37F06793}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0357335B-27CB-45C1-A683-DEFE37F06793}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0357335B-27CB-45C1-A683-DEFE37F06793}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0357335B-27CB-45C1-A683-DEFE37F06793}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

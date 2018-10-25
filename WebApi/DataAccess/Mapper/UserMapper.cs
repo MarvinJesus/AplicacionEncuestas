@@ -61,7 +61,10 @@ namespace DataAccess.Mapper
 
         public SqlOperation GetRetriveStatement(BaseEntity entity)
         {
-            throw new System.NotImplementedException();
+            var operation = new SqlOperation { ProcedureName = "RET_USER_BY_USERNAME" };
+            var user = (User)entity;
+            operation.AddVarcharParam(DB_COL_USERNAME, user.Username);
+            return operation;
         }
 
         public SqlOperation GetUpdateStatement(BaseEntity entity)

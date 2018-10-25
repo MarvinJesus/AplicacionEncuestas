@@ -2,6 +2,8 @@
 using CoreApi.ActionResult;
 using Entities_POJO;
 using Exceptions;
+using System;
+using System.Security.Claims;
 using System.Web.Http;
 
 namespace WebApi.Controllers
@@ -16,6 +18,40 @@ namespace WebApi.Controllers
         {
             _manager = ProfileManager;
             _userManager = userManger;
+        }
+
+        [HttpGet]
+        public IHttpActionResult GetProfile(string username, string password)
+        {
+            var profile = _manager.GetProfile(username, password);
+
+            if (profile == null) return NotFound();
+
+            return Ok(profile);
+        }
+
+        [HttpGet]
+        [Authorize]
+        public IHttpActionResult GetProfile(Guid userId)
+        {
+            var claimsPrincipal = User as ClaimsPrincipal;
+            var claims = claimsPrincipal.Claims;
+            var id = claimsPrincipal.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name");
+
+            var profile = _manager.GetProfile(new Profile { UserId = userId });
+
+            if (profile == null)
+                return NotFound();
+
+            return Ok(profile);
+        }
+
+        [HttpGet]
+        public IHttpActionResult GetProfile()
+        {
+            var userId = 2;
+
+            return Ok(userId);
         }
 
         [HttpPost]

@@ -24,6 +24,11 @@ namespace WebApi.App_Start
             var build = container.Build();
 
             config.DependencyResolver = new AutofacWebApiDependencyResolver(build);
+
+            app.UseIdentityServerBearerTokenAuthentication(new IdentityServer3.AccessTokenValidation.IdentityServerBearerTokenAuthenticationOptions
+            {
+                Authority = "http://localhost:53605",
+            });
         }
     }
 }

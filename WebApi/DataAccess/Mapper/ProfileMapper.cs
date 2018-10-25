@@ -64,6 +64,15 @@ namespace DataAccess.Mapper
             return operation;
         }
 
+        public SqlOperation GetRetrieveUserRoles(BaseEntity entity)
+        {
+            var operation = new SqlOperation { ProcedureName = "RET_ROLE_BY_USER" };
+            var profile = (Profile)entity;
+            operation.AddGuidParam(DB_COL_USERID, profile.UserId);
+
+            return operation;
+        }
+
         SqlOperation ISqlStaments.GetDeleteStatement(BaseEntity entity)
         {
             throw new NotImplementedException();
@@ -76,9 +85,9 @@ namespace DataAccess.Mapper
 
         public SqlOperation GetRetriveStatement(BaseEntity entity)
         {
-            var operation = new SqlOperation { ProcedureName = "RET_PROFILE" };
+            var operation = new SqlOperation { ProcedureName = "RET_PROFILE_BY_USER_ID" };
             var Profile = (Profile)entity;
-            operation.AddGuidParam(DB_COL_ID, Profile.UserId);
+            operation.AddGuidParam(DB_COL_USERID, Profile.UserId);
             return operation;
         }
 

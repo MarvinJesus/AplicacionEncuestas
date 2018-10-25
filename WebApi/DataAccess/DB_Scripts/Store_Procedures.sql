@@ -67,6 +67,18 @@ GO
 
 
 
+/************** RETIRVE USER BY USERNAME ***************/
+/******************************************************/
+CREATE PROCEDURE RET_USER_BY_USERNAME
+	@P_USERNAME VARCHAR(100)
+AS
+	BEGIN
+		SELECT * FROM TBL_USER WHERE USERNAME = @P_USERNAME
+	END
+GO
+
+
+
 /********** REGISTER ROLE BY USER **********/
 /******************************************/
 CREATE PROCEDURE CRE_ROLE_BY_USER
@@ -81,6 +93,27 @@ GO
 
 
 
+/********** RETRIEVE ROLE BY USER **********/
+/******************************************/
+CREATE PROCEDURE RET_ROLE_BY_USER
+	@P_USER_ID	UNIQUEIDENTIFIER
+AS
+	BEGIN
+		SET NOCOUNT ON;
+		SELECT ROL.ROLE_ID, ROL.ROLE_NAME
+		FROM TBL_ROLE_BY_USER AS USER_ROL
+		INNER JOIN TBL_ROLE AS ROL ON
+		ROL.ROLE_ID = USER_ROL.ROLE_ID
+		INNER JOIN TBL_USER AS TUSER ON
+		TUSER.USER_ID = USER_ROL.USER_ID
+		WHERE USER_ROL.USER_ID = @P_USER_ID
+	END
+GO
+
+
+
+/********** UPDATE PROFILE PICTURE **********/
+/*******************************************/
 CREATE PROCEDURE UPD_PROFILE_PICTURE
 	@P_IMG_URL VARCHAR(2083),
 	@P_USER_ID UNIQUEIDENTIFIER
@@ -116,21 +149,78 @@ BEGIN
 	INSERT INTO TBL_PROFILE VALUES (@PROFILE_ID,@P_IDENTIFICATION,@P_NAME,@P_EMAIL,
 						@P_IMG_URL,@CREATE_DATE,1,@P_USER_ID);
 
-	EXEC dbo.RET_PROFILE @P_USER_ID;
+	EXEC dbo.RET_PROFILE_BY_USER_ID @P_USER_ID;
 END
 GO
 
 
 
-/********** RETRIVE PROFILE BY ID **********/
-/******************************************/
+/********** RETRIVE PROFILE BY USER ID **********/
+/***********************************************/
+CREATE PROCEDURE RET_PROFILE_BY_USER_ID 
+	@P_USER_ID			UNIQUEIDENTIFIER
+AS
+BEGIN
+	SET NOCOUNT ON;
+	SELECT * FROM TBL_PROFILE  WHERE @P_USER_ID = USER_ID;
+END
+GO
+
+
+
+/********** RETRIVE PROFILE BY USER ID **********/
+/***********************************************/
 CREATE PROCEDURE RET_PROFILE 
 	@P_PROFILE_ID			UNIQUEIDENTIFIER
 AS
 BEGIN
 	SET NOCOUNT ON;
-	SELECT * FROM TBL_PROFILE  WHERE @P_PROFILE_ID = USER_ID;
+	SELECT * FROM TBL_PROFILE  WHERE @P_PROFILE_ID = PROFILE_ID
 END
+GO
+
+
+
+/**************************************************************************************************
+								STORE PROCEDURES FOR USER CLAIMS
+**************************************************************************************************/
+
+/************ CREATE USER CLAIMS **************/
+/*********************************************/
+CREATE PROCEDURE CRE_USER_CLAIMS
+	@P_USER_ID UNIQUEIDENTIFIER,
+	@P_CLAIM_TYPE VARCHAR(30),
+	@P_CLAIM_VALUE VARCHAR(30)
+AS
+	BEGIN
+		INSERT INTO TBL_USER_CLAIM VALUES(@P_USER_ID, @P_CLAIM_VALUE,@P_CLAIM_TYPE)
+		DECLARE @P_ID  INT = (SELECT IDENT_CURRENT('TBL_USER_CLAIM'))
+		EXEC DBO.RET_USER_CLAIMS_BY_ID @P_ID
+	END
+GO
+
+
+
+/************ RETRIVE USER CLAIMS BY ID **************/
+/****************************************************/
+CREATE PROCEDURE RET_USER_CLAIMS_BY_ID
+	@P_ID INT
+AS
+	BEGIN
+		SELECT * FROM TBL_USER_CLAIM WHERE ID = @P_ID
+	END
+GO
+
+
+
+/************ RETRIVE USER CLAIMS **************/
+/**********************************************/
+CREATE PROCEDURE RET_USER_CLAIMS
+	@P_USER_ID UNIQUEIDENTIFIER
+AS
+	BEGIN
+		SELECT * FROM TBL_USER_CLAIM WHERE USER_ID = @P_USER_ID
+	END
 GO
 
 

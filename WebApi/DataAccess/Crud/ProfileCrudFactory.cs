@@ -50,6 +50,30 @@ namespace DataAccess.Crud
             return default(T);
         }
 
+        public ICollection<Role> RetrieveUserRoles(BaseEntity entity)
+        {
+            var lstRoles = new List<Role>();
+            var lstResult = dao.ExecuteQueryProcedure(_mapper.GetRetrieveUserRoles(entity));
+            var dic = new Dictionary<string, object>();
+            if (lstResult.Count > 0)
+            {
+                var roleMapper = new RoleMapper();
+                var objs = roleMapper.BuildObjects(lstResult);
+                foreach (var c in objs)
+                {
+                    lstRoles.Add((Role)c);
+                }
+            }
+
+            return lstRoles;
+        }
+
+        public int EditPicture(BaseEntity entity)
+        {
+            var profile = (Profile)entity;
+            return dao.ExecuteProcedure(_mapper.GetEditPicture(profile));
+        }
+
         public override ICollection<T> RetrieveAll<T>()
         {
             throw new System.NotImplementedException();
@@ -58,12 +82,6 @@ namespace DataAccess.Crud
         public override int Update(BaseEntity entity)
         {
             throw new System.NotImplementedException();
-        }
-
-        public int EditPicture(BaseEntity entity)
-        {
-            var profile = (Profile)entity;
-            return dao.ExecuteProcedure(_mapper.GetEditPicture(profile));
         }
     }
 }

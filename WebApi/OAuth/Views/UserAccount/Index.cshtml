@@ -1,0 +1,50 @@
+﻿@model OAuth.ViewModel.ViewModelForUserRegistration
+@{
+    ViewBag.Title = "Registration page";
+}
+
+
+<div class="registration-form text-center">
+    <div class="form-container">
+        <h4><span class="primary-color">SURVEY</span><span class="secondary-color size-1">ONLINE</span></h4>
+        <h2>CREAR CUENTA</h2>
+
+        <p class="error-color error-message">@{var message = Model.ErrorMessage.IsEmpty() ? "Todos los campos son requeridos*" : Model.ErrorMessage;} @message</p>
+
+        @using (Html.BeginForm("Index", "UserAccount", FormMethod.Post, new { @class = "form-group" }))
+        {
+            @Html.AntiForgeryToken();
+
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Identification, new { @class = "form-control", @placeholder = "Idenficación" })
+            </div>
+                @Html.ValidationMessageFor(m => m.Identification)
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Name, new { @class = "form-control", @placeholder = "Nombre" })
+            </div>
+                @Html.ValidationMessageFor(m => m.Name)
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Correo electrónico" })
+            </div>
+                @Html.ValidationMessageFor(m => m.Email)
+            <div class="input-group">
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Contraseña" })
+
+            </div>
+                @Html.ValidationMessageFor(m => m.Password)
+            <div class="input-group">
+                @Html.PasswordFor(m => m.PasswordConfirmation, new { @class = "form-control", @placeholder = "Confirmación de contraseña" })
+            </div>
+                @Html.ValidationMessageFor(m => m.PasswordConfirmation)
+            <div class="term-and-conditions">
+                @Html.CheckBoxFor(m => m.TermAndConditions)
+                <p><strong>Acepto los términos y condiciones</strong></p>
+            </div>
+            @Html.ValidationMessageFor(m => m.TermAndConditions)
+            <div class="input-group">
+                <input type="submit" class="btn btn-default btn-md" value="Registrar">
+            </div>
+
+        }
+    </div>
+</div>

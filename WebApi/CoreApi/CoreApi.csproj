@@ -43,11 +43,11 @@
     <Compile Include="ActionResult\ManagerActionResult.cs" />
     <Compile Include="ActionResult\ManagerActionStatus.cs" />
     <Compile Include="AnswerManager.cs" />
-    <Compile Include="PictureManager.cs" />
     <Compile Include="ProfileManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuestionManager.cs" />
     <Compile Include="TopicManager.cs" />
+    <Compile Include="UserClaimManager.cs" />
     <Compile Include="UserManager.cs" />
   </ItemGroup>
   <ItemGroup>

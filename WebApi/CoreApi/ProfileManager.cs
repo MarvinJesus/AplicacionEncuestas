@@ -4,6 +4,8 @@ using EncryptPassword;
 using Entities_POJO;
 using Exceptions;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace CoreApi
@@ -84,6 +86,32 @@ namespace CoreApi
                 throw ex;
             }
         }
+
+        public Profile GetProfile(string userName, string password)
+        {
+            var user = new UserCrudFactory().Retrieve<User>(new User { Username = userName });
+
+            if (user == null) return null;
+
+            var hashedPassword = Cryptographic.HashPasswordWithSalt(Encoding.UTF8.GetBytes(password), user.Salt);
+
+            if (!hashedPassword.SequenceEqual(user.Password)) return null;
+
+            return _crudFactory.Retrieve<Profile>(new Profile { UserId = user.UserId });
+
+        }
+
+        public ICollection<Role> GetProfileRoles(Guid userId)
+        {
+            try
+            {
+                return _crudFactory.RetrieveUserRoles(new Profile { UserId = userId });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 
     public interface IProfileManager
@@ -91,5 +119,7 @@ namespace CoreApi
         ManagerActionResult<Profile> EditPicture(Profile profile);
         Profile GetProfile(Profile profile);
         ManagerActionResult<Profile> RegisterProfile(ProfileForRegistration profileForRegistration);
+        Profile GetProfile(string userName, string password);
+        ICollection<Role> GetProfileRoles(Guid userId);
     }
 }
