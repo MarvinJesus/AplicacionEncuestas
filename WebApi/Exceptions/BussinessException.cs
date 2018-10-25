@@ -17,8 +17,9 @@ namespace Exceptions
             Code = code;
         }
 
-        public BussinessException(int code, Exception innerException) : this(code)
+        public BussinessException(int code, Exception innerException) : base(innerException.Message, innerException)
         {
+            Code = code;
         }
     }
 }

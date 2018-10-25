@@ -32,6 +32,222 @@ GO
 
 
 /**************************************************************************************************
+								STORE PROCEDURES FOR USER
+**************************************************************************************************/
+
+/************** REGISTER USER **************/
+/******************************************/
+CREATE PROCEDURE CRE_USER
+	@P_PASSWORD	VARBINARY(MAX),
+	@P_SALT		VARBINARY(MAX),
+	@P_USERNAME VARCHAR(100)
+
+AS
+	BEGIN
+		SET NOCOUNT ON;
+		DECLARE @USER_ID UNIQUEIDENTIFIER = NEWID()
+		INSERT INTO TBL_USER VALUES(@USER_ID,@P_USERNAME,@P_PASSWORD,@P_SALT)
+		EXEC DBO.CRE_ROLE_BY_USER 2,@USER_ID
+		EXEC DBO.RET_USER_BY_ID @USER_ID  
+	END
+GO
+
+
+
+/************** RETIRVE USER ***************/
+/*******************************************/
+CREATE PROCEDURE RET_USER_BY_ID
+	@P_USER_ID	UNIQUEIDENTIFIER
+
+AS
+	BEGIN
+		SELECT * FROM TBL_USER WHERE @P_USER_ID = USER_ID
+	END
+GO
+
+
+
+/************** RETIRVE USER BY USERNAME ***************/
+/******************************************************/
+CREATE PROCEDURE RET_USER_BY_USERNAME
+	@P_USERNAME VARCHAR(100)
+AS
+	BEGIN
+		SELECT * FROM TBL_USER WHERE USERNAME = @P_USERNAME
+	END
+GO
+
+
+
+/********** REGISTER ROLE BY USER **********/
+/******************************************/
+CREATE PROCEDURE CRE_ROLE_BY_USER
+	@P_ROLE_ID	INT,
+	@P_USER_ID	UNIQUEIDENTIFIER
+AS
+	BEGIN
+		SET NOCOUNT ON;
+		INSERT INTO TBL_ROLE_BY_USER VALUES(@P_ROLE_ID,@P_USER_ID)
+	END
+GO
+
+
+
+/********** RETRIEVE ROLE BY USER **********/
+/******************************************/
+CREATE PROCEDURE RET_ROLE_BY_USER
+	@P_USER_ID	UNIQUEIDENTIFIER
+AS
+	BEGIN
+		SET NOCOUNT ON;
+		SELECT ROL.ROLE_ID, ROL.ROLE_NAME
+		FROM TBL_ROLE_BY_USER AS USER_ROL
+		INNER JOIN TBL_ROLE AS ROL ON
+		ROL.ROLE_ID = USER_ROL.ROLE_ID
+		INNER JOIN TBL_USER AS TUSER ON
+		TUSER.USER_ID = USER_ROL.USER_ID
+		WHERE USER_ROL.USER_ID = @P_USER_ID
+	END
+GO
+
+
+
+/********** UPDATE PROFILE PICTURE **********/
+/*******************************************/
+CREATE PROCEDURE UPD_PROFILE_PICTURE
+	@P_IMG_URL VARCHAR(2083),
+	@P_USER_ID UNIQUEIDENTIFIER
+AS
+	BEGIN
+			UPDATE TBL_PROFILE
+			SET IMG_URL = @P_IMG_URL
+			WHERE USER_ID = @P_USER_ID
+						  
+	END
+GO
+
+
+
+/**************************************************************************************************
+								STORE PROCEDURES FOR PROFILE
+**************************************************************************************************/
+
+/********** REGISTER PROFILE **********/
+/*************************************/
+CREATE PROCEDURE CRE_PROFILE
+	@P_IDENTIFICATION		VARCHAR(15),
+	@P_NAME					VARCHAR(100),
+	@P_EMAIL				VARCHAR(100),
+	@P_IMG_URL				VARCHAR(2083),
+	@P_USER_ID				UNIQUEIDENTIFIER
+
+AS
+BEGIN
+	SET NOCOUNT ON;
+	DECLARE @CREATE_DATE DATE = GETDATE(),@PROFILE_ID UNIQUEIDENTIFIER = NEWID()
+	
+	INSERT INTO TBL_PROFILE VALUES (@PROFILE_ID,@P_IDENTIFICATION,@P_NAME,@P_EMAIL,
+						@P_IMG_URL,@CREATE_DATE,1,@P_USER_ID);
+
+	EXEC dbo.RET_PROFILE_BY_USER_ID @P_USER_ID;
+END
+GO
+
+
+
+/********** RETRIVE PROFILE BY USER ID **********/
+/***********************************************/
+CREATE PROCEDURE RET_PROFILE_BY_USER_ID 
+	@P_USER_ID			UNIQUEIDENTIFIER
+AS
+BEGIN
+	SET NOCOUNT ON;
+	SELECT * FROM TBL_PROFILE  WHERE @P_USER_ID = USER_ID;
+END
+GO
+
+
+
+/********** RETRIVE PROFILE BY USER ID **********/
+/***********************************************/
+CREATE PROCEDURE RET_PROFILE 
+	@P_PROFILE_ID			UNIQUEIDENTIFIER
+AS
+BEGIN
+	SET NOCOUNT ON;
+	SELECT * FROM TBL_PROFILE  WHERE @P_PROFILE_ID = PROFILE_ID
+END
+GO
+
+
+
+/**************************************************************************************************
+								STORE PROCEDURES FOR USER CLAIMS
+**************************************************************************************************/
+
+/************ CREATE USER CLAIMS **************/
+/*********************************************/
+CREATE PROCEDURE CRE_USER_CLAIMS
+	@P_USER_ID UNIQUEIDENTIFIER,
+	@P_CLAIM_TYPE VARCHAR(30),
+	@P_CLAIM_VALUE VARCHAR(30)
+AS
+	BEGIN
+		INSERT INTO TBL_USER_CLAIM VALUES(@P_USER_ID, @P_CLAIM_VALUE,@P_CLAIM_TYPE)
+		DECLARE @P_ID  INT = (SELECT IDENT_CURRENT('TBL_USER_CLAIM'))
+		EXEC DBO.RET_USER_CLAIMS_BY_ID @P_ID
+	END
+GO
+
+
+
+/************ RETRIVE USER CLAIMS BY ID **************/
+/****************************************************/
+CREATE PROCEDURE RET_USER_CLAIMS_BY_ID
+	@P_ID INT
+AS
+	BEGIN
+		SELECT * FROM TBL_USER_CLAIM WHERE ID = @P_ID
+	END
+GO
+
+
+
+/************ RETRIVE USER CLAIMS **************/
+/**********************************************/
+CREATE PROCEDURE RET_USER_CLAIMS
+	@P_USER_ID UNIQUEIDENTIFIER
+AS
+	BEGIN
+		SELECT * FROM TBL_USER_CLAIM WHERE USER_ID = @P_USER_ID
+	END
+GO
+
+
+
+/**************************************************************************************************
+								STORE PROCEDURES FOR ROLE BY PROFILE
+**************************************************************************************************/
+
+/********** CREATE CATEGORY BY TOPIC ************/
+/*********************************************/
+CREATE PROCEDURE CRE_ROLE_BY_PROFILE
+
+	@P_ROLE_ID		INT,
+	@P_PROFILE_ID	INT
+
+AS
+	BEGIN
+		
+		SET NOCOUNT ON;
+
+		INSERT INTO TBL_ROLE_BY_USER VALUES(@P_ROLE_ID,@P_PROFILE_ID)
+	END
+GO
+
+
+
+/**************************************************************************************************
 								STORE PROCEDURES FOR TOPIC
 **************************************************************************************************/
 
@@ -133,47 +349,6 @@ BEGIN
 	FROM TBL_TOPIC
 	WHERE TOPIC_ID = @P_TOPIC_ID
 
-END
-GO
-
-
-
-/**************************************************************************************************
-								STORE PROCEDURES FOR PROFILE
-**************************************************************************************************/
-
-/********** REGISTER PROFILE **********/
-/*************************************/
-CREATE PROCEDURE CRE_PROFILE
-	@P_IDENTIFICATION		VARCHAR(15),
-	@P_NAME					VARCHAR(100),
-	@P_EMAIL				VARCHAR(100),
-	@P_PASSWORD				VARBINARY(MAX),
-	@P_SALT					VARBINARY(MAX),
-	@P_IMG_URL				VARCHAR(2083)
-
-AS
-BEGIN
-	SET NOCOUNT ON;
-	DECLARE @P_CREATE_DATE DATE = GETDATE();
-	INSERT INTO TBL_PROFILE VALUES (@P_IDENTIFICATION,@P_NAME,@P_EMAIL,
-						@P_PASSWORD,@P_SALT,@P_IMG_URL,@P_CREATE_DATE,1);
-
-	DECLARE @P_PROFILE_ID INT = (SELECT IDENT_CURRENT( 'TBL_PROFILE' ));
-	EXEC dbo.RET_PROFILE @P_PROFILE_ID;
-END
-GO
-
-
-
-/********** RETRIVE PROFILE BY ID **********/
-/******************************************/
-CREATE PROCEDURE RET_PROFILE 
-	@P_PROFILE_ID			INT
-AS
-BEGIN
-	SET NOCOUNT ON;
-	SELECT * FROM TBL_PROFILE  WHERE @P_PROFILE_ID = PROFILE_ID;
 END
 GO
 
@@ -372,5 +547,126 @@ AS
 		FROM TBL_QUESTION
 		WHERE QUESTION_ID = @P_QUESTION_ID
 
+	END
+GO
+
+
+
+
+/**************************************************************************************************
+								STORE PROCEDURES FOR CATEGORY
+**************************************************************************************************/
+
+/********** RETRIVE CATEGORY BY ID ************/
+/*********************************************/
+CREATE PROCEDURE RET_CATEGORY
+
+	@P_CATEGORY_ID	INT
+
+AS
+	BEGIN
+		
+		SET NOCOUNT ON;
+
+		SELECT * FROM TBL_CATEGORY WHERE CATEGORY_ID = @P_CATEGORY_ID
+	END
+GO
+
+
+
+/********** RETRIVE CATEGORY BY TOPIC ID ************/
+/***************************************************/
+CREATE PROCEDURE RET_CATEGORY_BY_TOPIC
+
+	@P_TOPIC_ID	INT
+
+AS
+	BEGIN
+		
+		SET NOCOUNT ON;
+
+		SELECT CATEGORY.CATEGORY_NAME
+		FROM TBL_CATEGORY_BY_TOPIC AS CAT_BY_TOP
+
+		INNER JOIN  TBL_CATEGORY AS CATEGORY ON
+		CAT_BY_TOP.CATEGORY_ID = CATEGORY.CATEGORY_ID
+
+		INNER JOIN TBL_TOPIC AS TOPIC ON
+		CAT_BY_TOP.TOPIC_ID = TOPIC.TOPIC_ID
+
+		WHERE CAT_BY_TOP.TOPIC_ID = @P_TOPIC_ID
+
+	END
+GO
+
+
+
+/********** RETRIVE ALL CATEGORY ************/
+/*******************************************/
+CREATE PROCEDURE RET_ALL_CATEGORY
+AS
+	BEGIN
+		SELECT * FROM TBL_CATEGORY
+	END
+GO
+
+
+
+/********** DELETE CATEGORY ************/
+/**************************************/
+CREATE PROCEDURE DEL_CATEGORY
+	@P_CATEGORY_ID INT
+AS
+	BEGIN
+		DELETE FROM TBL_CATEGORY WHERE CATEGORY_ID = @P_CATEGORY_ID
+	END
+GO
+
+
+
+/********** UPDATE CATEGORY ************/
+/**************************************/
+CREATE PROCEDURE UPD_CATEGORY
+	@P_CATEGORY_ID		INT,
+	@P_CATEGORY_NAME	VARCHAR(20)
+AS
+	BEGIN
+		UPDATE TBL_CATEGORY
+		SET CATEGORY_NAME = @P_CATEGORY_NAME
+		WHERE CATEGORY_ID = @P_CATEGORY_ID
+	END
+GO
+
+
+
+/********** CREATE CATEGORY ************/
+/**************************************/
+CREATE PROCEDURE CRE_CATEGORY
+	@P_CATEGORY_NAME	VARCHAR(20)
+AS
+	BEGIN
+		INSERT INTO TBL_CATEGORY VALUES(@P_CATEGORY_NAME)
+	END
+GO
+
+
+
+/**************************************************************************************************
+								STORE PROCEDURES FOR CATEGORY BY TOPIC
+**************************************************************************************************/
+
+/********** CREATE CATEGORY BY TOPIC ************/
+/*********************************************/
+CREATE PROCEDURE CRE_CATEGORY_BY_TOPIC
+
+	@P_CATEGORY_ID	INT,
+	@P_TOPIC_ID		INT
+
+AS
+	BEGIN
+		
+		SET NOCOUNT ON;
+
+		INSERT INTO TBL_CATEGORY_BY_TOPIC VALUES(@P_CATEGORY_ID,@P_TOPIC_ID)
 	END
 GO

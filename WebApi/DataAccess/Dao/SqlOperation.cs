@@ -54,5 +54,14 @@ namespace DataAccess.Dao
             };
             Parameters.Add(param);
         }
+
+        public void AddGuidParam(string paramName, Guid paramValue)
+        {
+            var param = new SqlParameter("@P_" + paramName, SqlDbType.UniqueIdentifier)
+            {
+                Value = paramValue
+            };
+            Parameters.Add(param);
+        }
     }
 }

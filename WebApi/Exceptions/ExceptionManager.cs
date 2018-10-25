@@ -47,7 +47,6 @@ namespace Exceptions
         {
             var today = string.Format("{0:yyyy-MM-dd_HH_mm_ss}_log.txt", DateTime.Now);
 
-
             var message = bex.Message + "\n" + bex.StackTrace + "\n";
 
             if (bex.InnerException != null)
@@ -75,7 +74,14 @@ namespace Exceptions
             }
             else
             {
-                operation.AddVarcharParam("STACK_TRACE", "No hay pila");
+                if (ex.Code == 1)
+                {
+                    operation.AddVarcharParam("STACK_TRACE", ex.InnerException?.StackTrace);
+                }
+                else
+                {
+                    operation.AddVarcharParam("STACK_TRACE", "No hay pila");
+                }
             }
 
             SqlDao.GetInstance().ExecuteProcedure(operation);

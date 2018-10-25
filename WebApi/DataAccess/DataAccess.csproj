@@ -40,30 +40,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Crud\AnswerCrudFactory.cs" />
     <Compile Include="Crud\AppMessagesCrudFactory.cs" />
     <Compile Include="Crud\CrudFactory.cs" />
-    <Compile Include="Crud\PreguntaCrudFactory.cs" />
-    <Compile Include="Crud\RespuestaCrudFactory.cs" />
-    <Compile Include="Crud\TemaCrudFactory.cs" />
-    <Compile Include="Crud\UsuarioCrudFactory.cs" />
+    <Compile Include="Crud\ProfileCrudFactory.cs" />
+    <Compile Include="Crud\QuestionCrudFactory.cs" />
+    <Compile Include="Crud\RoleCrudFactory.cs" />
+    <Compile Include="Crud\TopicCrudFactory.cs" />
+    <Compile Include="Crud\UserClaimCrudFactory.cs" />
+    <Compile Include="Crud\UserCrudFactory.cs" />
     <Compile Include="Dao\SqlDao.cs" />
     <Compile Include="Dao\SqlOperation.cs" />
-    <Compile Include="Factories\UsuarioFactory.cs" />
+    <Compile Include="Factory\ProfileFactory.cs" />
+    <Compile Include="Mapper\AnswerMapper.cs" />
     <Compile Include="Mapper\AppMessageMapper.cs" />
     <Compile Include="Mapper\EntityMapper.cs" />
     <Compile Include="Mapper\IObjectMapper.cs" />
     <Compile Include="Mapper\ISqlStaments.cs" />
-    <Compile Include="Mapper\PreguntaMapper.cs" />
-    <Compile Include="Mapper\RespuestaMapper.cs" />
-    <Compile Include="Mapper\TemaMapper.cs" />
-    <Compile Include="Mapper\UsuarioMapper.cs" />
+    <Compile Include="Mapper\ProfileMapper.cs" />
+    <Compile Include="Mapper\QuestionMapper.cs" />
+    <Compile Include="Mapper\RoleMapper.cs" />
+    <Compile Include="Mapper\TopicMapper.cs" />
+    <Compile Include="Mapper\UserClaimMapper.cs" />
+    <Compile Include="Mapper\UserMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Dtos\Dtos.csproj">
-      <Project>{673E8CF5-7A3A-48B0-ACB5-51C98ABAC830}</Project>
-      <Name>Dtos</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Entities-POJO\Entities-POJO.csproj">
       <Project>{D2A404F9-FD9E-4A28-9827-5F7663F150E2}</Project>
       <Name>Entities-POJO</Name>

@@ -1,0 +1,160 @@
+﻿html, body {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    font-family: 'Lato';
+    background: #fff;
+}
+
+.primary-color {
+    color: #488aff;
+}
+
+.secondary-color {
+    color: #16171b;
+}
+
+.error-color {
+    color: rgba(242, 36, 28, 1);
+}
+
+.error-message {
+    text-align: left;
+    margin-left: 9%;
+}
+
+.size-1 {
+    font-size: 14px;
+}
+
+.size-2 {
+    font-size: 16px;
+}
+
+.size-2 {
+    font-size: 20px;
+}
+
+.main-container {
+    background: url(../images/surverOnline.png)no-repeat center center fixed;
+    width: 100%;
+    height: 100%;
+    display: table;
+    background-size: cover;
+    position: relative;
+}
+
+    .main-container .registration-form {
+        display: table-cell;
+        vertical-align: middle;
+        text-align: center;
+    }
+
+    .main-container .form-container {
+        background: #fff;
+        max-width: 550px;
+        margin: 0 auto;
+        border-top-color: #4387fc;
+        border-radius: 10px;
+        padding: 25px 0;
+    }
+.error-container {
+    background: #d4dfe6;
+    width: 100%;
+    height: 100%;
+    display: table;
+    background-size: cover;
+    position: relative;
+}
+.error-container .main-description {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+
+    .error-container .main-description i {
+        font-size: 70px;
+    }
+
+.form-container .form-group .field-validation-error {
+    float: left;
+    margin-left: 9%;
+    margin-bottom:5px;
+    color: #f80944;
+    font-size: 12px;
+}
+
+    .main-container h2 {
+        margin-bottom: 35px;
+    }
+
+    .main-container .input-group {
+        display: block;
+        margin: 4% auto 1% auto;
+    }
+
+        .main-container .input-group input {
+            max-width: 450px;
+            width: 100%;
+            height: 50px;
+            font-size: 15px;
+        }
+
+            .main-container .input-group input[type="submit"] {
+                background: #488aff;
+                color: #fff;
+            }
+
+    .main-container .form-control {
+        -webkit-box-shadow: none;
+        -moz-box-shadow:none;
+        box-shadow: none;
+        border: none;
+        border-bottom: 1px solid #d9d9d9;
+    }
+
+        .main-container .form-control:focus {
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            box-shadow: none;
+            border-bottom-color: #488aff;
+        }
+
+    .main-container .term-and-conditions {
+        font-family: Lato;
+        display: inline-flex;
+        max-width: 450px;
+        width: 100%;
+    }
+
+        .main-container .term-and-conditions input {
+            margin-right: 10px;
+            height: 13px;
+            border: 1px solid #d3d3d3;
+        }
+
+@media (max-width: 768px) {
+    .main-container .form-container {
+        border-radius: 0;
+        height: 100%;
+        padding: 15px 15px 5px 15px;
+    }
+
+    .main-container h2 {
+        font-size: 20px;
+        margin-bottom: 15px;
+    }
+    .error-message {
+        margin-left:0;
+        font-size:13px;
+    }
+    .main-container .input-group input {
+        height: 40px;
+        font-size: 13px;
+    }
+
+    .main-container .term-and-conditions p {
+        font-size: 12px;
+    }
+}

@@ -45,5 +45,14 @@ namespace DataAccess.Mapper
 
             return new byte[0];
         }
+
+        protected Guid GetGuidValue(Dictionary<string, object> dic, string attName)
+        {
+            var val = dic[attName];
+            if (dic.ContainsKey(attName) && val is Guid)
+                return (Guid)dic[attName];
+
+            return new Guid("00000000-0000-0000-0000-000000000000");
+        }
     }
 }
