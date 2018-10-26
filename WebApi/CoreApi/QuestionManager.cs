@@ -66,7 +66,7 @@ namespace CoreApi
             }
         }
 
-        public ICollection<Question> GetQuestionsByTopic(int topicId)
+        public ICollection<Question> GetQuestionsByTopic(Guid topicId)
         {
             try
             {
@@ -132,7 +132,7 @@ namespace CoreApi
             }
         }
 
-        public ManagerActionResult<Question> DeleteQuestion(int id, int topicId)
+        public ManagerActionResult<Question> DeleteQuestion(int id, Guid topicId)
         {
             try
             {
@@ -176,9 +176,9 @@ namespace CoreApi
     {
         ICollection<Question> GetAllQuestions();
         ManagerActionResult<Question> RegisterQuestion(Question question);
-        ICollection<Question> GetQuestionsByTopic(int topicId);
+        ICollection<Question> GetQuestionsByTopic(Guid topicId);
         Question GetQuestion(int id);
         ManagerActionResult<Question> UpdateQuestion(Question question);
-        ManagerActionResult<Question> DeleteQuestion(int id, int topicId);
+        ManagerActionResult<Question> DeleteQuestion(int id, Guid topicId);
     }
 }

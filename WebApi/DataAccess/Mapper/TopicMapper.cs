@@ -33,7 +33,7 @@ namespace DataAccess.Mapper
         {
             var operation = new SqlOperation { ProcedureName = "RET_TOPIC" };
             var Topic = (Topic)entity;
-            operation.AddIntParam(DB_COL_ID, Topic.Id);
+            operation.AddGuidParam(DB_COL_ID, Topic.Id);
             return operation;
         }
 
@@ -59,7 +59,7 @@ namespace DataAccess.Mapper
             var operation = new SqlOperation { ProcedureName = "UPD_TOPIC" };
             var Topic = (Topic)entity;
 
-            operation.AddIntParam(DB_COL_ID, Topic.Id);
+            operation.AddGuidParam(DB_COL_ID, Topic.Id);
             operation.AddVarcharParam(DB_COL_TITLE, Topic.Title);
             operation.AddVarcharParam(DB_COL_DESCRIPTION, Topic.Description);
             operation.AddVarcharParam(DB_COL_IMAGEPATH, Topic.ImagePath);
@@ -73,7 +73,7 @@ namespace DataAccess.Mapper
         {
             var operation = new SqlOperation { ProcedureName = "DEL_TOPIC" };
             var Topic = (Topic)entity;
-            operation.AddIntParam(DB_COL_ID, Topic.Id);
+            operation.AddGuidParam(DB_COL_ID, Topic.Id);
             return operation;
         }
 
@@ -94,7 +94,7 @@ namespace DataAccess.Mapper
         {
             var Topic = new Topic
             {
-                Id = GetIntValue(row, DB_COL_ID),
+                Id = GetGuidValue(row, DB_COL_ID),
                 Title = GetStringValue(row, DB_COL_TITLE),
                 Description = GetStringValue(row, DB_COL_DESCRIPTION),
                 ImagePath = GetStringValue(row, DB_COL_IMAGEPATH),

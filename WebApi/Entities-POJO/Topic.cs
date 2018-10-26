@@ -5,7 +5,7 @@ namespace Entities_POJO
 {
     public class Topic : BaseEntity
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public string Title { get; set; }
 
@@ -21,7 +21,7 @@ namespace Entities_POJO
         {
         }
 
-        public Topic(int id, string title, string description, string imagePath, Guid userId)
+        public Topic(Guid id, string title, string description, string imagePath, Guid userId)
         {
             Id = id;
             Title = title;

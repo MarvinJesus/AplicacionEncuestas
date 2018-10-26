@@ -5,11 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
+using Thinktecture.IdentityModel.WebApi;
 
 namespace WebApi.Controllers
 {
     [RoutePrefix("api")]
-    public class TopicsController : ApiController
+    [Authorize]
+    public class TopicsController : SurveyOnlineController
     {
         private ITopicManager _manager { get; set; }
 
@@ -19,9 +21,10 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
+        [ScopeAuthorize("read")]
         [Route("profiles/{userId}/topics/{topicId}")]
         [Route("topics/{topicId}")]
-        public IHttpActionResult GetTopic(int topicId, Guid? userId = null)
+        public IHttpActionResult GetTopic(Guid topicId, Guid? userId = null)
         {
             try
             {
@@ -52,6 +55,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
+        [ScopeAuthorize("read")]
         [Route("profiles/{userId}/topics")]
         public IHttpActionResult GetTopicsByUser(Guid userId)
         {
@@ -72,6 +76,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
+        [ScopeAuthorize("read")]
         [Route("topics")]
         public IHttpActionResult GetTopics()
         {
@@ -87,13 +92,15 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        [Route("topics")]
-        public IHttpActionResult PostTopic([FromBody] Topic Topic)
+        [ScopeAuthorize("write")]
+        [Route("profiles/{userId}/topics")]
+        public IHttpActionResult PostTopic([FromBody] Topic Topic, Guid userId)
         {
             try
             {
-                if (Topic == null)
-                    return BadRequest();
+                if (!userId.Equals(GetProfileId())) return Unauthorized();
+
+                if (Topic == null) return BadRequest();
 
                 var result = _manager.RegisterTopic(Topic);
 
@@ -121,11 +128,14 @@ namespace WebApi.Controllers
         }
 
         [HttpPut]
-        [Route("topics/{id}")]
-        public IHttpActionResult PutTopic(int id, [FromBody]Topic topic)
+        [ScopeAuthorize("write")]
+        [Route("profiles/{profileId}/topics/{id}")]
+        public IHttpActionResult PutTopic(Guid profileId, Guid id, [FromBody]Topic topic)
         {
             try
             {
+                if (!profileId.Equals(GetProfileId())) return Unauthorized();
+
                 if (topic == null)
                     return BadRequest();
 
@@ -150,8 +160,9 @@ namespace WebApi.Controllers
         }
 
         [HttpDelete]
+        [ScopeAuthorize("write")]
         [Route("profiles/{userId}/topics/{id}")]
-        public IHttpActionResult DeleteTopic(int id, Guid userId)
+        public IHttpActionResult DeleteTopic(Guid id, Guid userId)
         {
             try
             {

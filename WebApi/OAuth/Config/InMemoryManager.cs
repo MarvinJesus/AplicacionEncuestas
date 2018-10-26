@@ -38,9 +38,10 @@ namespace OAuth.Config
                     StandardScopes.OfflineAccess,
                     new Scope
                     {
-                        DisplayName = "User roles",
-                        Name = "Roles",
-                        Type = ScopeType.Resource,
+                        Name = "roles",
+                        DisplayName = "Role(s)",
+                        Description = "Allow the application to see your role(s).",
+                        Type = ScopeType.Identity,
                         Claims = new List<ScopeClaim>
                         {
                             new ScopeClaim(Constants.ClaimTypes.Role,true),
@@ -78,7 +79,7 @@ namespace OAuth.Config
                             Constants.StandardScopes.Profile,
                             "read",
                             "write",
-                            "Roles"
+                            "roles"
                         },
                         Enabled = true
                     },

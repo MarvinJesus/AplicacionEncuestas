@@ -106,6 +106,9 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Thinktecture.IdentityModel.WebApi.ScopeAuthorization, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Thinktecture.IdentityModel.WebApi.ScopeAuthorization.1.0.0\lib\net45\Thinktecture.IdentityModel.WebApi.ScopeAuthorization.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Net.Http.Formatting">
@@ -138,6 +141,7 @@
     </Compile>
     <Compile Include="Helper\CreatePictures.cs" />
     <Compile Include="Helper\GetPictures.cs" />
+    <Compile Include="Helper\Picture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
