@@ -69,7 +69,7 @@ namespace WebApi.Controllers
 
         [HttpGet]
         [Route("topics/{id}/questions")]
-        public IHttpActionResult GetQuestionsbyTopic(int id)
+        public IHttpActionResult GetQuestionsbyTopic(Guid id)
         {
             try
             {
@@ -90,7 +90,7 @@ namespace WebApi.Controllers
         [HttpGet]
         [Route("topics/{topicId}/questions/{id}")]
         [Route("questions/{id}")]
-        public IHttpActionResult GetQuestion(int id, int? topicId = null)
+        public IHttpActionResult GetQuestion(int id, Guid? topicId = null)
         {
             try
             {
@@ -102,7 +102,7 @@ namespace WebApi.Controllers
                 }
                 else
                 {
-                    ICollection<Question> questions = _manager.GetQuestionsByTopic((int)topicId);
+                    ICollection<Question> questions = _manager.GetQuestionsByTopic((Guid)topicId);
 
                     if (questions?.Count > 0)
                     {
@@ -153,7 +153,7 @@ namespace WebApi.Controllers
 
         [HttpDelete]
         [Route("topics/{topicId}/questions/{id}")]
-        public IHttpActionResult DeleteAnswer(int id, int topicId)
+        public IHttpActionResult DeleteAnswer(int id, Guid topicId)
         {
             try
             {

@@ -18,7 +18,7 @@ namespace DataAccess.Mapper
             var question = (Question)entity;
 
             operation.AddVarcharParam(DB_COL_DESCRIPTION, question.Description);
-            operation.AddIntParam(DB_COL_ID_TOPIC, question.TopicId);
+            operation.AddGuidParam(DB_COL_ID_TOPIC, question.TopicId);
 
             return operation;
         }
@@ -35,7 +35,7 @@ namespace DataAccess.Mapper
         {
             var operation = new SqlOperation { ProcedureName = "RET_QUESTIONS_BY_TOPIC_ID" };
             var question = (Question)entity;
-            operation.AddIntParam(DB_COL_ID_TOPIC, question.TopicId);
+            operation.AddGuidParam(DB_COL_ID_TOPIC, question.TopicId);
             return operation;
         }
 
@@ -85,7 +85,7 @@ namespace DataAccess.Mapper
             {
                 Id = GetIntValue(row, DB_COL_ID),
                 Description = GetStringValue(row, DB_COL_DESCRIPTION),
-                TopicId = GetIntValue(row, DB_COL_ID_TOPIC)
+                TopicId = GetGuidValue(row, DB_COL_ID_TOPIC)
             };
             return Question;
         }

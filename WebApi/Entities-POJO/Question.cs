@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Entities_POJO
 {
@@ -8,7 +9,7 @@ namespace Entities_POJO
 
         public string Description { get; set; }
 
-        public int TopicId { get; set; }
+        public Guid TopicId { get; set; }
 
         public ICollection<Answer> Answers { get; set; }
 
@@ -16,7 +17,7 @@ namespace Entities_POJO
         {
         }
 
-        public Question(int id, string description, int topicId)
+        public Question(int id, string description, Guid topicId)
         {
             Id = id;
             Description = description;

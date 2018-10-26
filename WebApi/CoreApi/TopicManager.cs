@@ -92,7 +92,7 @@ namespace CoreApi
             }
         }
 
-        public ManagerActionResult<Topic> DeleteTopic(int id, Guid userId)
+        public ManagerActionResult<Topic> DeleteTopic(Guid id, Guid userId)
         {
             try
             {
@@ -129,7 +129,7 @@ namespace CoreApi
             }
         }
 
-        public Topic GetTopic(int id)
+        public Topic GetTopic(Guid id)
         {
             try
             {
@@ -172,9 +172,9 @@ namespace CoreApi
     {
         ManagerActionResult<Topic> RegisterTopic(Topic Topic);
         ManagerActionResult<Topic> EditTopic(Topic Topic);
-        Topic GetTopic(int id);
+        Topic GetTopic(Guid id);
         ICollection<Topic> GetTopicsByUser(Guid userId);
         ICollection<Topic> GetTopics();
-        ManagerActionResult<Topic> DeleteTopic(int id, Guid userId);
+        ManagerActionResult<Topic> DeleteTopic(Guid id, Guid userId);
     }
 }

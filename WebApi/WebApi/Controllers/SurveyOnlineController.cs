@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Claims;
 using System.Web.Http;
 
 namespace WebApi.Controllers
@@ -7,7 +8,10 @@ namespace WebApi.Controllers
     {
         public Guid GetProfileId()
         {
-            return new Guid("B97FACDA-F26E-4AEE-B97D-0AD074018E70");
+            var user = User as ClaimsPrincipal;
+            var userId = user.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+
+            return new Guid(userId);
         }
     }
 }
