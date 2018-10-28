@@ -67,7 +67,33 @@ namespace DataAccess.Mapper
             return operation;
         }
 
+        public SqlOperation GetRetrieveCategoryByTopic(BaseEntity entity)
+        {
+            var operation = new SqlOperation { ProcedureName = "RET_CATEGORIES_BY_TOPIC" };
+            var Topic = (Topic)entity;
+            operation.AddGuidParam(DB_COL_ID, Topic.Id);
+            return operation;
+        }
 
+        public SqlOperation GetCreateCategoryByTopic(BaseEntity topic, BaseEntity category)
+        {
+            var operation = new SqlOperation { ProcedureName = "CRE_TOPICS_CATEGORIES" };
+            var Topic = (Topic)topic;
+            var Category = (Category)category;
+            operation.AddGuidParam(DB_COL_ID, Topic.Id);
+            operation.AddIntParam(new CategoryMapper().DBColId, Category.Id);
+
+            return operation;
+        }
+
+        public SqlOperation GetDeleteTopicsCategory(BaseEntity entity)
+        {
+            var operation = new SqlOperation { ProcedureName = "DEL_TOPICS_CATEGORIES" };
+            var topic = (Topic)entity;
+            operation.AddGuidParam(DB_COL_ID, topic.Id);
+
+            return operation;
+        }
 
         public SqlOperation GetDeleteStatement(BaseEntity entity)
         {

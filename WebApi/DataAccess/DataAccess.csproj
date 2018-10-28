@@ -46,6 +46,7 @@
     <Compile Include="Crud\ProfileCrudFactory.cs" />
     <Compile Include="Crud\QuestionCrudFactory.cs" />
     <Compile Include="Crud\RoleCrudFactory.cs" />
+    <Compile Include="Crud\SurveyCrudFactory.cs" />
     <Compile Include="Crud\TopicCrudFactory.cs" />
     <Compile Include="Crud\UserClaimCrudFactory.cs" />
     <Compile Include="Crud\UserCrudFactory.cs" />
@@ -54,12 +55,14 @@
     <Compile Include="Factory\ProfileFactory.cs" />
     <Compile Include="Mapper\AnswerMapper.cs" />
     <Compile Include="Mapper\AppMessageMapper.cs" />
+    <Compile Include="Mapper\CategoryMapper.cs" />
     <Compile Include="Mapper\EntityMapper.cs" />
     <Compile Include="Mapper\IObjectMapper.cs" />
     <Compile Include="Mapper\ISqlStaments.cs" />
     <Compile Include="Mapper\ProfileMapper.cs" />
     <Compile Include="Mapper\QuestionMapper.cs" />
     <Compile Include="Mapper\RoleMapper.cs" />
+    <Compile Include="Mapper\SurveyMapper.cs" />
     <Compile Include="Mapper\TopicMapper.cs" />
     <Compile Include="Mapper\UserClaimMapper.cs" />
     <Compile Include="Mapper\UserMapper.cs" />

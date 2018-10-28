@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Entities_POJO
 {
-    public class Topic : BaseEntity
+    public class Survey : BaseEntity
     {
         public Guid Id { get; set; }
 
@@ -13,21 +13,21 @@ namespace Entities_POJO
 
         public string ImagePath { get; set; }
 
-        public Guid UserId { get; set; }
+        public Guid TopicId { get; set; }
 
-        public ICollection<Category> Categories { get; set; }
+        public ICollection<Question> Questions { get; set; }
 
-        public Topic()
+        public Survey()
         {
         }
 
-        public Topic(Guid id, string title, string description, string imagePath, Guid userId)
+        public Survey(Guid id, string title, string description, string imagePath, Guid topicId)
         {
             Id = id;
             Title = title;
             Description = description;
             ImagePath = imagePath;
-            UserId = userId;
+            TopicId = topicId;
         }
     }
 }

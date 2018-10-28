@@ -9,7 +9,7 @@ namespace Entities_POJO
 
         public string Description { get; set; }
 
-        public Guid TopicId { get; set; }
+        public Guid SurveyId { get; set; }
 
         public ICollection<Answer> Answers { get; set; }
 
@@ -17,11 +17,11 @@ namespace Entities_POJO
         {
         }
 
-        public Question(int id, string description, Guid topicId)
+        public Question(int id, string description, Guid surveyId)
         {
             Id = id;
             Description = description;
-            TopicId = topicId;
+            SurveyId = surveyId;
         }
 
     }

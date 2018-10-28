@@ -164,6 +164,37 @@ namespace CoreApi
                 throw ex;
             }
         }
+
+        //public ICollection<Category> RetrieveCategoryByTopic(Topic entity)
+        //{
+        //    try
+        //    {
+        //        return _crudFactory.RetrieveCategoryByTopic(entity);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
+
+        //public int CreateTopicsCategories(BaseEntity topic, BaseEntity category)
+        //{
+        //    try
+        //    {
+
+        //    }
+        //    catch (Exception)
+        //    {
+        //        throw;
+        //    }
+        //    return dao.ExecuteProcedure(_mapper.GetCreateCategoryByTopic(topic, category));
+        //}
+
+        //public int DeleteTopicsCategory(BaseEntity entity)
+        //{
+        //    var topic = (Topic)entity;
+        //    return dao.ExecuteProcedure(_mapper.GetDeleteTopicsCategory(topic));
+        //}
     }
 
 

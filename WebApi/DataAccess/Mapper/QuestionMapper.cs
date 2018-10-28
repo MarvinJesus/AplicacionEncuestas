@@ -8,7 +8,7 @@ namespace DataAccess.Mapper
     {
         private const string DB_COL_ID = "QUESTION_ID";
         private const string DB_COL_DESCRIPTION = "QUESTION_DESCRIPTION";
-        private const string DB_COL_ID_TOPIC = "TOPIC_ID";
+        private const string DB_COL_SURVEY_ID = "SURVEY_ID";
 
 
         public SqlOperation GetCreateStatement(BaseEntity entity)
@@ -18,7 +18,7 @@ namespace DataAccess.Mapper
             var question = (Question)entity;
 
             operation.AddVarcharParam(DB_COL_DESCRIPTION, question.Description);
-            operation.AddGuidParam(DB_COL_ID_TOPIC, question.TopicId);
+            operation.AddGuidParam(DB_COL_SURVEY_ID, question.SurveyId);
 
             return operation;
         }
@@ -31,11 +31,11 @@ namespace DataAccess.Mapper
             return operation;
         }
 
-        public SqlOperation GetRetriveQuestionsByTopic(BaseEntity entity)
+        public SqlOperation GetRetriveQuestionsBySurvey(BaseEntity entity)
         {
             var operation = new SqlOperation { ProcedureName = "RET_QUESTIONS_BY_TOPIC_ID" };
             var question = (Question)entity;
-            operation.AddGuidParam(DB_COL_ID_TOPIC, question.TopicId);
+            operation.AddGuidParam(DB_COL_SURVEY_ID, question.SurveyId);
             return operation;
         }
 
@@ -85,7 +85,7 @@ namespace DataAccess.Mapper
             {
                 Id = GetIntValue(row, DB_COL_ID),
                 Description = GetStringValue(row, DB_COL_DESCRIPTION),
-                TopicId = GetGuidValue(row, DB_COL_ID_TOPIC)
+                SurveyId = GetGuidValue(row, DB_COL_SURVEY_ID)
             };
             return Question;
         }

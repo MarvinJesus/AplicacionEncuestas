@@ -47,7 +47,7 @@ namespace OAuth.Controllers
 
                 new UserClaimManager().RegisterUserClaims(GetUserClaims(result.Entity, true));
 
-                return Content("User Registrated");
+                return Content("User Registrated");//Change it, It must redirect to the login page
             }
             catch (System.Exception ex)
             {

@@ -10,21 +10,21 @@ namespace CoreApi
     public class QuestionManager : IQuestionManager
     {
         private QuestionCrudFactory _questionCrudFactory { get; set; }
-        public TopicCrudFactory _topicCrudFactory { get; set; }
+        public SurveyCrudFactory _SurveyCrudFactory { get; set; }
 
         public QuestionManager()
         {
             _questionCrudFactory = new QuestionCrudFactory();
-            _topicCrudFactory = new TopicCrudFactory();
+            _SurveyCrudFactory = new SurveyCrudFactory();
         }
 
         public ManagerActionResult<Question> RegisterQuestion(Question question)
         {
             try
             {
-                var topic = _topicCrudFactory.Retrieve<Topic>(new Topic { Id = question.TopicId });
+                var Survey = _SurveyCrudFactory.Retrieve<Survey>(new Survey { Id = question.SurveyId });
 
-                if (topic != null)
+                if (Survey != null)
                 {
                     var newQuestion = _questionCrudFactory.Create<Question>(question);
 
@@ -49,12 +49,10 @@ namespace CoreApi
                 switch (sqlEx.Number)
                 {
                     case 201:
-                        //Missing parameters
-                        exception = ExceptionManager.GetInstance().Process(new BussinessException(2));
+                        exception = ExceptionManager.GetInstance().Process(new BussinessException(2)); //Missing parameters
                         break;
                     default:
-                        //Uncontrolled exception
-                        exception = ExceptionManager.GetInstance().Process(sqlEx);
+                        exception = ExceptionManager.GetInstance().Process(sqlEx); //Uncontrolled exception
                         break;
                 }
                 return new ManagerActionResult<Question>(null, ManagerActionStatus.Error, exception);
@@ -66,11 +64,11 @@ namespace CoreApi
             }
         }
 
-        public ICollection<Question> GetQuestionsByTopic(Guid topicId)
+        public ICollection<Question> GetQuestionsBySurvey(Guid surveyId)
         {
             try
             {
-                return _questionCrudFactory.GetAllQuestionsByTopic<Question>(new Question { TopicId = topicId });
+                return _questionCrudFactory.GetAllQuestionsBySurvey<Question>(new Question { SurveyId = surveyId });
             }
             catch (System.Exception ex)
             {
@@ -132,7 +130,7 @@ namespace CoreApi
             }
         }
 
-        public ManagerActionResult<Question> DeleteQuestion(int id, Guid topicId)
+        public ManagerActionResult<Question> DeleteQuestion(int id, Guid surveyId)
         {
             try
             {
@@ -141,7 +139,7 @@ namespace CoreApi
 
                 if (existingQuestion != null)
                 {
-                    if (existingQuestion.TopicId == topicId)
+                    if (existingQuestion.SurveyId == surveyId)
                     {
                         var result = _questionCrudFactory.Delete(existingQuestion);
 
@@ -176,9 +174,9 @@ namespace CoreApi
     {
         ICollection<Question> GetAllQuestions();
         ManagerActionResult<Question> RegisterQuestion(Question question);
-        ICollection<Question> GetQuestionsByTopic(Guid topicId);
+        ICollection<Question> GetQuestionsBySurvey(Guid surveyId);
         Question GetQuestion(int id);
         ManagerActionResult<Question> UpdateQuestion(Question question);
-        ManagerActionResult<Question> DeleteQuestion(int id, Guid topicId);
+        ManagerActionResult<Question> DeleteQuestion(int id, Guid surveyId);
     }
 }

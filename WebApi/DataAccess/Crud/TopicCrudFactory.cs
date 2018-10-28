@@ -93,5 +93,34 @@ namespace DataAccess.Crud
 
             return lstTopics;
         }
+
+        public ICollection<Category> RetrieveCategoryByTopic(BaseEntity entity)
+        {
+            var lstCategories = new List<Category>();
+
+            var lstResult = dao.ExecuteQueryProcedure(_mapper.GetRetrieveCategoryByTopic(entity));
+            var dic = new Dictionary<string, object>();
+            if (lstResult.Count > 0)
+            {
+                var objs = new CategoryMapper().BuildObjects(lstResult);
+                foreach (var c in objs)
+                {
+                    lstCategories.Add((Category)c);
+                }
+            }
+
+            return lstCategories;
+        }
+
+        public int CreateCategoryByTopic(BaseEntity topic, BaseEntity category)
+        {
+            return dao.ExecuteProcedure(_mapper.GetCreateCategoryByTopic(topic, category));
+        }
+
+        public int DeleteTopicsCategory(BaseEntity entity)
+        {
+            var topic = (Topic)entity;
+            return dao.ExecuteProcedure(_mapper.GetDeleteTopicsCategory(topic));
+        }
     }
 }
