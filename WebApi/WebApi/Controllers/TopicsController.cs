@@ -6,11 +6,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 using Thinktecture.IdentityModel.WebApi;
+using WebApi.Helper;
 
 namespace WebApi.Controllers
 {
     [RoutePrefix("api")]
-    [Authorize]
+    //[Authorize]
     public class TopicsController : SurveyOnlineController
     {
         private ITopicManager _manager { get; set; }
@@ -76,13 +77,16 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        [ScopeAuthorize("read")]
+        //[ScopeAuthorize("read")]
         [Route("topics")]
-        public IHttpActionResult GetTopics()
+        public IHttpActionResult GetTopics(string sort = "Id", string category = null)
         {
             try
             {
-                return base.Ok(_manager.GetTopics());
+                var sortList = _manager.GetTopics().AsQueryable()
+                    .ApplySort<Topic>(sort);
+
+                return Ok(sortList);
             }
             catch (Exception ex)
             {
@@ -92,13 +96,13 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        [ScopeAuthorize("write")]
+        //[ScopeAuthorize("write")]
         [Route("profiles/{userId}/topics")]
         public IHttpActionResult PostTopic([FromBody] Topic Topic, Guid userId)
         {
             try
             {
-                if (!userId.Equals(GetProfileId())) return Unauthorized();
+                //if (!userId.Equals(GetProfileId())) return Unauthorized();
 
                 if (Topic == null) return BadRequest();
 
