@@ -7,10 +7,12 @@ using System.IO;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
+using Thinktecture.IdentityModel.WebApi;
 using WebApi.Helper;
 
 namespace WebApi.Controllers
 {
+    [Authorize]
     public class PicturesController : SurveyOnlineController
     {
         private IProfileManager _profileManager { get; set; }
@@ -23,14 +25,13 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
+        [ScopeAuthorize("read")]
         [Route("api/profiles/{profileId}/pictures")]
-        public IHttpActionResult GetImages(Guid? profileId = null)
+        public IHttpActionResult GetPicture(Guid? profileId = null)
         {
             try
             {
                 if (profileId == null) return BadRequest("Invalid profile Id");
-
-                if (!profileId.Equals(GetProfileId())) return Unauthorized();
 
                 var profile = _profileManager.GetProfile(new Entities_POJO.Profile { UserId = (Guid)profileId });
 
@@ -61,13 +62,12 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
+        [ScopeAuthorize("write")]
         [Route("api/profiles/{profileId}/pictures")]
         public IHttpActionResult PostPicture(Guid profileId)
         {
             try
             {
-                if (profileId == null) return BadRequest();
-
                 if (!profileId.Equals(GetProfileId())) return Unauthorized();
 
                 var profile = _profileManager.GetProfile(new Entities_POJO.Profile { UserId = profileId });

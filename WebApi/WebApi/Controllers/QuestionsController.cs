@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
+using Thinktecture.IdentityModel.WebApi;
 
 namespace WebApi.Controllers
 {
@@ -19,6 +20,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
+        [ScopeAuthorize("read")]
         public IHttpActionResult Get()
         {
             try
@@ -34,6 +36,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
+        [ScopeAuthorize("write")]
         [Route("questions")]
         public IHttpActionResult PostQuestion([FromBody]Question question)
         {
@@ -68,12 +71,13 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        [Route("topics/{id}/questions")]
+        [ScopeAuthorize("read")]
+        [Route("surveys/{id}/questions")]
         public IHttpActionResult GetQuestionsbyTopic(Guid id)
         {
             try
             {
-                var questions = _manager.GetQuestionsByTopic(id);
+                var questions = _manager.GetQuestionsBySurvey(id);
 
                 if (questions?.Count > 0)
                     return Ok(questions);
@@ -88,21 +92,22 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        [Route("topics/{topicId}/questions/{id}")]
+        [ScopeAuthorize("read")]
+        [Route("surveys/{surveyId}/questions/{id}")]
         [Route("questions/{id}")]
-        public IHttpActionResult GetQuestion(int id, Guid? topicId = null)
+        public IHttpActionResult GetQuestion(int id, Guid? surveyId = null)
         {
             try
             {
                 Question question = null;
 
-                if (topicId == null)
+                if (surveyId == null)
                 {
                     question = _manager.GetQuestion(id);
                 }
                 else
                 {
-                    ICollection<Question> questions = _manager.GetQuestionsByTopic((Guid)topicId);
+                    ICollection<Question> questions = _manager.GetQuestionsBySurvey((Guid)surveyId);
 
                     if (questions?.Count > 0)
                     {
@@ -123,6 +128,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPut]
+        [ScopeAuthorize("write")]
         [Route("questions/{id}")]
         public IHttpActionResult PutQuestion(int id, [FromBody]Question question)
         {
@@ -152,12 +158,13 @@ namespace WebApi.Controllers
         }
 
         [HttpDelete]
-        [Route("topics/{topicId}/questions/{id}")]
-        public IHttpActionResult DeleteAnswer(int id, Guid topicId)
+        [ScopeAuthorize("write")]
+        [Route("surveys/{surveyId}/questions/{id}")]
+        public IHttpActionResult DeleteAnswer(int id, Guid surveyId)
         {
             try
             {
-                var result = _manager.DeleteQuestion(id, topicId);
+                var result = _manager.DeleteQuestion(id, surveyId);
 
                 if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Deleted)
                     return StatusCode(System.Net.HttpStatusCode.NoContent);
