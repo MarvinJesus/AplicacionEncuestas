@@ -4,8 +4,11 @@ using Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using System.Web.Http;
+using System.Web.Http.Routing;
 using Thinktecture.IdentityModel.WebApi;
+using WebApi.Helper;
 
 namespace WebApi.Controllers
 {
@@ -76,7 +79,72 @@ namespace WebApi.Controllers
             }
         }
 
+        [HttpGet]
+        //[ScopeAuthorize("read")]
+        [Route("topics", Name = "TopicsList")]
+        public IHttpActionResult GetTopics(string sort = "Id", string category = null,
+            int page = 1, int pageSize = MAX_PAGE_SIZE)
+        {
+            try
+            {
+                var topicList = _manager.GetTopics()
+                    .AsQueryable<Topic>()
+                    .ApplyFilter(category);
 
+                if (pageSize > MAX_PAGE_SIZE)
+                {
+                    pageSize = MAX_PAGE_SIZE;
+                }
+
+                var totalCount = topicList.Count();
+                var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
+                var urlHelper = new UrlHelper(Request);
+
+                var prevLink = page > 1 ? urlHelper.Link("Topics",
+                    new
+                    {
+                        page = page - 1,
+                        pageSize = pageSize,
+                        sort = sort,
+                        category = category
+                    }) : "";
+                var nextLink = page < totalPages ? urlHelper.Link("TopicsList",
+                    new
+                    {
+                        page = page + 1,
+                        pageSize = pageSize,
+                        sort = sort,
+                        category = category
+                    }) : "";
+
+                var paginationHeader = new
+                {
+                    currentPage = page,
+                    pageSize = pageSize,
+                    totalCount = totalCount,
+                    totalPages = totalPages,
+                    previousLink = prevLink,
+                    nextLink = nextLink
+                };
+
+                HttpContext.Current.Response.Headers.Add("X-Pagination",
+                    Newtonsoft.Json.JsonConvert.SerializeObject(paginationHeader));
+
+                var topicResult = topicList
+                    .ApplySort<Topic>(sort)
+                    .Skip(pageSize * (page - 1))
+                    .Take(pageSize)
+                    .ToList();
+
+                return Ok(topicResult);
+            }
+            catch (Exception ex)
+            {
+                ExceptionManager.GetInstance().Process(ex);
+                return InternalServerError();
+            }
+        }
 
         [HttpPost]
         [ScopeAuthorize("write")]
