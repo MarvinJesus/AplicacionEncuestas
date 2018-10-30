@@ -82,12 +82,25 @@ namespace WebApi.Controllers
         [HttpGet]
         //[ScopeAuthorize("read")]
         [Route("topics", Name = "TopicsList")]
-        public IHttpActionResult GetTopics(string sort = "Id", string category = null,
+        public IHttpActionResult GetTopics(string search, string sort = "Id", string category = null,
             int page = 1, int pageSize = MAX_PAGE_SIZE)
         {
             try
             {
-                var topicList = _manager.GetTopics()
+                ICollection<Topic> topics = null;
+
+                if (!string.IsNullOrWhiteSpace(search))
+                {
+                    topics = _manager.GetTopics(search);
+                }
+                else
+                {
+                    topics = _manager.GetTopics();
+                }
+
+                if (topics == null) return Ok(topics);
+
+                var topicList = topics
                     .AsQueryable<Topic>()
                     .ApplyFilter(category);
 

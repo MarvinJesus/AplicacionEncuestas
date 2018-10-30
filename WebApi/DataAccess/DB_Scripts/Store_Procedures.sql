@@ -278,6 +278,20 @@ GO
 
 
 
+/********** SEARCH TOPIC **********/
+/***********************************/
+CREATE PROCEDURE SEARCH_TOPIC
+	@P_SEARCH VARCHAR(100)
+AS
+	BEGIN
+		SELECT *
+		FROM TBL_TOPIC AS TOPIC
+		WHERE TOPIC.TITLE LIKE '%' + @P_SEARCH +'%'
+	END
+GO
+
+
+
 /********** UPDATE TOPIC **********/
 /***********************************/
 CREATE PROCEDURE UPD_TOPIC

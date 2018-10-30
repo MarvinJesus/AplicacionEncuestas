@@ -11,6 +11,7 @@ namespace DataAccess.Mapper
         private const string DB_COL_DESCRIPTION = "TOPIC_DESCRIPTION";
         private const string DB_COL_IMAGEPATH = "IMG_URL";
         private const string DB_COL_USERID = "USER_ID";
+        private const string DB_COL_SEARCH = "SEARCH";
 
 
         public SqlOperation GetCreateStatement(BaseEntity entity)
@@ -128,6 +129,14 @@ namespace DataAccess.Mapper
 
             };
             return Topic;
+        }
+
+        internal SqlOperation GetSearchTopics(string search)
+        {
+            var operation = new SqlOperation { ProcedureName = "SEARCH_TOPIC" };
+            operation.AddVarcharParam(DB_COL_SEARCH, search);
+
+            return operation;
         }
     }
 }

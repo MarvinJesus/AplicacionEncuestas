@@ -240,6 +240,26 @@ namespace CoreApi
                 throw;
             }
         }
+
+        public ICollection<Topic> GetTopics(string search)
+        {
+            try
+            {
+                var topics = _crudFactory.SearchTopic(search);
+
+                foreach (var topic in topics)
+                {
+                    topic.Categories = RetrieveCategoryByTopic(topic);
+                }
+
+                return topics;
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 
 
@@ -254,5 +274,6 @@ namespace CoreApi
         ManagerActionResult<Topic> DeleteTopic(Guid id, Guid userId);
         ICollection<Category> RetrieveCategoryByTopic(Topic entity);
         ManagerActionResult<ICollection<Category>> RegisterCategories(Guid topicId, ICollection<Category> categories);
+        ICollection<Topic> GetTopics(string search);
     }
 }
