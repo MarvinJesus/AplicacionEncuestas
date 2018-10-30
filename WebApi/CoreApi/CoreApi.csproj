@@ -43,6 +43,7 @@
     <Compile Include="ActionResult\ManagerActionResult.cs" />
     <Compile Include="ActionResult\ManagerActionStatus.cs" />
     <Compile Include="AnswerManager.cs" />
+    <Compile Include="CategoryManager.cs" />
     <Compile Include="ProfileManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuestionManager.cs" />

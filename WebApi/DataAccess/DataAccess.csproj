@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="Crud\AnswerCrudFactory.cs" />
     <Compile Include="Crud\AppMessagesCrudFactory.cs" />
+    <Compile Include="Crud\CategoryCrudFacotory.cs" />
     <Compile Include="Crud\CrudFactory.cs" />
     <Compile Include="Crud\ProfileCrudFactory.cs" />
     <Compile Include="Crud\QuestionCrudFactory.cs" />

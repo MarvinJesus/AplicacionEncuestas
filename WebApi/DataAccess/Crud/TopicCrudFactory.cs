@@ -112,9 +112,19 @@ namespace DataAccess.Crud
             return lstCategories;
         }
 
-        public int CreateCategoryByTopic(BaseEntity topic, BaseEntity category)
+        public Category CreateCategoryByTopic(BaseEntity topic, BaseEntity category)
         {
-            return dao.ExecuteProcedure(_mapper.GetCreateCategoryByTopic(topic, category));
+            var result = dao.ExecuteQueryProcedure(_mapper.GetCreateCategoryByTopic(topic, category));
+
+            var dic = new Dictionary<string, object>();
+            if (result.Count > 0)
+            {
+                dic = result[0];
+                var objs = new CategoryMapper().BuildObject(dic);
+                return (Category)objs;
+            }
+
+            return default(Category);
         }
 
         public int DeleteTopicsCategory(BaseEntity entity)

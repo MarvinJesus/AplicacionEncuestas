@@ -51,7 +51,7 @@ namespace DataAccess.Crud
             var lstQuestion = new List<T>();
 
             var lstResult = dao.ExecuteQueryProcedure(_mapper.GetRetriveQuestionsBySurvey(entity));
-            var dic = new Dictionary<string, object>();
+
             if (lstResult.Count > 0)
             {
                 var objs = _mapper.BuildObjects(lstResult);
@@ -68,7 +68,7 @@ namespace DataAccess.Crud
         {
             var questionList = new List<T>();
             var questionsListResult = dao.ExecuteQueryProcedure(_mapper.GetRetriveAllStatement());
-            var dic = new Dictionary<string, object>();
+
             if (questionsListResult.Count > 0)
             {
                 var objects = _mapper.BuildObjects(questionsListResult);

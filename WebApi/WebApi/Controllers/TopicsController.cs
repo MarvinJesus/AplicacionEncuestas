@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 using Thinktecture.IdentityModel.WebApi;
-using WebApi.Helper;
 
 namespace WebApi.Controllers
 {
@@ -15,6 +14,7 @@ namespace WebApi.Controllers
     public class TopicsController : SurveyOnlineController
     {
         private ITopicManager _manager { get; set; }
+        private const int MAX_PAGE_SIZE = 10;
 
         public TopicsController(ITopicManager manager)
         {
@@ -76,17 +76,44 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpGet]
-        //[ScopeAuthorize("read")]
-        [Route("topics")]
-        public IHttpActionResult GetTopics(string sort = "Id", string category = null)
+
+
+        [HttpPost]
+        [ScopeAuthorize("write")]
+        [Route("profiles/{userId}/topics")]
+        public IHttpActionResult PostTopic([FromBody] Topic topic, Guid userId)
         {
             try
             {
-                var sortList = _manager.GetTopics().AsQueryable()
-                    .ApplySort<Topic>(sort);
+                if (!userId.Equals(GetProfileId())) return Unauthorized();
 
-                return Ok(sortList);
+                if (topic == null) return BadRequest();
+
+                var result = _manager.RegisterTopic(topic);
+
+                if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Created)
+                {
+                    if (topic.Categories != null)
+                    {
+                        var resultCategories = _manager.RegisterCategories(result.Entity.Id, topic.Categories);
+
+                        if (resultCategories.Status == CoreApi.ActionResult.ManagerActionStatus.Error)
+                        {
+                            return BadRequest(string.Format("El usuario se creo exitosamente pero {0}",
+                                resultCategories.Exception.AppMessage.Message));
+                        }
+                        result.Entity.Categories = resultCategories.Entity;
+                    }
+
+                    return Created(Request.RequestUri + "/" + result.Entity.Id.ToString(), result.Entity);
+                }
+
+                if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Error)
+                {
+                    return BadRequest(result.Exception.AppMessage.Message);
+                }
+
+                return BadRequest();
             }
             catch (Exception ex)
             {
@@ -96,32 +123,24 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        //[ScopeAuthorize("write")]
-        [Route("profiles/{userId}/topics")]
-        public IHttpActionResult PostTopic([FromBody] Topic Topic, Guid userId)
+        [ScopeAuthorize("write")]
+        [Route("topics/{topicId}/categories")]
+        public IHttpActionResult PostTopicCategories(Guid topicId, ICollection<Category> categories)
         {
             try
             {
-                //if (!userId.Equals(GetProfileId())) return Unauthorized();
+                if (categories == null) return BadRequest();
 
-                if (Topic == null) return BadRequest();
-
-                var result = _manager.RegisterTopic(Topic);
+                var result = _manager.RegisterCategories(topicId, categories);
 
                 if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Created)
-                    return Created(Request.RequestUri + "/" + result.Entity.Id.ToString(), result.Entity);
+                    return Created(Request.RequestUri, result.Entity);
 
-                if (result.Exception != null)
+                if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Error)
                 {
-                    if (result.Exception.Code == 1)
-                    {
-                        return InternalServerError();
-                    }
-                    else
-                    {
-                        return BadRequest(result.Exception.AppMessage.Message);
-                    }
+                    return BadRequest(result.Exception.AppMessage.Message);
                 }
+
                 return BadRequest();
             }
             catch (Exception ex)
@@ -152,7 +171,7 @@ namespace WebApi.Controllers
                     return Ok(result.Entity);
 
                 if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Error)
-                    return InternalServerError();
+                    return BadRequest(string.Concat("El tema pudo ser actualizado pero {0}", result.Exception.AppMessage.Message));
 
                 return BadRequest();
             }
@@ -170,6 +189,8 @@ namespace WebApi.Controllers
         {
             try
             {
+                if (userId.Equals(GetProfileId())) return Unauthorized();
+
                 var result = _manager.DeleteTopic(id, userId);
 
                 if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Deleted)
@@ -177,9 +198,6 @@ namespace WebApi.Controllers
 
                 if (result.Status == CoreApi.ActionResult.ManagerActionStatus.NotFound)
                     return NotFound();
-
-                if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Error && result.Exception != null)
-                    return InternalServerError();
 
                 return BadRequest();
             }

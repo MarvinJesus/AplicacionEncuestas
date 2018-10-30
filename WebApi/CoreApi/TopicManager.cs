@@ -4,6 +4,7 @@ using Entities_POJO;
 using Exceptions;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 
 namespace CoreApi
 {
@@ -40,55 +41,67 @@ namespace CoreApi
                 switch (sqlEx.Number)
                 {
                     case 201:
-                        //Missing parameters
-                        exception = ExceptionManager.GetInstance().Process(new BussinessException(2));
+                        exception = ExceptionManager.GetInstance().Process(new BussinessException(2));//Missing parameters
                         break;
                     case 547:
-                        //User not found
-                        exception = ExceptionManager.GetInstance().Process(new BussinessException(4));
+                        exception = ExceptionManager.GetInstance().Process(new BussinessException(4));//User not found
                         break;
                     default:
-                        //Uncontrolled exception
-                        exception = ExceptionManager.GetInstance().Process(sqlEx);
-                        break;
+                        throw;
                 }
                 return new ManagerActionResult<Topic>(null, ManagerActionStatus.Error, exception);
             }
-            catch (System.Exception ex)
+            catch (System.Exception)
             {
-                var exception = ExceptionManager.GetInstance().Process(ex);
-
-                return new ManagerActionResult<Topic>(null, ManagerActionStatus.Error, exception);
+                throw;
             }
         }
 
-        public ManagerActionResult<Topic> EditTopic(Topic Topic)
+        public ManagerActionResult<Topic> EditTopic(Topic topic)
         {
             try
             {
-                Topic existingTopic = _crudFactory.Retrieve<Topic>(Topic);
+                Topic existingTopic = _crudFactory.Retrieve<Topic>(topic);
 
                 if (existingTopic != null)
                 {
-                    var result = _crudFactory.Update(Topic);
+                    var result = _crudFactory.Update(topic);
 
                     if (result != 0)
                     {
-                        return new ManagerActionResult<Topic>(Topic, ManagerActionStatus.Updated);
+                        _crudFactory.DeleteTopicsCategory(existingTopic);
+
+                        if (topic.Categories != null)
+                        {
+                            var resultCategories = RegisterCategories(existingTopic.Id, topic.Categories);
+
+                            if (resultCategories.Status == ManagerActionStatus.Created)
+                            {
+                                topic.Categories = resultCategories.Entity;
+                            }
+                            else
+                            {
+                                if (resultCategories.Status == ManagerActionStatus.Error)
+                                {
+                                    return new ManagerActionResult<Topic>(topic, ManagerActionStatus.Error,
+                                    resultCategories.Exception);
+                                }
+                            }
+                        }
+
+                        return new ManagerActionResult<Topic>(topic, ManagerActionStatus.Updated);
                     }
                     else
                     {
-                        return new ManagerActionResult<Topic>(Topic, ManagerActionStatus.NothingModified);
+                        return new ManagerActionResult<Topic>(topic, ManagerActionStatus.NothingModified);
                     }
                 }
 
-                return new ManagerActionResult<Topic>(Topic, ManagerActionStatus.NotFound);
+                return new ManagerActionResult<Topic>(topic, ManagerActionStatus.NotFound);
             }
-            catch (System.Exception ex)
+            catch (System.Exception)
             {
-                var exception = ExceptionManager.GetInstance().Process(ex);
-
-                return new ManagerActionResult<Topic>(null, ManagerActionStatus.Error, exception);
+                throw;
             }
         }
 
@@ -98,7 +111,7 @@ namespace CoreApi
             {
                 var topicToDelete = new Topic { Id = id };
 
-                Topic existingTopic = _crudFactory.Retrieve<Topic>(new Topic { Id = id });
+                Topic existingTopic = _crudFactory.Retrieve<Topic>(topicToDelete);
 
                 if (existingTopic != null)
                 {
@@ -157,44 +170,76 @@ namespace CoreApi
         {
             try
             {
-                return _crudFactory.RetrieveAll<Topic>();
+                var topics = _crudFactory.RetrieveAll<Topic>();
+
+                foreach (var topic in topics)
+                {
+                    topic.Categories = RetrieveCategoryByTopic(topic);
+                }
+
+                return topics;
             }
-            catch (System.Exception ex)
+            catch (System.Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
-        //public ICollection<Category> RetrieveCategoryByTopic(Topic entity)
-        //{
-        //    try
-        //    {
-        //        return _crudFactory.RetrieveCategoryByTopic(entity);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-        //}
+        public ICollection<Category> RetrieveCategoryByTopic(Topic entity)
+        {
+            try
+            {
+                return _crudFactory.RetrieveCategoryByTopic(entity);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
-        //public int CreateTopicsCategories(BaseEntity topic, BaseEntity category)
-        //{
-        //    try
-        //    {
+        public ManagerActionResult<ICollection<Category>> RegisterCategories(Guid topicId, ICollection<Category> categories)
+        {
+            try
+            {
+                var topic = new Topic { Id = topicId };
+                var existingTopic = _crudFactory.Retrieve<Topic>(topic);
+                ICollection<Category> categoriesCreated = null;
 
-        //    }
-        //    catch (Exception)
-        //    {
-        //        throw;
-        //    }
-        //    return dao.ExecuteProcedure(_mapper.GetCreateCategoryByTopic(topic, category));
-        //}
+                if (existingTopic == null)
+                    return new ManagerActionResult<ICollection<Category>>(categories, ManagerActionStatus.NotFound);
 
-        //public int DeleteTopicsCategory(BaseEntity entity)
-        //{
-        //    var topic = (Topic)entity;
-        //    return dao.ExecuteProcedure(_mapper.GetDeleteTopicsCategory(topic));
-        //}
+                categoriesCreated = new List<Category>();
+                var actionResult = new ManagerActionResult<ICollection<Category>>(categoriesCreated, ManagerActionStatus.Created);
+
+                foreach (var category in categories)
+                {
+                    try
+                    {
+                        var result = _crudFactory.CreateCategoryByTopic(existingTopic, category);
+
+                        if (result != null)
+                            categoriesCreated.Add(result);
+                    }
+                    catch (SqlException sqlEx)
+                    {
+                        if (sqlEx.Number != 547) throw;
+
+                        if (actionResult.Exception == null)
+                        {
+                            actionResult.Exception = ExceptionManager.GetInstance().Process(new BussinessException(7));
+                            actionResult.Status = ManagerActionStatus.Error;
+                        }
+                    }
+                }
+                actionResult.Entity = categoriesCreated;
+
+                return actionResult;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 
 
@@ -207,5 +252,7 @@ namespace CoreApi
         ICollection<Topic> GetTopicsByUser(Guid userId);
         ICollection<Topic> GetTopics();
         ManagerActionResult<Topic> DeleteTopic(Guid id, Guid userId);
+        ICollection<Category> RetrieveCategoryByTopic(Topic entity);
+        ManagerActionResult<ICollection<Category>> RegisterCategories(Guid topicId, ICollection<Category> categories);
     }
 }
