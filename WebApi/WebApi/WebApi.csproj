@@ -182,6 +182,10 @@
       <Project>{EB460B4D-EADB-447D-A9FE-72FA4765E61D}</Project>
       <Name>Exceptions</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SurveyOnline.Constants\SurveyOnline.Constants.csproj">
+      <Project>{C3817C80-266C-4E2F-8332-89D19E591213}</Project>
+      <Name>SurveyOnline.Constants</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Util\Util.csproj">
       <Project>{63CDD880-2933-4382-AC72-0899288C2670}</Project>
       <Name>Util</Name>

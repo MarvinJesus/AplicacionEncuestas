@@ -1,6 +1,7 @@
 ﻿using IdentityServer3.Core;
 using IdentityServer3.Core.Models;
 using IdentityServer3.Core.Services.InMemory;
+using SurveyOnline.Constants;
 using System.Collections.Generic;
 using System.Security.Claims;
 
@@ -103,11 +104,11 @@ namespace OAuth.Config
                         },
                         RedirectUris = new List<string>
                        {
-                            "url"
+                           SurveyOnlineConstants.SurveyOnlineWebUI,
                         },
                         PostLogoutRedirectUris = new List<string>
                         {
-                            "url"
+                            SurveyOnlineConstants.SurveyOnlineWebUI,
                         },
                         Enabled = true
                     }
