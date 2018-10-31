@@ -102,11 +102,22 @@ namespace WebApi.Controllers
 
                 if (topics == null) return Ok(topics);
 
-                var topicList = topics
-                    .AsQueryable<Topic>()
-                    .ApplyFilter(filters);
+                if (filters != null || fields != null)
+                {
+                    foreach (var topic in topics)
+                    {
+                        topic.Categories = _manager.RetrieveCategoryByTopic(topic);
+                    }
+                }
 
-                //Here add code to validate if requiered fields
+                if (fields != null)
+                {
+                    listOfFields = new List<string>();
+                    listOfFields = fields.Split(',').ToList();
+                }
+
+                var topicList = topics.AsQueryable()
+                    .ApplyFilter(filters);
 
                 HttpContext.Current.Response.Headers.Add("X-Pagination", Paging.GetInstance().Page(page, pageSize, MAX_PAGE_SIZE, topicList,
                     "TopicsList", new UrlHelper(Request), sort, filters, fields, search));
@@ -116,9 +127,15 @@ namespace WebApi.Controllers
                     .Skip(pageSize * (page - 1))
                     .Take(pageSize)
                     .ToList();
-                //Here add code to convert an expando object
 
-                return Ok(topicResult);
+                if (fields != null)
+                {
+                    return Ok(topicResult.Select(top => topicFactory.CreateDataShapeObject(top, listOfFields)));
+                }
+                else
+                {
+                    return Ok(topicResult.Select(top => topicFactory.CreateDataShapeObject(top)));
+                }
             }
             catch (Exception ex)
             {
