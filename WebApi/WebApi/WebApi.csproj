@@ -147,6 +147,7 @@
     <Compile Include="Helper\CreatePictures.cs" />
     <Compile Include="Helper\GetPictures.cs" />
     <Compile Include="Helper\IQueraybleExtensions.cs" />
+    <Compile Include="Helper\Paging.cs" />
     <Compile Include="Helper\Picture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

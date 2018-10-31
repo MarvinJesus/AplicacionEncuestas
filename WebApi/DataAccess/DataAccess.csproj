@@ -53,7 +53,10 @@
     <Compile Include="Crud\UserCrudFactory.cs" />
     <Compile Include="Dao\SqlDao.cs" />
     <Compile Include="Dao\SqlOperation.cs" />
+    <Compile Include="Factory\EntityFactory.cs" />
     <Compile Include="Factory\ProfileFactory.cs" />
+    <Compile Include="Factory\TopicFactory.cs" />
+    <Compile Include="Helper\ExtensionsMethod.cs" />
     <Compile Include="Mapper\AnswerMapper.cs" />
     <Compile Include="Mapper\AppMessageMapper.cs" />
     <Compile Include="Mapper\CategoryMapper.cs" />

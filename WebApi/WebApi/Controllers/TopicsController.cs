@@ -1,4 +1,5 @@
 ﻿using CoreApi;
+using DataAccess.Factory;
 using Entities_POJO;
 using Exceptions;
 using System;
@@ -13,7 +14,6 @@ using WebApi.Helper;
 namespace WebApi.Controllers
 {
     [RoutePrefix("api")]
-    //[Authorize]
     public class TopicsController : SurveyOnlineController
     {
         private ITopicManager _manager { get; set; }
@@ -82,14 +82,16 @@ namespace WebApi.Controllers
         [HttpGet]
         //[ScopeAuthorize("read")]
         [Route("topics", Name = "TopicsList")]
-        public IHttpActionResult GetTopics(string search, string sort = "Id", string category = null,
-            int page = 1, int pageSize = MAX_PAGE_SIZE)
+        public IHttpActionResult GetTopics(string sort = "Id", string filters = null,
+            int page = 1, int pageSize = MAX_PAGE_SIZE, string fields = null, string search = null)
         {
             try
             {
+                var topicFactory = new TopicFactory();
+                List<string> listOfFields = null;
                 ICollection<Topic> topics = null;
 
-                if (!string.IsNullOrWhiteSpace(search))
+                if (search != null)
                 {
                     topics = _manager.GetTopics(search);
                 }
@@ -100,57 +102,40 @@ namespace WebApi.Controllers
 
                 if (topics == null) return Ok(topics);
 
-                var topicList = topics
-                    .AsQueryable<Topic>()
-                    .ApplyFilter(category);
-
-                if (pageSize > MAX_PAGE_SIZE)
+                if (filters != null || fields != null)
                 {
-                    pageSize = MAX_PAGE_SIZE;
+                    foreach (var topic in topics)
+                    {
+                        topic.Categories = _manager.RetrieveCategoryByTopic(topic);
+                    }
                 }
 
-                var totalCount = topicList.Count();
-                var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
-
-                var urlHelper = new UrlHelper(Request);
-
-                var prevLink = page > 1 ? urlHelper.Link("Topics",
-                    new
-                    {
-                        page = page - 1,
-                        pageSize = pageSize,
-                        sort = sort,
-                        category = category
-                    }) : "";
-                var nextLink = page < totalPages ? urlHelper.Link("TopicsList",
-                    new
-                    {
-                        page = page + 1,
-                        pageSize = pageSize,
-                        sort = sort,
-                        category = category
-                    }) : "";
-
-                var paginationHeader = new
+                if (fields != null)
                 {
-                    currentPage = page,
-                    pageSize = pageSize,
-                    totalCount = totalCount,
-                    totalPages = totalPages,
-                    previousLink = prevLink,
-                    nextLink = nextLink
-                };
+                    listOfFields = new List<string>();
+                    listOfFields = fields.Split(',').ToList();
+                }
 
-                HttpContext.Current.Response.Headers.Add("X-Pagination",
-                    Newtonsoft.Json.JsonConvert.SerializeObject(paginationHeader));
+                var topicList = topics.AsQueryable()
+                    .ApplyFilter(filters);
+
+                HttpContext.Current.Response.Headers.Add("X-Pagination", Paging.GetInstance().Page(page, pageSize, MAX_PAGE_SIZE, topicList,
+                    "TopicsList", new UrlHelper(Request), sort, filters, fields, search));
 
                 var topicResult = topicList
-                    .ApplySort<Topic>(sort)
+                    .ApplySort(sort)
                     .Skip(pageSize * (page - 1))
                     .Take(pageSize)
                     .ToList();
 
-                return Ok(topicResult);
+                if (fields != null)
+                {
+                    return Ok(topicResult.Select(top => topicFactory.CreateDataShapeObject(top, listOfFields)));
+                }
+                else
+                {
+                    return Ok(topicResult.Select(top => topicFactory.CreateDataShapeObject(top)));
+                }
             }
             catch (Exception ex)
             {

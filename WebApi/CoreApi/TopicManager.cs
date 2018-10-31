@@ -170,14 +170,7 @@ namespace CoreApi
         {
             try
             {
-                var topics = _crudFactory.RetrieveAll<Topic>();
-
-                foreach (var topic in topics)
-                {
-                    topic.Categories = RetrieveCategoryByTopic(topic);
-                }
-
-                return topics;
+                return _crudFactory.RetrieveAll<Topic>();
             }
             catch (System.Exception)
             {
@@ -245,15 +238,7 @@ namespace CoreApi
         {
             try
             {
-                var topics = _crudFactory.SearchTopic(search);
-
-                foreach (var topic in topics)
-                {
-                    topic.Categories = RetrieveCategoryByTopic(topic);
-                }
-
-                return topics;
-
+                return _crudFactory.SearchTopic(search);
             }
             catch (Exception)
             {
