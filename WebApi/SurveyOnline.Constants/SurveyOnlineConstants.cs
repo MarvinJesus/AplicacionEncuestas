@@ -4,6 +4,6 @@
     {
         public const string SurveyOnlineWepApi = "";
         public const string SurveyOnlineOAuth = "http://localhost:53605";
-        public const string SurveyOnlineWebUI = "";
+        public const string SurveyOnlineClient = "";
     }
 }

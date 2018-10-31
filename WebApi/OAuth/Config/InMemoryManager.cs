@@ -104,11 +104,11 @@ namespace OAuth.Config
                         },
                         RedirectUris = new List<string>
                        {
-                           SurveyOnlineConstants.SurveyOnlineWebUI,
+                           SurveyOnlineConstants.SurveyOnlineClient,
                         },
                         PostLogoutRedirectUris = new List<string>
                         {
-                            SurveyOnlineConstants.SurveyOnlineWebUI,
+                            SurveyOnlineConstants.SurveyOnlineClient,
                         },
                         Enabled = true
                     }

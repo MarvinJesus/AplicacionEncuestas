@@ -8,23 +8,30 @@ namespace DataAccess.Factory
 {
     public abstract class EntityFactory
     {
-        public object CreateDataShapeObject<T>(T entity, List<string> listOfFields, List<string> partialObjectsName)
+        protected object CreateDataShapeObject<T>(T entity, List<string> listOfFields, List<string> partialObjectsName = null)
         {
-            if (listOfFields == null || entity == null) return entity;
-
             var listOfFieldsToWorkWith = new List<string>(ConvertToLower(listOfFields));
-            var objectsName = ConvertToLower(partialObjectsName);
+            List<string> objectsName = null;
+            List<string> listOfObjectsFields = null;
+            bool returnPartialObjects = false;
+
+            if (listOfFields == null || entity == null) return entity;
 
             if (!listOfFieldsToWorkWith.Any()) return entity;
 
-            var listOfObjectsFields = listOfFieldsToWorkWith.Where(f => f.Contains(objectsName)).ToList();
-
-            var returnPartialObjects = listOfObjectsFields.Any() && !listOfObjectsFields.Contains(objectsName);
-
-            if (!returnPartialObjects)
+            if (partialObjectsName != null)
             {
-                listOfObjectsFields.RemoveRange(objectsName);
-                listOfFieldsToWorkWith.RemoveRange(listOfObjectsFields);
+                objectsName = ConvertToLower(partialObjectsName);
+
+                listOfObjectsFields = listOfFieldsToWorkWith.Where(f => f.Contains(objectsName)).ToList();
+
+                returnPartialObjects = listOfObjectsFields.Any() && !listOfObjectsFields.Contains(objectsName);
+
+                if (!returnPartialObjects)
+                {
+                    listOfObjectsFields.RemoveRange(objectsName);
+                    listOfFieldsToWorkWith.RemoveRange(listOfObjectsFields);
+                }
             }
 
             var objectToReturn = BuildObject(entity, listOfFieldsToWorkWith);
