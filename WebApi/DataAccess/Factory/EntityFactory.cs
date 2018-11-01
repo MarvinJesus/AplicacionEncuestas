@@ -10,7 +10,7 @@ namespace DataAccess.Factory
     {
         protected object CreateDataShapeObject<T>(T entity, List<string> listOfFields, List<string> partialObjectsName = null)
         {
-            var listOfFieldsToWorkWith = new List<string>(ConvertToLower(listOfFields));
+            var listOfFieldsToWorkWith = new List<string>(CleanProperties(listOfFields));
             List<string> objectsName = null;
             List<string> listOfObjectsFields = null;
             bool returnPartialObjects = false;
@@ -21,7 +21,7 @@ namespace DataAccess.Factory
 
             if (partialObjectsName != null)
             {
-                objectsName = ConvertToLower(partialObjectsName);
+                objectsName = CleanProperties(partialObjectsName);
 
                 listOfObjectsFields = listOfFieldsToWorkWith.Where(f => f.Contains(objectsName)).ToList();
 
@@ -62,10 +62,13 @@ namespace DataAccess.Factory
 
             foreach (var item in listOfFields)
             {
-                if (item.StartsWith(internalObjectsName))
+                if (item.Contains(".") && item.Contains(internalObjectsName))
                 {
-                    listExternalObjects.Add(item.Substring(0, item.IndexOf(".")),
-                        item.Substring(item.IndexOf(".") + 1).Split('.').ToList());
+                    var key = item.Substring(0, item.IndexOf("."));
+
+                    var value = item.Substring(item.IndexOf(".") + 1).Split('.').ToList();
+
+                    listExternalObjects.Add(key, value);
                 }
             }
 
@@ -132,11 +135,25 @@ namespace DataAccess.Factory
                 .Select(p => p.Name.ToLower());
         }
 
-        private List<string> ConvertToLower(List<string> source)
+        private List<string> CleanProperties(List<string> source)
         {
             if (source == null) return source;
 
-            return source.Select(s => s.ToLower()).ToList();
+            return source.Select(p => ValidAgainstWhiteSpace(p.ToLower())).ToList();
+        }
+
+        private string ValidAgainstWhiteSpace(string item)
+        {
+            if (item.Contains(" "))
+            {
+                var newItem = item.Replace(" ", "");
+
+                return newItem;
+            }
+            else
+            {
+                return item;
+            }
         }
     }
 }

@@ -12,11 +12,13 @@ namespace CoreApi
     {
         private TopicCrudFactory _crudFactory { get; set; }
         private ProfileCrudFactory _ProfileCrudFactory { get; set; }
+        private SurveyCrudFactory _SurveyCrudFactory { get; set; }
 
         public TopicManager()
         {
             _crudFactory = new TopicCrudFactory();
             _ProfileCrudFactory = new ProfileCrudFactory();
+            _SurveyCrudFactory = new SurveyCrudFactory();
         }
 
         public ManagerActionResult<Topic> RegisterTopic(Topic Topic)
@@ -190,6 +192,18 @@ namespace CoreApi
             }
         }
 
+        public int GetTotalSurveyByTopic(Guid topicId)
+        {
+            try
+            {
+                return _SurveyCrudFactory.GetAllSurveysByTopic<Survey>(new Survey { TopicId = topicId }).Count;
+            }
+            catch (System.Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public ManagerActionResult<ICollection<Category>> RegisterCategories(Guid topicId, ICollection<Category> categories)
         {
             try
@@ -260,5 +274,6 @@ namespace CoreApi
         ICollection<Category> RetrieveCategoryByTopic(Topic entity);
         ManagerActionResult<ICollection<Category>> RegisterCategories(Guid topicId, ICollection<Category> categories);
         ICollection<Topic> GetTopics(string search);
+        int GetTotalSurveyByTopic(Guid topicId);
     }
 }

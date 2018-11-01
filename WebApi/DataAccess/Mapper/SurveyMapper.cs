@@ -7,8 +7,8 @@ namespace DataAccess.Mapper
     public class SurveyMapper : EntityMapper, ISqlStaments, IObjectMapper
     {
         private const string DB_COL_ID = "SURVEY_ID";
-        private const string DB_COL_TITLE = "TITLE";
-        private const string DB_COL_DESCRIPTION = "survey_DESCRIPTION";
+        private const string DB_COL_TITLE = "SURVEY_TITLE";
+        private const string DB_COL_DESCRIPTION = "SURVEY_DESCRIPTION";
         private const string DB_COL_IMAGEPATH = "IMG_URL";
         private const string DB_COL_TOPICID = "TOPIC_ID";
 

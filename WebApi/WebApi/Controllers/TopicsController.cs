@@ -18,9 +18,13 @@ namespace WebApi.Controllers
     {
         private ITopicManager _manager { get; set; }
         private const int MAX_PAGE_SIZE = 10;
+        private TopicFactory TopicFactory { get; set; }
+        private const string CATEGORIES_PROPERTY = "categories";
+        private const string TOTAL_SURVEY_PROPERTY = "totalsurvey";
 
         public TopicsController(ITopicManager manager)
         {
+            TopicFactory = new TopicFactory();
             _manager = manager;
         }
 
@@ -28,7 +32,7 @@ namespace WebApi.Controllers
         [ScopeAuthorize("read")]
         [Route("profiles/{userId}/topics/{topicId}")]
         [Route("topics/{topicId}")]
-        public IHttpActionResult GetTopic(Guid topicId, Guid? userId = null)
+        public IHttpActionResult GetTopic(Guid topicId, Guid? userId = null, string fields = null)
         {
             try
             {
@@ -47,7 +51,28 @@ namespace WebApi.Controllers
                 }
 
                 if (topic != null)
-                    return Ok(topic);
+                {
+                    if (fields != null)
+                    {
+                        var listOfFields = fields.ToLower().Split(',').ToList();
+
+                        if (listOfFields.Contains(CATEGORIES_PROPERTY))
+                        {
+                            topic.Categories = _manager.RetrieveCategoryByTopic(topic);
+                        }
+
+                        if (listOfFields.Contains(TOTAL_SURVEY_PROPERTY))
+                        {
+                            topic.TotalSurvey = _manager.GetTotalSurveyByTopic(topic.Id);
+                        }
+
+                        return Ok(TopicFactory.CreateDataShapeObject(topic, listOfFields));
+                    }
+                    else
+                    {
+                        return Ok(TopicFactory.CreateDataShapeObject(topic));
+                    }
+                }
 
                 return NotFound();
             }
@@ -61,16 +86,50 @@ namespace WebApi.Controllers
         [HttpGet]
         [ScopeAuthorize("read")]
         [Route("profiles/{userId}/topics")]
-        public IHttpActionResult GetTopicsByUser(Guid userId)
+        public IHttpActionResult GetTopicsByUser(Guid userId, string filters = null, string fields = null)
         {
             try
             {
                 var topics = _manager.GetTopicsByUser(userId);
+                IQueryable<Topic> topicsList = null;
 
-                if (topics.Count > 0)
-                    return Ok(topics);
+                if (topics.Count < 1) return NotFound();
 
-                return NotFound();
+                if (filters != null || fields != null && fields.Contains(CATEGORIES_PROPERTY))
+                {
+                    foreach (var topic in topics)
+                    {
+                        topic.Categories = _manager.RetrieveCategoryByTopic(topic);
+                    }
+                }
+
+                if (filters != null)
+                {
+                    topicsList = topics.AsQueryable().ApplyFilter(filters);
+                }
+                else
+                {
+                    topicsList = topics.AsQueryable();
+                }
+
+                if (fields != null)
+                {
+                    var listOfFields = fields.ToLower().Split(',').ToList();
+                    if (listOfFields.Contains(TOTAL_SURVEY_PROPERTY))
+                    {
+                        foreach (var topic in topicsList)
+                        {
+                            topic.TotalSurvey = _manager.GetTotalSurveyByTopic(topic.Id);
+                        }
+                    }
+
+                    return Ok(topicsList.Select(t => TopicFactory.CreateDataShapeObject(t, listOfFields)));
+                }
+                else
+                {
+                    var list = topicsList.Select(t => TopicFactory.CreateDataShapeObject(t));
+                    return Ok(list);
+                }
             }
             catch (Exception ex)
             {
@@ -80,14 +139,13 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        //[ScopeAuthorize("read")]
+        [ScopeAuthorize("read")]
         [Route("topics", Name = "TopicsList")]
         public IHttpActionResult GetTopics(string sort = "Id", string filters = null,
             int page = 1, int pageSize = MAX_PAGE_SIZE, string fields = null, string search = null)
         {
             try
             {
-                var topicFactory = new TopicFactory();
                 List<string> listOfFields = null;
                 ICollection<Topic> topics = null;
 
@@ -113,7 +171,7 @@ namespace WebApi.Controllers
                 if (fields != null)
                 {
                     listOfFields = new List<string>();
-                    listOfFields = fields.Split(',').ToList();
+                    listOfFields = fields.ToLower().Split(',').ToList();
                 }
 
                 var topicList = topics.AsQueryable()
@@ -130,11 +188,19 @@ namespace WebApi.Controllers
 
                 if (fields != null)
                 {
-                    return Ok(topicResult.Select(top => topicFactory.CreateDataShapeObject(top, listOfFields)));
+                    if (listOfFields.Contains(TOTAL_SURVEY_PROPERTY))
+                    {
+                        foreach (var topic in topicResult)
+                        {
+                            topic.TotalSurvey = _manager.GetTotalSurveyByTopic(topic.Id);
+                        }
+                    }
+                    var list = topicResult.Select(top => TopicFactory.CreateDataShapeObject(top, listOfFields));
+                    return Ok(list);
                 }
                 else
                 {
-                    return Ok(topicResult.Select(top => topicFactory.CreateDataShapeObject(top)));
+                    return Ok(topicResult.Select(top => TopicFactory.CreateDataShapeObject(top)));
                 }
             }
             catch (Exception ex)
