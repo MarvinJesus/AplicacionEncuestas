@@ -10,16 +10,23 @@ namespace CoreApi
     public class SurveyManager : ISurveyManager
     {
         private SurveyCrudFactory _crudFactory { get; set; }
+        private TopicCrudFactory _topicCrudFactory { get; set; }
 
         public SurveyManager()
         {
             _crudFactory = new SurveyCrudFactory();
+            _topicCrudFactory = new TopicCrudFactory();
         }
 
-        public ManagerActionResult<Survey> RegisterSurvey(Survey survey)
+        public ManagerActionResult<Survey> RegisterSurvey(Guid topicId, Survey survey)
         {
             try
             {
+                var topic = _topicCrudFactory.Retrieve<Topic>(new Topic { Id = topicId });
+
+                if (topic == null)
+                    return new ManagerActionResult<Survey>(survey, ManagerActionStatus.NotFound);
+
                 var newSurvey = _crudFactory.Create<Survey>(survey);
 
                 if (newSurvey != null)
@@ -38,25 +45,17 @@ namespace CoreApi
                 switch (sqlEx.Number)
                 {
                     case 201:
-                        //Missing parameters
-                        exception = ExceptionManager.GetInstance().Process(new BussinessException(2));
-                        break;
-                    case 547:
-                        //Topic not found
-                        exception = ExceptionManager.GetInstance().Process(new BussinessException(4));
+                        exception = ExceptionManager.GetInstance().Process(new BussinessException(2)); //Missing parameters
                         break;
                     default:
-                        //Uncontrolled exception
-                        exception = ExceptionManager.GetInstance().Process(sqlEx);
-                        break;
+                        throw;//Uncontrolled exception
                 }
-                return new ManagerActionResult<Survey>(null, ManagerActionStatus.Error, exception);
-            }
-            catch (System.Exception ex)
-            {
-                var exception = ExceptionManager.GetInstance().Process(ex);
 
                 return new ManagerActionResult<Survey>(null, ManagerActionStatus.Error, exception);
+            }
+            catch (System.Exception)
+            {
+                throw;
             }
         }
 
@@ -166,7 +165,7 @@ namespace CoreApi
 
     public interface ISurveyManager
     {
-        ManagerActionResult<Survey> RegisterSurvey(Survey survey);
+        ManagerActionResult<Survey> RegisterSurvey(Guid topicId, Survey survey);
         ManagerActionResult<Survey> EditSurvey(Survey survey);
         Survey GetSurvey(Guid id);
         ICollection<Survey> GetSurveysByTopic(Guid surveyId);

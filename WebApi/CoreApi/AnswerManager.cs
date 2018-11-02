@@ -47,20 +47,67 @@ namespace CoreApi
                 switch (sqlEx.Number)
                 {
                     case 201:
-                        //Missing parameters
-                        exception = ExceptionManager.GetInstance().Process(new BussinessException(2));
+                        exception = ExceptionManager.GetInstance().Process(new BussinessException(2)); //Missing parameters
                         break;
                     default:
-                        //Uncontrolled exception
-                        exception = ExceptionManager.GetInstance().Process(sqlEx);
-                        break;
+                        throw; //Uncontrolled exception
                 }
                 return new ManagerActionResult<Answer>(null, ManagerActionStatus.Error, exception);
             }
-            catch (System.Exception ex)
+            catch (System.Exception)
             {
-                var exception = ExceptionManager.GetInstance().Process(ex);
-                return new ManagerActionResult<Answer>(null, ManagerActionStatus.Error, exception);
+                throw;
+            }
+        }
+
+        public ManagerActionResult<ICollection<Answer>> RegisterAnwers(int questionId, ICollection<Answer> answers)
+        {
+            try
+            {
+                var existingQuestion = _questionCrudFactory.Retrieve<Question>(new Question { Id = questionId });
+
+                if (existingQuestion == null)
+                    return new ManagerActionResult<ICollection<Answer>>(answers, ManagerActionStatus.NotFound);
+
+                ICollection<Answer> answersRegistered = new List<Answer>();
+                var actionResult = new ManagerActionResult<ICollection<Answer>>(answersRegistered, ManagerActionStatus.Created);
+
+                foreach (var answer in answers)
+                {
+                    try
+                    {
+                        answer.QuestionId = existingQuestion.Id;
+                        var questionRegistered = _crudFactory.Create<Answer>(answer);
+
+                        if (questionRegistered != null)
+                        {
+                            answersRegistered.Add(questionRegistered);
+                        }
+                        else
+                        {
+                            actionResult.Status = ManagerActionStatus.Error;
+                        }
+                    }
+                    catch (System.Data.SqlClient.SqlException sqlEx)
+                    {
+                        if (sqlEx.Number == 201)
+                        {
+                            actionResult.Status = ManagerActionStatus.Error;
+                            actionResult.Exception = ExceptionManager.GetInstance().Process(new BussinessException(8));
+                            actionResult.Exception.AppMessage.Message += " Respuestas ";
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                }
+
+                return actionResult;
+            }
+            catch (System.Exception)
+            {
+                throw;
             }
         }
 
@@ -164,5 +211,6 @@ namespace CoreApi
         ManagerActionResult<Answer> RegisterAnswer(Answer answer);
         ManagerActionResult<Answer> DeleteAnswer(int id, int questionId);
         ManagerActionResult<Answer> UpdateAnswer(Answer answer);
+        ManagerActionResult<ICollection<Answer>> RegisterAnwers(int questionId, ICollection<Answer> answers);
     }
 }

@@ -4,18 +4,21 @@ using Entities_POJO;
 using Exceptions;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 
 namespace CoreApi
 {
     public class QuestionManager : IQuestionManager
     {
         private QuestionCrudFactory _questionCrudFactory { get; set; }
-        public SurveyCrudFactory _SurveyCrudFactory { get; set; }
+        private SurveyCrudFactory _SurveyCrudFactory { get; set; }
+        private IAnswerManager _AnswerManager { get; set; }
 
         public QuestionManager()
         {
             _questionCrudFactory = new QuestionCrudFactory();
             _SurveyCrudFactory = new SurveyCrudFactory();
+            _AnswerManager = new AnswerManager();
         }
 
         public ManagerActionResult<Question> RegisterQuestion(Question question)
@@ -61,6 +64,93 @@ namespace CoreApi
             {
                 return new ManagerActionResult<Question>(null, ManagerActionStatus.Error,
                     ExceptionManager.GetInstance().Process(ex));
+            }
+        }
+
+        public ManagerActionResult<ICollection<Question>> RegisterQuestions(Guid surveyId, ICollection<Question> questions)
+        {
+            try
+            {
+                var survey = _SurveyCrudFactory.Retrieve<Survey>(new Survey { Id = surveyId });
+
+                if (survey == null)
+                {
+                    return new ManagerActionResult<ICollection<Question>>(questions, ManagerActionStatus.NotFound);
+                }
+
+                ICollection<Question> questionsRegistered = new List<Question>();
+                var actionResult = new ManagerActionResult<ICollection<Question>>(questionsRegistered, ManagerActionStatus.Created);
+
+                foreach (var question in questions)
+                {
+                    try
+                    {
+                        question.SurveyId = survey.Id;
+
+                        var result = RegisterQuestion(question);
+
+                        if (result.Status == ManagerActionStatus.Created)
+                        {
+                            if (question.Answers != null)
+                            {
+                                var answersResult = _AnswerManager.RegisterAnwers(result.Entity.Id, question.Answers);
+
+                                if (answersResult.Status == ManagerActionStatus.Created)
+                                {
+                                    result.Entity.Answers = answersResult.Entity;
+                                }
+                                else
+                                {
+                                    if (answersResult.Status == ManagerActionStatus.Error)
+                                    {
+                                        actionResult.Status = ManagerActionStatus.Error;
+
+                                        if (actionResult.Exception != null && !actionResult.Exception.AppMessage.Message.Contains("Respuestas"))
+                                        {
+                                            actionResult.Exception.AppMessage.Message += " Respuestas ";
+                                        }
+                                        else
+                                        {
+                                            if (actionResult.Exception == null)
+                                                actionResult.Exception = answersResult.Exception;
+                                        }
+                                    }
+                                }
+                            }
+                            questionsRegistered.Add(result.Entity);
+                        }
+                    }
+                    catch (SqlException sqlEx)
+                    {
+                        if (sqlEx.Number == 201)
+                        {
+                            actionResult.Status = ManagerActionStatus.Error;
+
+                            if (actionResult.Exception != null && !actionResult.Exception.AppMessage.Message.Contains("Preguntas"))
+                            {
+                                actionResult.Exception.AppMessage.Message += "Preguntas";
+                            }
+                            else
+                            {
+                                if (actionResult == null)
+                                {
+                                    actionResult.Exception = ExceptionManager.GetInstance().Process(new BussinessException(8));
+                                    actionResult.Exception.AppMessage.Message += " Preguntas ";
+                                }
+                            }
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                }
+
+                return actionResult;
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 
@@ -178,5 +268,6 @@ namespace CoreApi
         Question GetQuestion(int id);
         ManagerActionResult<Question> UpdateQuestion(Question question);
         ManagerActionResult<Question> DeleteQuestion(int id, Guid surveyId);
+        ManagerActionResult<ICollection<Question>> RegisterQuestions(Guid surveyId, ICollection<Question> questions);
     }
 }

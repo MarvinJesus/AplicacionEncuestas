@@ -12,10 +12,12 @@ namespace WebApi.Controllers
     public class SurveysController : SurveyOnlineController
     {
         private ISurveyManager _manager { get; set; }
+        private IQuestionManager _questionManager { get; set; }
 
-        public SurveysController(ISurveyManager manager)
+        public SurveysController(ISurveyManager manager, IQuestionManager questionManager)
         {
             _manager = manager;
+            _questionManager = questionManager;
         }
 
         [HttpGet]
@@ -73,46 +75,45 @@ namespace WebApi.Controllers
             }
         }
 
-        /*--------------------------------------------------
-         *      WILL SEE ABOUT THIS METHOD
-         -------------------------------------------------*/
-        //[HttpGet]
-        //[ScopeAuthorize("read")]
-        //[Route("surveys")]
-        //public IHttpActionResult GetSurveys()
-        //{
-        //    try
-        //    {
-        //        return base.Ok(_manager.GetSurveys());
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        ExceptionManager.GetInstance().Process(ex);
-        //        return InternalServerError();
-        //    }
-        //}
-
         [HttpPost]
         [ScopeAuthorize("write")]
         [Route("topics/{topicId}/surveys")]
-        public IHttpActionResult PostSurvey([FromBody] Survey Survey, Guid topicId)
+        public IHttpActionResult PostSurvey([FromBody] Survey survey, Guid topicId)
         {
             try
             {
-                if (Survey == null) return BadRequest();
+                if (survey == null) return BadRequest();
 
-                var result = _manager.RegisterSurvey(Survey);
+                var result = _manager.RegisterSurvey(topicId, survey);
 
                 if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Created)
-                    return Created(Request.RequestUri + "/" + result.Entity.Id.ToString(), result.Entity);
-
-                if (result.Exception != null)
                 {
-                    if (result.Exception.Code == 1)
+                    if (survey.Questions != null)
                     {
-                        return InternalServerError();
+                        var questionResult = _questionManager.RegisterQuestions(result.Entity.Id, survey.Questions);
+
+                        if (questionResult.Status == CoreApi.ActionResult.ManagerActionStatus.Created)
+                        {
+                            result.Entity.Questions = questionResult.Entity;
+
+                            return Created(Request.RequestUri + "/" + result.Entity.Id.ToString(), result.Entity);
+                        }
+                        else
+                        {
+                            if (questionResult.Status == CoreApi.ActionResult.ManagerActionStatus.Error)
+                            {
+                                return BadRequest(questionResult.Exception.AppMessage.Message);
+                            }
+                        }
                     }
                     else
+                    {
+                        return Created(Request.RequestUri + "/" + result.Entity.Id.ToString(), result.Entity);
+                    }
+                }
+                else
+                {
+                    if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Error)
                     {
                         return BadRequest(result.Exception.AppMessage.Message);
                     }
