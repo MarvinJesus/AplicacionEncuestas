@@ -9,7 +9,6 @@ using System.Web.Http;
 namespace WebApi.Controllers
 {
     [RoutePrefix("api")]
-    //[Authorize]
     public class ProfilesController : SurveyOnlineController
     {
         private IProfileManager _manager { get; set; }

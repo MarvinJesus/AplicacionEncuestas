@@ -1,3 +1,6 @@
+USE DB_ENCUESTA
+GO
+
 /**************************************************************************************************
 								STORE PROCEDURES FOR USER
 **************************************************************************************************/
@@ -466,9 +469,9 @@ EXEC CRE_SURVEY 'Los animales salvajes','Los animales salvajes son muy peligroso
 
 /*********** UPDATE SURVEY ***********/
 /************************************/
-CREATE PROCEDURE UPD_SURVEY
-	@P_SURVEY_ID				UNIQUEIDENTIFIER,
-	@P_TITLE				VARCHAR(100),
+alter PROCEDURE UPD_SURVEY
+	@P_SURVEY_ID			UNIQUEIDENTIFIER,
+	@P_SURVEY_TITLE			VARCHAR(100),
 	@P_SURVEY_DESCRIPTION	VARCHAR(500),
 	@P_IMG_URL				VARCHAR(2083)
 
@@ -479,8 +482,7 @@ BEGIN
 	DECLARE @P_CREATE_DATE DATE = GETDATE();
 
 	UPDATE TBL_SURVEY
-	SET TITLE = @P_TITLE , SURVEY_DESCRIPTION = @P_SURVEY_DESCRIPTION , IMG_URL = @P_IMG_URL,
-			CREATE_DATE = @P_CREATE_DATE
+	SET SURVEY_TITLE = @P_SURVEY_TITLE , SURVEY_DESCRIPTION = @P_SURVEY_DESCRIPTION , IMG_URL = @P_IMG_URL
 	WHERE SURVEY_ID = @P_SURVEY_ID
 
 END
@@ -605,6 +607,24 @@ GO
 
 
 
+/************ DELETE QUESTION BY SURVEY************/
+/**************************************/
+CREATE PROCEDURE DEL_QUESTION_BY_SURVEY
+	@P_SURVEY_ID		UNIQUEIDENTIFIER
+
+AS
+	BEGIN
+		SET NOCOUNT ON;
+
+		DELETE
+		FROM TBL_QUESTION
+		WHERE SURVEY_ID = @P_SURVEY_ID
+
+	END
+GO
+
+
+
 /**************************************************************************************************
 								STORE PROCEDURES FOR ANSWER
 **************************************************************************************************/
@@ -702,6 +722,23 @@ BEGIN
 END
 GO
 
+
+
+/************ DELETE ANSWER ************/
+/**************************************/
+CREATE PROCEDURE DEL_ANSWER_BY_QUESTION
+	@P_QUESTION_ID		INT
+
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	DELETE
+	FROM TBL_ANSWER
+	WHERE QUESTION_ID = @P_QUESTION_ID
+
+END
+GO
 
 
 

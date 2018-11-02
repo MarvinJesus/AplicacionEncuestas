@@ -4,6 +4,7 @@ using System.Web.Http;
 
 namespace WebApi.Controllers
 {
+    [RoutePrefix("api")]
     public class CategoryController : SurveyOnlineController
     {
         private ICategoryManager _categoryManager { get; set; }

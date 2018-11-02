@@ -37,6 +37,12 @@ namespace DataAccess.Crud
             return dao.ExecuteProcedure(_mapper.GetDeleteStatement(answer));
         }
 
+        public int DeleteAnswersByQuestion(BaseEntity entity)
+        {
+            var answer = (Answer)entity;
+            return dao.ExecuteProcedure(_mapper.GetDeleteStatement(answer));
+        }
+
         public override T Retrieve<T>(BaseEntity entity)
         {
             var lstResult = dao.ExecuteQueryProcedure(_mapper.GetRetriveStatement(entity));

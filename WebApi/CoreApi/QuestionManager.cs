@@ -5,6 +5,7 @@ using Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 
 namespace CoreApi
 {
@@ -55,15 +56,13 @@ namespace CoreApi
                         exception = ExceptionManager.GetInstance().Process(new BussinessException(2)); //Missing parameters
                         break;
                     default:
-                        exception = ExceptionManager.GetInstance().Process(sqlEx); //Uncontrolled exception
-                        break;
+                        throw; //Uncontrolled exception
                 }
                 return new ManagerActionResult<Question>(null, ManagerActionStatus.Error, exception);
             }
-            catch (System.Exception ex)
+            catch (System.Exception)
             {
-                return new ManagerActionResult<Question>(null, ManagerActionStatus.Error,
-                    ExceptionManager.GetInstance().Process(ex));
+                throw;
             }
         }
 
@@ -213,13 +212,119 @@ namespace CoreApi
 
                 return new ManagerActionResult<Question>(question, ManagerActionStatus.NotFound);
             }
-            catch (System.Exception ex)
+            catch (System.Exception)
             {
-                return new ManagerActionResult<Question>(null, ManagerActionStatus.Error,
-                    ExceptionManager.GetInstance().Process(ex));
+                throw;
             }
         }
 
+        public ManagerActionResult<ICollection<Question>> UpdateQuestions(ICollection<Question> questions, Guid surveyId)
+        {
+            try
+            {
+                if (questions == null)
+                    return new ManagerActionResult<ICollection<Question>>(questions, ManagerActionStatus.NothingModified);
+
+                var questionList = _questionCrudFactory.GetAllQuestionsBySurvey<Question>(new Question { SurveyId = surveyId });
+                ICollection<Question> newQuestionList = new List<Question>();
+
+                if (questionList != null)
+                {
+                    foreach (var question in questions)
+                    {
+                        if (question.Id == -1)
+                        {
+                            question.SurveyId = surveyId;
+                            var result = RegisterQuestion(question);
+
+                            if (result.Status == ManagerActionStatus.Created)
+                            {
+                                if (question.Answers != null)
+                                {
+                                    var answersResult = _AnswerManager.RegisterAnwers(result.Entity.Id, question.Answers);
+
+                                    if (answersResult.Status == ManagerActionStatus.Created)
+                                        result.Entity.Answers = answersResult.Entity;
+                                }
+
+                                newQuestionList.Add(result.Entity);
+                            }
+                        }
+                        else
+                        {
+                            var existingQuestion = questionList.FirstOrDefault(q => q.Id == question.Id);
+
+                            if (existingQuestion != null)
+                            {
+                                var result = UpdateQuestion(question);
+
+                                if (result.Status == ManagerActionStatus.Updated)
+                                {
+                                    if (question.Answers != null)
+                                    {
+                                        var answerResult = _AnswerManager.UpdateAnswers(question.Id, question.Answers);
+
+                                        if (answerResult.Status == ManagerActionStatus.Updated)
+                                        {
+                                            result.Entity.Answers = answerResult.Entity;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        _AnswerManager.DeleteAnswersByQuestion(question.Id);
+                                    }
+                                    newQuestionList.Add(result.Entity);
+                                }
+                            }
+                        }
+                    }
+
+                    DeleteQuestions(newQuestionList, questionList);
+
+                    return new ManagerActionResult<ICollection<Question>>(newQuestionList, ManagerActionStatus.Updated);
+                }
+
+                return new ManagerActionResult<ICollection<Question>>(questions, ManagerActionStatus.NothingModified);
+            }
+            catch (System.Exception)
+            {
+                throw;
+            }
+        }
+
+        public ManagerActionResult<Question> DeleteQuestionBySurvey(Guid surveyId)
+        {
+            try
+            {
+                var result = _questionCrudFactory.DeleteQuestionBySurvey(new Question { SurveyId = surveyId });
+
+                if (result != 0)
+                {
+                    return new ManagerActionResult<Question>(null, ManagerActionStatus.Deleted);
+                }
+                else
+                {
+                    return new ManagerActionResult<Question>(null, ManagerActionStatus.NothingModified);
+                }
+            }
+            catch (System.Exception)
+            {
+                throw;
+            }
+        }
+
+        private void DeleteQuestions(ICollection<Question> newQuestions, ICollection<Question> questionsToCompare)
+        {
+            foreach (var question in questionsToCompare)
+            {
+                var existingQuestion = newQuestions.FirstOrDefault(q => q.Id == question.Id);
+
+                if (existingQuestion == null)
+                {
+                    _questionCrudFactory.Delete(question);
+                }
+            }
+        }
         public ManagerActionResult<Question> DeleteQuestion(int id, Guid surveyId)
         {
             try
@@ -252,10 +357,9 @@ namespace CoreApi
                     return new ManagerActionResult<Question>(null, ManagerActionStatus.NotFound, null);
                 }
             }
-            catch (System.Exception ex)
+            catch (System.Exception)
             {
-                return new ManagerActionResult<Question>(null, ManagerActionStatus.Error,
-                    ExceptionManager.GetInstance().Process(ex));
+                throw;
             }
         }
     }
@@ -267,7 +371,9 @@ namespace CoreApi
         ICollection<Question> GetQuestionsBySurvey(Guid surveyId);
         Question GetQuestion(int id);
         ManagerActionResult<Question> UpdateQuestion(Question question);
+        ManagerActionResult<ICollection<Question>> UpdateQuestions(ICollection<Question> questions, Guid surveyId);
         ManagerActionResult<Question> DeleteQuestion(int id, Guid surveyId);
         ManagerActionResult<ICollection<Question>> RegisterQuestions(Guid surveyId, ICollection<Question> questions);
+        ManagerActionResult<Question> DeleteQuestionBySurvey(Guid surveyId);
     }
 }

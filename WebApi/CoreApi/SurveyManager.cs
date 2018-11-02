@@ -81,11 +81,9 @@ namespace CoreApi
 
                 return new ManagerActionResult<Survey>(survey, ManagerActionStatus.NotFound);
             }
-            catch (System.Exception ex)
+            catch (System.Exception)
             {
-                var exception = ExceptionManager.GetInstance().Process(ex);
-
-                return new ManagerActionResult<Survey>(null, ManagerActionStatus.Error, exception);
+                throw;
             }
         }
 

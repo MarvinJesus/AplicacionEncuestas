@@ -3,6 +3,7 @@ using DataAccess.Crud;
 using Entities_POJO;
 using Exceptions;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CoreApi
 {
@@ -168,10 +169,43 @@ namespace CoreApi
                     return new ManagerActionResult<Answer>(null, ManagerActionStatus.NotFound, null);
                 }
             }
-            catch (System.Exception ex)
+            catch (System.Exception)
             {
-                var exception = ExceptionManager.GetInstance().Process(ex);
-                return new ManagerActionResult<Answer>(null, ManagerActionStatus.Error, exception);
+                throw;
+            }
+        }
+
+        private void DeleteAnswers(ICollection<Answer> newAnswers, ICollection<Answer> answersToCompare)
+        {
+            foreach (var answer in answersToCompare)
+            {
+                var existingQuestion = newAnswers.FirstOrDefault(q => q.Id == answer.Id);
+
+                if (existingQuestion == null)
+                {
+                    _crudFactory.Delete(answer);
+                }
+            }
+        }
+
+        public ManagerActionResult<Answer> DeleteAnswersByQuestion(int questionId)
+        {
+            try
+            {
+                var result = _crudFactory.DeleteAnswersByQuestion(new Answer { QuestionId = questionId });
+
+                if (result != 0)
+                {
+                    return new ManagerActionResult<Answer>(null, ManagerActionStatus.Deleted);
+                }
+                else
+                {
+                    return new ManagerActionResult<Answer>(null, ManagerActionStatus.NothingModified);
+                }
+            }
+            catch (System.Exception)
+            {
+                throw;
             }
         }
 
@@ -196,10 +230,62 @@ namespace CoreApi
                 }
                 return new ManagerActionResult<Answer>(answer, ManagerActionStatus.NotFound);
             }
-            catch (System.Exception ex)
+            catch (System.Exception)
             {
-                return new ManagerActionResult<Answer>(null, ManagerActionStatus.Error,
-                    ExceptionManager.GetInstance().Process(ex));
+                throw;
+            }
+        }
+
+        public ManagerActionResult<ICollection<Answer>> UpdateAnswers(int questionId, ICollection<Answer> answers)
+        {
+            try
+            {
+                if (answers == null)
+                    return new ManagerActionResult<ICollection<Answer>>(answers, ManagerActionStatus.NothingModified);
+
+                var answersList = _crudFactory.GetAllAnswersByQuestion<Answer>(new Answer { QuestionId = questionId });
+                ICollection<Answer> newAnswersList = new List<Answer>();
+
+                if (answersList != null)
+                {
+                    foreach (var answer in answers)
+                    {
+                        if (answer.Id == -1)
+                        {
+                            answer.QuestionId = questionId;
+                            var result = RegisterAnswer(answer);
+
+                            if (result.Status == ManagerActionStatus.Created)
+                            {
+                                newAnswersList.Add(result.Entity);
+                            }
+                        }
+                        else
+                        {
+                            var existingAnswer = answersList.FirstOrDefault(a => a.Id == answer.Id);
+
+                            if (existingAnswer != null)
+                            {
+                                var result = UpdateAnswer(answer);
+
+                                if (result.Status == ManagerActionStatus.Updated)
+                                {
+                                    newAnswersList.Add(result.Entity);
+                                }
+                            }
+                        }
+                    }
+
+                    DeleteAnswers(newAnswersList, answersList);
+
+                    return new ManagerActionResult<ICollection<Answer>>(newAnswersList, ManagerActionStatus.Updated);
+                }
+
+                return new ManagerActionResult<ICollection<Answer>>(answers, ManagerActionStatus.NothingModified);
+            }
+            catch (System.Exception)
+            {
+                throw;
             }
         }
     }
@@ -210,7 +296,9 @@ namespace CoreApi
         ICollection<Answer> GetAnswersByQuestion(int answerId);
         ManagerActionResult<Answer> RegisterAnswer(Answer answer);
         ManagerActionResult<Answer> DeleteAnswer(int id, int questionId);
+        ManagerActionResult<Answer> DeleteAnswersByQuestion(int questionId);
         ManagerActionResult<Answer> UpdateAnswer(Answer answer);
+        ManagerActionResult<ICollection<Answer>> UpdateAnswers(int questionId, ICollection<Answer> answers);
         ManagerActionResult<ICollection<Answer>> RegisterAnwers(int questionId, ICollection<Answer> answers);
     }
 }
