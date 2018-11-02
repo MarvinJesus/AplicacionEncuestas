@@ -59,5 +59,22 @@ namespace DataAccess.Helper
 
             return result;
         }
+
+        public static bool Equals(this string value, List<string> source)
+        {
+            var result = false;
+
+            if (source == null) return result;
+
+            foreach (var item in source)
+            {
+                if (value.Equals(item))
+                {
+                    result = true;
+                }
+            }
+
+            return result;
+        }
     }
 }

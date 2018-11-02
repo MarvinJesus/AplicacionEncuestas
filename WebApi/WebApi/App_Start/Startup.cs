@@ -2,6 +2,7 @@
 using Autofac.Integration.WebApi;
 using Microsoft.Owin;
 using Owin;
+using SurveyOnline.Constants;
 using System.Reflection;
 using System.Web.Http;
 using WebApi.Autofac.Modules;
@@ -27,7 +28,7 @@ namespace WebApi.App_Start
 
             app.UseIdentityServerBearerTokenAuthentication(new IdentityServer3.AccessTokenValidation.IdentityServerBearerTokenAuthenticationOptions
             {
-                Authority = "http://localhost:53605",
+                Authority = SurveyOnlineConstants.SurveyOnlineOAuth,
             });
         }
     }

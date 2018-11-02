@@ -13,6 +13,7 @@ using WebApi.Helper;
 namespace WebApi.Controllers
 {
     [Authorize]
+    [RoutePrefix("api")]
     public class PicturesController : SurveyOnlineController
     {
         private IProfileManager _profileManager { get; set; }
@@ -26,7 +27,7 @@ namespace WebApi.Controllers
 
         [HttpGet]
         [ScopeAuthorize("read")]
-        [Route("api/profiles/{profileId}/pictures")]
+        [Route("profiles/{profileId}/pictures")]
         public IHttpActionResult GetPicture(Guid? profileId = null)
         {
             try
@@ -63,7 +64,7 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [ScopeAuthorize("write")]
-        [Route("api/profiles/{profileId}/pictures")]
+        [Route("profiles/{profileId}/pictures")]
         public IHttpActionResult PostPicture(Guid profileId)
         {
             try

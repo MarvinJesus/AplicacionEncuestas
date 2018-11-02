@@ -197,6 +197,10 @@
       <Project>{EB460B4D-EADB-447D-A9FE-72FA4765E61D}</Project>
       <Name>Exceptions</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SurveyOnline.Constants\SurveyOnline.Constants.csproj">
+      <Project>{C3817C80-266C-4E2F-8332-89D19E591213}</Project>
+      <Name>SurveyOnline.Constants</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

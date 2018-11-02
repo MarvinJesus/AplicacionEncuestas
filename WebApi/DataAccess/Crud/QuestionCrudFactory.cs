@@ -92,5 +92,11 @@ namespace DataAccess.Crud
             var question = (Question)entity;
             return dao.ExecuteProcedure(_mapper.GetDeleteStatement(question));
         }
+
+        public int DeleteQuestionBySurvey(BaseEntity entity)
+        {
+            var question = (Question)entity;
+            return dao.ExecuteProcedure(_mapper.GetDeleteQuestionBySurvey(question));
+        }
     }
 }

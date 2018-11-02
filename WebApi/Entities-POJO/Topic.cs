@@ -13,6 +13,8 @@ namespace Entities_POJO
 
         public string ImagePath { get; set; }
 
+        public int TotalSurvey { get; set; }
+
         public Guid UserId { get; set; }
 
         public ICollection<Category> Categories { get; set; }

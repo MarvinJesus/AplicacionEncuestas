@@ -8,23 +8,30 @@ namespace DataAccess.Factory
 {
     public abstract class EntityFactory
     {
-        public object CreateDataShapeObject<T>(T entity, List<string> listOfFields, List<string> partialObjectsName)
+        protected object CreateDataShapeObject<T>(T entity, List<string> listOfFields, List<string> partialObjectsName = null)
         {
-            if (listOfFields == null || entity == null) return entity;
+            var listOfFieldsToWorkWith = new List<string>(CleanProperties(listOfFields));
+            List<string> objectsName = null;
+            List<string> listOfObjectsFields = null;
+            bool returnPartialObjects = false;
 
-            var listOfFieldsToWorkWith = new List<string>(ConvertToLower(listOfFields));
-            var objectsName = ConvertToLower(partialObjectsName);
+            if (listOfFields == null || entity == null) return entity;
 
             if (!listOfFieldsToWorkWith.Any()) return entity;
 
-            var listOfObjectsFields = listOfFieldsToWorkWith.Where(f => f.Contains(objectsName)).ToList();
-
-            var returnPartialObjects = listOfObjectsFields.Any() && !listOfObjectsFields.Contains(objectsName);
-
-            if (!returnPartialObjects)
+            if (partialObjectsName != null)
             {
-                listOfObjectsFields.RemoveRange(objectsName);
-                listOfFieldsToWorkWith.RemoveRange(listOfObjectsFields);
+                objectsName = CleanProperties(partialObjectsName);
+
+                listOfObjectsFields = listOfFieldsToWorkWith.Where(f => f.Contains(objectsName)).ToList();
+
+                returnPartialObjects = listOfObjectsFields.Any() && !listOfObjectsFields.Contains(objectsName);
+
+                if (!returnPartialObjects)
+                {
+                    listOfObjectsFields.RemoveRange(objectsName);
+                    listOfFieldsToWorkWith.RemoveRange(listOfObjectsFields);
+                }
             }
 
             var objectToReturn = BuildObject(entity, listOfFieldsToWorkWith);
@@ -55,10 +62,13 @@ namespace DataAccess.Factory
 
             foreach (var item in listOfFields)
             {
-                if (item.StartsWith(internalObjectsName))
+                if (item.Contains(".") && item.Contains(internalObjectsName))
                 {
-                    listExternalObjects.Add(item.Substring(0, item.IndexOf(".")),
-                        item.Substring(item.IndexOf(".") + 1).Split('.').ToList());
+                    var key = item.Substring(0, item.IndexOf("."));
+
+                    var value = item.Substring(item.IndexOf(".") + 1).Split('.').ToList();
+
+                    listExternalObjects.Add(key, value);
                 }
             }
 
@@ -125,11 +135,25 @@ namespace DataAccess.Factory
                 .Select(p => p.Name.ToLower());
         }
 
-        private List<string> ConvertToLower(List<string> source)
+        private List<string> CleanProperties(List<string> source)
         {
             if (source == null) return source;
 
-            return source.Select(s => s.ToLower()).ToList();
+            return source.Select(p => ValidAgainstWhiteSpace(p.ToLower())).ToList();
+        }
+
+        private string ValidAgainstWhiteSpace(string item)
+        {
+            if (item.Contains(" "))
+            {
+                var newItem = item.Replace(" ", "");
+
+                return newItem;
+            }
+            else
+            {
+                return item;
+            }
         }
     }
 }

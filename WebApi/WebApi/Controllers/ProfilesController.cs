@@ -1,14 +1,14 @@
 ﻿using CoreApi;
+using DataAccess.Factory;
 using Entities_POJO;
 using Exceptions;
 using System;
+using System.Linq;
 using System.Web.Http;
-using Thinktecture.IdentityModel.WebApi;
 
 namespace WebApi.Controllers
 {
     [RoutePrefix("api")]
-    [Authorize]
     public class ProfilesController : SurveyOnlineController
     {
         private IProfileManager _manager { get; set; }
@@ -19,21 +19,30 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        [ScopeAuthorize("read")]
-        public IHttpActionResult GetProfile(Guid userId)
+        //[ScopeAuthorize("read")]
+        public IHttpActionResult GetProfile(Guid userId, string fields = null)
         {
             try
             {
-                if (!userId.Equals(GetProfileId())) return Unauthorized();
+                //if (!userId.Equals(GetProfileId())) return Unauthorized();
 
                 var profile = _manager.GetProfile(new Profile { UserId = userId });
+                var factory = new ProfileFactory();
 
                 if (profile == null)
                     return NotFound();
 
-                profile.ImagePath = string.Format("{0}/pictures", Request.RequestUri); ;
+                profile.ImagePath = string.Format("{0}/pictures", Request.RequestUri);
 
-                return Ok(profile);
+                if (fields != null)
+                {
+                    var fieldsList = fields.Split(',').ToList();
+                    return Ok(factory.CreateDataShapeObject(profile, fieldsList));
+                }
+                else
+                {
+                    return Ok(factory.CreateDataShapeObject(profile));
+                }
             }
             catch (Exception ex)
             {

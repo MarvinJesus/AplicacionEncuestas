@@ -33,7 +33,7 @@ namespace DataAccess.Mapper
 
         public SqlOperation GetRetriveQuestionsBySurvey(BaseEntity entity)
         {
-            var operation = new SqlOperation { ProcedureName = "RET_QUESTIONS_BY_TOPIC_ID" };
+            var operation = new SqlOperation { ProcedureName = "RET_QUESTIONS_BY_SURVEY_ID" };
             var question = (Question)entity;
             operation.AddGuidParam(DB_COL_SURVEY_ID, question.SurveyId);
             return operation;
@@ -65,6 +65,14 @@ namespace DataAccess.Mapper
             var operation = new SqlOperation { ProcedureName = "DEL_QUESTION" };
             var question = (Question)entity;
             operation.AddIntParam(DB_COL_ID, question.Id);
+            return operation;
+        }
+
+        public SqlOperation GetDeleteQuestionBySurvey(BaseEntity entity)
+        {
+            var operation = new SqlOperation { ProcedureName = "DEL_QUESTION_BY_SURVEY" };
+            var question = (Question)entity;
+            operation.AddGuidParam(DB_COL_SURVEY_ID, question.SurveyId);
             return operation;
         }
 

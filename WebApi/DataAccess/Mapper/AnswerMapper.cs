@@ -53,6 +53,14 @@ namespace DataAccess.Mapper
             return operation;
         }
 
+        public SqlOperation GetDeleteAnswersByQuestion(BaseEntity entity)
+        {
+            var operation = new SqlOperation { ProcedureName = "DEL_ANSWER_BY_QUESTION" };
+            var answer = (Answer)entity;
+            operation.AddIntParam(DB_COL_QUESTIONID, answer.QuestionId);
+            return operation;
+        }
+
         public SqlOperation GetRetriveAllStatement()
         {
             var operation = new SqlOperation { ProcedureName = "RET_ALL_ANSWERS" };
