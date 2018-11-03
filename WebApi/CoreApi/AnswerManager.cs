@@ -124,11 +124,11 @@ namespace CoreApi
             }
         }
 
-        public ICollection<Answer> GetAnswersByQuestion(int answerId)
+        public ICollection<Answer> GetAnswersByQuestion(int questionId)
         {
             try
             {
-                return _crudFactory.GetAllAnswersByQuestion<Answer>(new Answer { QuestionId = answerId });
+                return _crudFactory.GetAllAnswersByQuestion<Answer>(new Answer { QuestionId = questionId });
             }
             catch (System.Exception ex)
             {
@@ -293,7 +293,7 @@ namespace CoreApi
     public interface IAnswerManager
     {
         Answer GetAnswer(int id);
-        ICollection<Answer> GetAnswersByQuestion(int answerId);
+        ICollection<Answer> GetAnswersByQuestion(int questionId);
         ManagerActionResult<Answer> RegisterAnswer(Answer answer);
         ManagerActionResult<Answer> DeleteAnswer(int id, int questionId);
         ManagerActionResult<Answer> DeleteAnswersByQuestion(int questionId);

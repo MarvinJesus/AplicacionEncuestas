@@ -55,6 +55,7 @@
     <Compile Include="Dao\SqlOperation.cs" />
     <Compile Include="Factory\EntityFactory.cs" />
     <Compile Include="Factory\ProfileFactory.cs" />
+    <Compile Include="Factory\QuestionFactory.cs" />
     <Compile Include="Factory\SurveyFactory.cs" />
     <Compile Include="Factory\TopicFactory.cs" />
     <Compile Include="Helper\ExtensionsMethod.cs" />
