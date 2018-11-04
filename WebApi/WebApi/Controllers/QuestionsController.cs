@@ -1,4 +1,5 @@
 ﻿using CoreApi;
+using DataAccess.Factory;
 using Entities_POJO;
 using Exceptions;
 using System;
@@ -6,33 +7,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 using Thinktecture.IdentityModel.WebApi;
+using WebApi.Helper;
 
 namespace WebApi.Controllers
 {
     [RoutePrefix("api")]
     public class QuestionsController : ApiController
     {
-        public IQuestionManager _manager { get; set; }
+        private IQuestionManager _manager { get; set; }
+        private IAnswerManager _answerManager { get; set; }
+        private QuestionFactory QuestionFactory { get; set; }
+        private const string ANSWER_PROPERTY = "answers";
 
-        public QuestionsController(IQuestionManager QuestionManager)
+        public QuestionsController(IQuestionManager QuestionManager, IAnswerManager answerManager)
         {
             _manager = QuestionManager;
-        }
-
-        [HttpGet]
-        [ScopeAuthorize("read")]
-        public IHttpActionResult Get()
-        {
-            try
-            {
-                var questions = _manager.GetAllQuestions();
-                return Ok(questions);
-            }
-            catch (Exception ex)
-            {
-                ExceptionManager.GetInstance().Process(ex);
-                return InternalServerError();
-            }
+            _answerManager = answerManager;
+            QuestionFactory = new QuestionFactory();
         }
 
         [HttpPost]
@@ -48,19 +39,29 @@ namespace WebApi.Controllers
                 var result = _manager.RegisterQuestion(question);
 
                 if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Created)
-                    return Created(Request.RequestUri + "/" + result.Entity.Id.ToString(), result.Entity);
-
-                if (result.Exception != null)
                 {
-                    if (result.Exception.Code == 1)
+                    if (question.Answers != null)
                     {
-                        return InternalServerError();
+                        var answersResult = _answerManager.RegisterAnwers(result.Entity.Id, question.Answers);
+
+                        if (answersResult.Status == CoreApi.ActionResult.ManagerActionStatus.Created)
+                        {
+                            result.Entity.Answers = answersResult.Entity;
+                        }
+                        else
+                        {
+                            if (answersResult.Status == CoreApi.ActionResult.ManagerActionStatus.Error && answersResult.Exception != null)
+                            {
+                                return BadRequest(answersResult.Exception.AppMessage.Message);
+                            }
+
+                            return BadRequest();
+                        }
                     }
-                    else
-                    {
-                        return BadRequest(result.Exception.AppMessage.Message);
-                    }
+
+                    return Created(Request.RequestUri + "/" + result.Entity.Id.ToString(), result.Entity);
                 }
+
                 return BadRequest();
             }
             catch (System.Exception ex)
@@ -73,16 +74,32 @@ namespace WebApi.Controllers
         [HttpGet]
         [ScopeAuthorize("read")]
         [Route("surveys/{id}/questions")]
-        public IHttpActionResult GetQuestionsbyTopic(Guid id)
+        public IHttpActionResult GetQuestionsbySurvey(Guid id, string sort = "id", string fields = null)
         {
             try
             {
                 var questions = _manager.GetQuestionsBySurvey(id);
 
-                if (questions?.Count > 0)
-                    return Ok(questions);
+                if (questions == null) return NotFound();
 
-                return NotFound();
+                var questionsList = questions.AsQueryable().ApplySort(sort);
+
+                if (fields != null)
+                {
+                    var listOfFields = fields.ToLower().Split(',').ToList();
+
+                    if (fields.Contains(ANSWER_PROPERTY))
+                    {
+                        foreach (var question in questionsList)
+                        {
+                            question.Answers = _answerManager.GetAnswersByQuestion(question.Id);
+                        }
+                    }
+
+                    return Ok(questionsList.Select(q => QuestionFactory.CreateDataShapeObject(q, listOfFields)));
+                }
+
+                return Ok(questionsList.Select(q => QuestionFactory.CreateDataShapeObject(q)));
             }
             catch (System.Exception ex)
             {
@@ -95,7 +112,7 @@ namespace WebApi.Controllers
         [ScopeAuthorize("read")]
         [Route("surveys/{surveyId}/questions/{id}")]
         [Route("questions/{id}")]
-        public IHttpActionResult GetQuestion(int id, Guid? surveyId = null)
+        public IHttpActionResult GetQuestion(int id, Guid? surveyId = null, string fields = null)
         {
             try
             {
@@ -115,10 +132,21 @@ namespace WebApi.Controllers
                     }
                 }
 
-                if (question != null)
-                    return Ok(question);
+                if (question == null) return NotFound();
 
-                return NotFound();
+                if (fields != null)
+                {
+                    var listOfFields = fields.ToLower().Split(',').ToList();
+
+                    if (fields.Contains(ANSWER_PROPERTY))
+                    {
+                        question.Answers = _answerManager.GetAnswersByQuestion(question.Id);
+                    }
+
+                    return Ok(QuestionFactory.CreateDataShapeObject(question, listOfFields));
+                }
+
+                return Ok(QuestionFactory.CreateDataShapeObject(question));
             }
             catch (System.Exception ex)
             {
@@ -143,10 +171,19 @@ namespace WebApi.Controllers
                     return NotFound();
 
                 if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Updated)
-                    return Ok(result.Entity);
+                {
+                    if (question.Answers != null)
+                    {
+                        var answersResult = _answerManager.UpdateAnswers(question.Id, question.Answers);
 
-                if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Error)
-                    return InternalServerError();
+                        if (answersResult.Status == CoreApi.ActionResult.ManagerActionStatus.Updated)
+                        {
+                            result.Entity.Answers = answersResult.Entity;
+                        }
+                    }
+
+                    return Ok(result.Entity);
+                }
 
                 return BadRequest();
             }
@@ -160,7 +197,7 @@ namespace WebApi.Controllers
         [HttpDelete]
         [ScopeAuthorize("write")]
         [Route("surveys/{surveyId}/questions/{id}")]
-        public IHttpActionResult DeleteAnswer(int id, Guid surveyId)
+        public IHttpActionResult DeleteQuestion(int id, Guid surveyId)
         {
             try
             {
@@ -171,9 +208,6 @@ namespace WebApi.Controllers
 
                 if (result.Status == CoreApi.ActionResult.ManagerActionStatus.NotFound)
                     return NotFound();
-
-                if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Error && result.Exception != null)
-                    return InternalServerError();
 
                 return BadRequest();
             }

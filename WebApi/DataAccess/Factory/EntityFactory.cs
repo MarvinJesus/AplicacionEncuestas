@@ -83,21 +83,24 @@ namespace DataAccess.Factory
             {
                 var propertyValue = GetPropertyValue(entity, partialObjPropertiesName.Key);
 
-                if (propertyValue.GetType().IsGenericType)
+                if (propertyValue != null)
                 {
-                    System.Collections.IList objectsList = (System.Collections.IList)propertyValue;
-                    var newPartialObjects = new List<object>();
-
-                    foreach (var item in objectsList)
+                    if (propertyValue.GetType().IsGenericType)
                     {
-                        newPartialObjects.Add(BuildObject(item, partialObjPropertiesName.Value));
-                    }
+                        System.Collections.IList objectsList = (System.Collections.IList)propertyValue;
+                        var newPartialObjects = new List<object>();
 
-                    return newPartialObjects;
-                }
-                else
-                {
-                    return BuildObject(propertyValue, partialObjPropertiesName.Value);
+                        foreach (var item in objectsList)
+                        {
+                            newPartialObjects.Add(BuildObject(item, partialObjPropertiesName.Value));
+                        }
+
+                        return newPartialObjects;
+                    }
+                    else
+                    {
+                        return BuildObject(propertyValue, partialObjPropertiesName.Value);
+                    }
                 }
             }
 

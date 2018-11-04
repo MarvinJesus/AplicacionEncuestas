@@ -31,5 +31,16 @@ namespace DataAccess.Factory
         {
             return CreateDataShapeObject(topic, listOfFields, new List<string> { CATEGORY_FIELD });
         }
+
+        public Topic CreateTopic(TopicForRegistration topicForRegistration)
+        {
+            return new Topic
+            {
+                Title = topicForRegistration.Title,
+                Description = topicForRegistration.Description,
+                UserId = topicForRegistration.UserId,
+                Categories = topicForRegistration.Categories
+            };
+        }
     }
 }

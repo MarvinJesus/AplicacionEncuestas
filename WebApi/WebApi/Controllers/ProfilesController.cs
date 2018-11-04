@@ -5,6 +5,8 @@ using Exceptions;
 using System;
 using System.Linq;
 using System.Web.Http;
+using Thinktecture.IdentityModel.WebApi;
+using WebApi.Helper;
 
 namespace WebApi.Controllers
 {
@@ -19,12 +21,12 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        //[ScopeAuthorize("read")]
+        [ScopeAuthorize("read")]
         public IHttpActionResult GetProfile(Guid userId, string fields = null)
         {
             try
             {
-                //if (!userId.Equals(GetProfileId())) return Unauthorized();
+                if (!userId.Equals(GetProfileId())) return Unauthorized();
 
                 var profile = _manager.GetProfile(new Profile { UserId = userId });
                 var factory = new ProfileFactory();
@@ -32,7 +34,8 @@ namespace WebApi.Controllers
                 if (profile == null)
                     return NotFound();
 
-                profile.ImagePath = string.Format("{0}/pictures", Request.RequestUri);
+                profile.ImagePath = string.Concat(PathForPicture.GetInstance().GetPicturePath(Request.RequestUri.PathAndQuery,
+                    Request.RequestUri.AbsoluteUri), profile.ImagePath);
 
                 if (fields != null)
                 {

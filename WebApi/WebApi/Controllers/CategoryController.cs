@@ -1,6 +1,7 @@
 ﻿using CoreApi;
 using Exceptions;
 using System.Web.Http;
+using Thinktecture.IdentityModel.WebApi;
 
 namespace WebApi.Controllers
 {
@@ -15,6 +16,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
+        [ScopeAuthorize("read")]
         public IHttpActionResult GetCategories()
         {
             try

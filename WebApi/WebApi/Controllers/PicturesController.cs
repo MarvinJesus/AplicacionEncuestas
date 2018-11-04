@@ -12,8 +12,7 @@ using WebApi.Helper;
 
 namespace WebApi.Controllers
 {
-    [Authorize]
-    [RoutePrefix("api")]
+
     public class PicturesController : SurveyOnlineController
     {
         private IProfileManager _profileManager { get; set; }
@@ -27,20 +26,14 @@ namespace WebApi.Controllers
 
         [HttpGet]
         [ScopeAuthorize("read")]
-        [Route("profiles/{profileId}/pictures")]
-        public IHttpActionResult GetPicture(Guid? profileId = null)
+        [Route("pictures")]
+        public IHttpActionResult GetPicture(string pictureName)
         {
             try
             {
-                if (profileId == null) return BadRequest("Invalid profile Id");
+                var result = new GetPictures().GetPicture(pictureName);
 
-                var profile = _profileManager.GetProfile(new Entities_POJO.Profile { UserId = (Guid)profileId });
-
-                if (profile == null) return NotFound();
-
-                var result = new GetPictures().GetPicture(profile.ImagePath);
-
-                if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Ok)
+                if (result.Status == ManagerActionStatus.Ok)
                 {
                     var responseMessage = new HttpResponseMessage(System.Net.HttpStatusCode.OK)
                     {
@@ -61,6 +54,8 @@ namespace WebApi.Controllers
                 return InternalServerError();
             }
         }
+
+
 
         [HttpPost]
         [ScopeAuthorize("write")]
@@ -93,7 +88,9 @@ namespace WebApi.Controllers
 
                                 if (result.Status == ManagerActionStatus.Created)
                                 {
-                                    result.Entity.ImagePath = Request.RequestUri.ToString();
+                                    result.Entity.ImagePath = string.Concat(PathForPicture.GetInstance().GetPicturePath(Request.RequestUri.PathAndQuery,
+                                        Request.RequestUri.AbsoluteUri), result.Entity.ImagePath);
+
                                     return Created(Request.RequestUri, result.Entity);
                                 }
                             }

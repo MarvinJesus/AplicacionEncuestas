@@ -31,5 +31,16 @@ namespace DataAccess.Factory
         {
             return CreateDataShapeObject(survey, listOfFields, new List<string> { QUESTION_FIELD });
         }
+
+        public Survey CreateSurvey(SurveyForRegistration surveyForRegistration)
+        {
+            return new Survey
+            {
+                Title = surveyForRegistration.Title,
+                Description = surveyForRegistration.Description,
+                TopicId = surveyForRegistration.TopicId,
+                Questions = surveyForRegistration.Questions
+            };
+        }
     }
 }

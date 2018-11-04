@@ -4,6 +4,8 @@ using Exceptions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
+using Thinktecture.IdentityModel.WebApi;
+using WebApi.Helper;
 
 namespace WebApi.Controllers
 {
@@ -18,6 +20,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
+        [ScopeAuthorize("write")]
         [Route("answers")]
         public IHttpActionResult PostAnswer([FromBody]Answer answer)
         {
@@ -52,21 +55,22 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        [Route("questions/{answerId}/answers/{id}")]
+        [ScopeAuthorize("read")]
+        [Route("questions/{questionId}/answers/{id}")]
         [Route("answers/{id}")]
-        public IHttpActionResult GetAnswer(int id, int? answerId = null)
+        public IHttpActionResult GetAnswer(int id, int? questionId = null)
         {
             try
             {
                 Answer answer = null;
 
-                if (answerId == null)
+                if (questionId == null)
                 {
                     answer = _manager.GetAnswer(id);
                 }
                 else
                 {
-                    ICollection<Answer> answers = _manager.GetAnswersByQuestion((int)answerId);
+                    ICollection<Answer> answers = _manager.GetAnswersByQuestion((int)questionId);
 
                     if (answers?.Count > 0)
                     {
@@ -87,17 +91,17 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
+        [ScopeAuthorize("read")]
         [Route("questions/{id}/answers")]
-        public IHttpActionResult GetAnswersbyQuestion(int id)
+        public IHttpActionResult GetAnswersbyQuestion(int id, string sort = "id")
         {
             try
             {
                 var answers = _manager.GetAnswersByQuestion(id);
 
-                if (answers?.Count > 0)
-                    return Ok(answers);
+                if (answers == null) return NotFound();
 
-                return NotFound();
+                return Ok(answers.AsQueryable().ApplySort(sort));
             }
             catch (System.Exception ex)
             {
@@ -107,6 +111,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPut]
+        [ScopeAuthorize("write")]
         [Route("answers/{id}")]
         public IHttpActionResult PutAnswer(int id, [FromBody]Answer answer)
         {
@@ -123,9 +128,6 @@ namespace WebApi.Controllers
                 if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Updated)
                     return Ok(result.Entity);
 
-                if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Error)
-                    return InternalServerError();
-
                 return BadRequest();
             }
             catch (System.Exception ex)
@@ -136,6 +138,7 @@ namespace WebApi.Controllers
         }
 
         [HttpDelete]
+        [ScopeAuthorize("write")]
         [Route("questions/{questionId}/answers/{id}")]
         public IHttpActionResult DeleteAnswer(int id, int questionId)
         {
@@ -148,9 +151,6 @@ namespace WebApi.Controllers
 
                 if (result.Status == CoreApi.ActionResult.ManagerActionStatus.NotFound)
                     return NotFound();
-
-                if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Error && result.Exception != null)
-                    return InternalServerError();
 
                 return BadRequest();
             }

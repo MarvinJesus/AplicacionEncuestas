@@ -20,6 +20,7 @@ namespace WebApi.Controllers
         private SurveyFactory SurveyFactory { get; set; }
         private const string QUESTION_PROPERTY = "questions";
         private const string ANSWER_PROPERTY = "answers";
+        private const string IMAGE_PATH_PROPERTY = "imagepath";
 
         public SurveysController(ISurveyManager manager, IQuestionManager questionManager, IAnswerManager answerManager)
         {
@@ -53,6 +54,9 @@ namespace WebApi.Controllers
 
                 if (survey != null)
                 {
+                    survey.ImagePath = string.Concat(PathForPicture.GetInstance().GetPicturePath(Request.RequestUri.PathAndQuery,
+                        Request.RequestUri.AbsoluteUri), survey.ImagePath);
+
                     if (fields != null)
                     {
                         var listOfFields = fields.ToLower().Split(',').ToList();
@@ -97,6 +101,17 @@ namespace WebApi.Controllers
 
                 if (surveys.Count > 0)
                 {
+                    if (fields == null || fields.Contains(IMAGE_PATH_PROPERTY))
+                    {
+                        var path = PathForPicture.GetInstance().GetPicturePath(Request.RequestUri.PathAndQuery,
+                            Request.RequestUri.AbsoluteUri);
+
+                        foreach (var survey in surveys)
+                        {
+                            survey.ImagePath = string.Concat(path, survey.ImagePath);
+                        }
+                    }
+
                     surveysResult = surveys.AsQueryable().ApplySort(sort);
 
                     if (fields != null)
@@ -140,11 +155,15 @@ namespace WebApi.Controllers
         [HttpPost]
         [ScopeAuthorize("write")]
         [Route("topics/{topicId}/surveys")]
-        public IHttpActionResult PostSurvey([FromBody] Survey survey, Guid topicId)
+        public IHttpActionResult PostSurvey([FromBody] SurveyForRegistration surveyForRegistration, Guid topicId)
         {
             try
             {
-                if (survey == null) return BadRequest();
+                if (surveyForRegistration == null) return BadRequest();
+
+                var survey = SurveyFactory.CreateSurvey(surveyForRegistration);
+
+                survey.ImagePath = new CreatePictures().CreatePicture(surveyForRegistration.Picture);
 
                 var result = _manager.RegisterSurvey(topicId, survey);
 
@@ -157,6 +176,9 @@ namespace WebApi.Controllers
                         if (questionResult.Status == CoreApi.ActionResult.ManagerActionStatus.Created)
                         {
                             result.Entity.Questions = questionResult.Entity;
+
+                            survey.ImagePath = string.Concat(PathForPicture.GetInstance().GetPicturePath(Request.RequestUri.PathAndQuery,
+                                    Request.RequestUri.AbsoluteUri), survey.ImagePath);
 
                             return Created(Request.RequestUri + "/" + result.Entity.Id.ToString(), result.Entity);
                         }
@@ -192,12 +214,16 @@ namespace WebApi.Controllers
         [HttpPut]
         [ScopeAuthorize("write")]
         [Route("topics/{topicId}/surveys/{id}")]
-        public IHttpActionResult PutSurvey(Guid topicId, Guid id, [FromBody]Survey survey)
+        public IHttpActionResult PutSurvey(Guid topicId, Guid id, [FromBody]SurveyForRegistration surveyForRegistration)
         {
             try
             {
-                if (survey == null)
+                if (surveyForRegistration == null)
                     return BadRequest();
+
+                var survey = SurveyFactory.CreateSurvey(surveyForRegistration);
+
+                survey.ImagePath = new CreatePictures().CreatePicture(surveyForRegistration.Picture);
 
                 var result = _manager.EditSurvey(survey);
 
