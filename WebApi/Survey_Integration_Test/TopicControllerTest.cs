@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using WebApi.Controllers;
 
 namespace Survey_Integration_Test
@@ -19,6 +20,17 @@ namespace Survey_Integration_Test
             _mockTopicManager = new Mock<ITopicManager>();
 
             _controller = new TopicsController(_mockTopicManager.Object);
+        }
+
+        [TestMethod]
+        public void Method()
+        {
+            var stringToProve = ".png";
+            IList<string> AllowedFilesExtensions = new List<string> { ".png", ".jpg", ".jpeg", ".gif" };
+
+            var extenssion = Path.GetExtension(stringToProve);
+
+            Assert.AreEqual(extenssion, stringToProve);
         }
 
         /*[TestMethod]

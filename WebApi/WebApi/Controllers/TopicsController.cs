@@ -21,6 +21,7 @@ namespace WebApi.Controllers
         private TopicFactory TopicFactory { get; set; }
         private const string CATEGORIES_PROPERTY = "categories";
         private const string TOTAL_SURVEY_PROPERTY = "totalsurvey";
+        private const string IMAGE_PATH_PROPERTY = "imagepath";
 
         public TopicsController(ITopicManager manager)
         {
@@ -52,6 +53,9 @@ namespace WebApi.Controllers
 
                 if (topic != null)
                 {
+                    topic.ImagePath = string.Concat(PathForPicture.GetInstance().GetPicturePath(Request.RequestUri.PathAndQuery,
+                            Request.RequestUri.AbsoluteUri), topic.ImagePath);
+
                     if (fields != null)
                     {
                         var listOfFields = fields.ToLower().Split(',').ToList();
@@ -112,9 +116,21 @@ namespace WebApi.Controllers
                     topicsList = topics.AsQueryable();
                 }
 
+                if (fields == null || fields.Contains(IMAGE_PATH_PROPERTY))
+                {
+                    var path = PathForPicture.GetInstance().GetPicturePath(Request.RequestUri.PathAndQuery,
+                            Request.RequestUri.AbsoluteUri);
+
+                    foreach (var topic in topicsList)
+                    {
+                        topic.ImagePath = string.Concat(path, topic.ImagePath);
+                    }
+                }
+
                 if (fields != null)
                 {
                     var listOfFields = fields.ToLower().Split(',').ToList();
+
                     if (listOfFields.Contains(TOTAL_SURVEY_PROPERTY))
                     {
                         foreach (var topic in topicsList)
@@ -160,7 +176,7 @@ namespace WebApi.Controllers
 
                 if (topics == null) return Ok(topics);
 
-                if (filters != null || fields != null)
+                if (filters != null || fields != null && fields.Contains(CATEGORIES_PROPERTY))
                 {
                     foreach (var topic in topics)
                     {
@@ -174,8 +190,7 @@ namespace WebApi.Controllers
                     listOfFields = fields.ToLower().Split(',').ToList();
                 }
 
-                var topicList = topics.AsQueryable()
-                    .ApplyFilter(filters);
+                var topicList = filters == null ? topics.AsQueryable() : topics.AsQueryable().ApplyFilter(filters);
 
                 HttpContext.Current.Response.Headers.Add("X-Pagination", Paging.GetInstance().Page(page, pageSize, MAX_PAGE_SIZE, topicList,
                     "TopicsList", new UrlHelper(Request), sort, filters, fields, search));
@@ -185,6 +200,17 @@ namespace WebApi.Controllers
                     .Skip(pageSize * (page - 1))
                     .Take(pageSize)
                     .ToList();
+
+                if (fields == null || fields.Contains(IMAGE_PATH_PROPERTY))
+                {
+                    var path = PathForPicture.GetInstance().GetPicturePath(Request.RequestUri.PathAndQuery,
+                            Request.RequestUri.AbsoluteUri);
+
+                    foreach (var topic in topicResult)
+                    {
+                        topic.ImagePath = string.Concat(path, topic.ImagePath);
+                    }
+                }
 
                 if (fields != null)
                 {
@@ -213,13 +239,19 @@ namespace WebApi.Controllers
         [HttpPost]
         [ScopeAuthorize("write")]
         [Route("profiles/{userId}/topics")]
-        public IHttpActionResult PostTopic([FromBody] Topic topic, Guid userId)
+        public IHttpActionResult PostTopic([FromBody] TopicForRegistration topicForRegistratrion, Guid userId)
         {
             try
             {
                 if (!userId.Equals(GetProfileId())) return Unauthorized();
 
-                if (topic == null) return BadRequest();
+                if (topicForRegistratrion == null) return BadRequest();
+
+                var pictureTopic = new CreatePictures().CreatePicture(topicForRegistratrion.Picture);
+
+                var topic = TopicFactory.CreateTopic(topicForRegistratrion);
+
+                topic.ImagePath = pictureTopic;
 
                 var result = _manager.RegisterTopic(topic);
 
@@ -231,11 +263,14 @@ namespace WebApi.Controllers
 
                         if (resultCategories.Status == CoreApi.ActionResult.ManagerActionStatus.Error)
                         {
-                            return BadRequest(string.Format("El usuario se creo exitosamente pero {0}",
+                            return BadRequest(string.Format("El tema se creo exitosamente pero {0}",
                                 resultCategories.Exception.AppMessage.Message));
                         }
                         result.Entity.Categories = resultCategories.Entity;
                     }
+
+                    result.Entity.ImagePath = string.Concat(PathForPicture.GetInstance().GetPicturePath(Request.RequestUri.PathAndQuery,
+                        Request.RequestUri.AbsoluteUri), result.Entity.ImagePath);
 
                     return Created(Request.RequestUri + "/" + result.Entity.Id.ToString(), result.Entity);
                 }
@@ -285,14 +320,18 @@ namespace WebApi.Controllers
         [HttpPut]
         [ScopeAuthorize("write")]
         [Route("profiles/{profileId}/topics/{id}")]
-        public IHttpActionResult PutTopic(Guid profileId, Guid id, [FromBody]Topic topic)
+        public IHttpActionResult PutTopic(Guid profileId, Guid id, [FromBody]TopicForRegistration topicForRegistration)
         {
             try
             {
                 if (!profileId.Equals(GetProfileId())) return Unauthorized();
 
-                if (topic == null)
+                if (topicForRegistration == null)
                     return BadRequest();
+
+                var topic = TopicFactory.CreateTopic(topicForRegistration);
+
+                topic.ImagePath = new CreatePictures().CreatePicture(topicForRegistration.Picture);
 
                 var result = _manager.EditTopic(topic);
 
@@ -300,7 +339,12 @@ namespace WebApi.Controllers
                     return NotFound();
 
                 if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Updated)
+                {
+                    result.Entity.ImagePath = string.Concat(PathForPicture.GetInstance().GetPicturePath(Request.RequestUri.PathAndQuery,
+                        Request.RequestUri.AbsoluteUri), result.Entity.ImagePath);
+
                     return Ok(result.Entity);
+                }
 
                 if (result.Status == CoreApi.ActionResult.ManagerActionStatus.Error)
                     return BadRequest(string.Concat("El tema pudo ser actualizado pero {0}", result.Exception.AppMessage.Message));
