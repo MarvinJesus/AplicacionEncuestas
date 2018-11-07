@@ -1,0 +1,313 @@
+﻿body {
+	background: #f9f9f9;
+	font-family: 'Lato', sans-serif;
+}
+
+.clear-fix {
+	clear: both;
+}
+
+.primary-color {
+	color: #488aff;
+}
+
+.secondary-color {
+	color: #fff;
+}
+
+.primary-background {
+	background: #488aff;
+}
+
+.secondary-background {
+	background-color: #fff;
+}
+
+.font-1 {
+	font-family: 'Raleway', sans-serif;
+}
+
+.font-2 {
+	font-family: 'Lato', sans-serif;
+}
+
+.font-size-1 {
+	font-size: 20px;
+}
+
+.font-size-2 {
+	font-size: 16px;
+}
+
+.font-size-3 {
+	font-size: 14px;
+}
+
+.font-size-4 {
+	font-size: 12px;
+}
+
+.font-size-5 {
+	font-size: 10px;
+}
+
+.font-weight-1 {
+	font-weight: bold;
+}
+
+.navbar {
+	background: #488aff;
+}
+
+.brand-part-one {
+	color: #fff;
+	font-size: 20px;
+}
+
+.brand-part-two {
+	color: #000;
+	font-size: 16px;
+}
+
+.navbar .navbar-collapse ul li a {
+	color: #fff;
+}
+
+.navbar .navbar-collapse ul .user-session {
+	padding: 3px 15px;
+}
+
+	.navbar .navbar-collapse ul .user-session img {
+		margin-left: 10px;
+	}
+
+.input-group-addon {
+	padding: 8px 14px;
+	font-size: 18px;
+	font-weight: 400;
+	line-height: 1;
+	color: #555;
+	background-color: #fff;
+	border: 1px solid #fff;
+	border-radius: 0;
+}
+/*
+	OVERWRITING BOOTSTRAP CLASSES
+*/
+
+.navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
+	background-color: #669bfb;
+}
+
+.navbar-default .navbar-toggle {
+	border-color: #fff;
+}
+
+	.navbar-default .navbar-toggle .icon-bar {
+		background-color: #FFF;
+	}
+
+.panel {
+	-webkit-box-shadow: none;
+	-moz-box-shadow:none;
+	box-shadow: none;
+}
+
+.panel-default {
+	border-color: #fff;
+}
+
+	.panel-default > .panel-heading {
+		color: #fff;
+		background-color: #488aff;
+		border-color: #fff;
+	}
+
+.caret {
+	visibility: hidden;
+}
+
+.badge {
+	padding: 0 7px;
+}
+/*************************************************/
+
+.container-body {
+	margin-top: 70px;
+	padding: 15px;
+}
+
+.list-group-item {
+	padding: 5px 15px;
+	border: 0;
+}
+
+	.list-group-item a {
+		color: #000;
+	}
+
+		.list-group-item a:hover {
+			color: #488aff;
+		}
+
+.form-control {
+	box-shadow: none;
+}
+
+	.form-control:focus {
+		border-color: #fff;
+		outline: 0;
+		-moz-box-shadow: none;
+		-webkit-box-shadow: none;
+		box-shadow: none;
+	}
+.categoryList {
+	display: none;
+}
+.input-search {
+    border: 1px solid #fff;
+    height: 40px;
+    border-radius: 0;
+}
+
+.btn-search {
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-right: 0;
+}
+
+.btn-primary {
+    border-radius: 0;
+    border: 1px solid #488aff;
+    font-size: 16px;
+    padding: 7px 16px;
+}
+
+.selected-filters {
+	margin: 10px 0;
+	text-align: center;
+}
+
+.selected-filter {
+	float: left;
+	margin: 5px;
+}
+
+.label {
+	padding: .3em .6em .4em;
+}
+
+.selected-filter, .badge {
+	background: #488aff;
+}
+
+.topics-container {
+	margin-top: 10px;
+}
+
+.media-left {
+	width: 9%;
+}
+
+	.media-left img {
+		width: 100%;
+	}
+
+.topic-item {
+	position: relative;
+	height: 60px;
+}
+
+	.topic-item:hover {
+		cursor: pointer;
+	}
+
+.overlay {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 100%;
+	width: 100%;
+	opacity: 0;
+	transition: .5s ease;
+	background: #c7c7c7;
+	background: rgba(0, 0, 0, .2);
+}
+
+.topic-item:hover .overlay {
+	opacity: 1;
+}
+
+.row {
+	padding: 0;
+	margin: 0;
+}
+
+@media (max-width: 1024px) {
+	.panel-body h4 {
+		font-size: 16px;
+	}
+
+	.panel-body .filter {
+		font-size: 14px;
+	}
+}
+@media (max-width: 892px) {
+    .container-body {
+        margin-top: 100px;
+        padding: 10px;
+    }
+}
+@media (max-width: 768px) {
+	.user-session {
+		font-weight: bold;
+	}
+
+		.user-session img {
+			margin-left: 60px;
+		}
+
+    .container-body {
+        margin-top: 70px;
+        padding: 1px;
+    }
+
+	.topics-container h4 {
+		font-size: 13px;
+	}
+
+	.list-filters {
+		display: none;
+	}
+
+	.panel-default > .panel-heading {
+		color: #000;
+		background-color: transparent;
+		border-bottom-color: #488aff;
+	}
+
+	.caret {
+		visibility: visible;
+	}
+
+	.topic-item {
+		height: 40px;
+	}
+}
+
+@media (max-width: 468px) {
+	.media-left {
+		width: 20%;
+	}
+
+	.user-session img {
+		margin-left: 10%;
+	}
+}
+@media (max-width: 268px) {
+    .input-search {
+        padding-left:2px;
+    }
+}

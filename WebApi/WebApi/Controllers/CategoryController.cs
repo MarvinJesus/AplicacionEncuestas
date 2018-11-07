@@ -6,17 +6,18 @@ using Thinktecture.IdentityModel.WebApi;
 namespace WebApi.Controllers
 {
     [RoutePrefix("api")]
-    public class CategoryController : SurveyOnlineController
+    public class CategoriesController : SurveyOnlineController
     {
         private ICategoryManager _categoryManager { get; set; }
 
-        public CategoryController(ICategoryManager categoryManager)
+        public CategoriesController(ICategoryManager categoryManager)
         {
             _categoryManager = categoryManager;
         }
 
         [HttpGet]
         [ScopeAuthorize("read")]
+        [Route("categories")]
         public IHttpActionResult GetCategories()
         {
             try

@@ -1,0 +1,97 @@
+﻿@model SurveyOnline.Web.ViewModels.TopicViewModel
+@using PagedList.Mvc;
+@{
+    Layout = "~/Views/Shared/_LoginPartial.cshtml";
+}
+
+<div class="row">
+    <div class="col-sm-3 col-md-3 col-lg-2">
+        <div class="panel panel-default">
+            <div class="panel-heading" id="display-filters">
+                <h3 class="panel-title">
+                    Filtros:
+                    <span class="pull-right">
+                        <span class="caret"></span>
+                    </span>
+                </h3>
+            </div>
+            <div class="panel-body list-filters">
+                <h4 class="list-group-heading"><strong>Categorias:</strong></h4>
+                <ul class="list-group filters-container" id="search-filters-container">
+                    @if (Model.Categories != null)
+                    {
+                        foreach (var category in Model.Categories)
+                        {
+                            <li class="list-group-item">
+                                <a href="#" class="filter font-size-2 js-apply-filter" data-filter-id="@category.Id">@category.Name</a>
+                            </li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-8 col-md-9">
+        @using (Html.BeginForm("Search", "Topic"))
+        {
+            @Html.TextBoxFor(t => t.CategoriesInList, new { @class = "categoryList" })
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">
+                    <i class="fas fa-search"></i>
+                </span>
+                @Html.TextBoxFor(t => t.SearchTeam, new { @class = "form-control input-search font-size-2", placeholder = "Buscar tema", aria_describedby = "basic-addon1" })
+                <span class="input-group-addon btn-search background-primary color-secondary btn-search">
+                    <button type="submit" class="btn btn-primary btn-lg background-primary">Buscar</button>
+                </span>
+            </div>
+        }
+
+        <div class="selected-filters" id="selected-filters">
+            @if (Model.SelectedCategories != null)
+            {
+                foreach (var category in Model.SelectedCategories)
+                {
+                    <label class="label label-default font-size-3 selected-filter js-remove-filter" data-filter-id="@category.Id">
+                        @category.Name
+                        <span class="badge"><i class="fas fa-times-circle"></i></span>
+                    </label>
+                }
+            }
+        </div>
+        <div class="clear-fix"></div>
+        <ul class="media-list  topics-container">
+            @if (Model.Topics != null)
+            {
+                foreach (var topic in Model.Topics)
+                {
+                    <li class="media background-secondary topic-item" data-topic-id="@topic.Id">
+                        <div class="media-left">
+                            <img class="media-object" src="@topic.ImagePath" alt="topic-picture">
+                        </div>
+                        <div class="media-body">
+                            <a href="@Url.Action("Details","Topic",new { id = topic.Id})" class="media-heading font-size-2">@topic.Title</a>
+                            <h6>@topic.TotalSurvey</h6>
+                        </div>
+                        <div class="overlay"></div>
+                    </li>
+                }
+            }
+        </ul>
+    </div>
+</div>
+<div class="text-center">
+    @Html.PagedListPager(Model.Topics, page => Url.Action("Topic", "Topic", new { query = Model.SearchTeam, filters = Model.CategoriesInList, page = page }))
+
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            FilterController.init('#search-filters-container', '#selected-filters');
+
+            $('#display-filters').click(function () {
+                $('.list-filters').toggle(300);
+            });
+        });
+    </script>
+}
