@@ -25,7 +25,6 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        [ScopeAuthorize("read")]
         [Route("pictures")]
         public IHttpActionResult GetPicture(string pictureName)
         {
