@@ -37,9 +37,10 @@ namespace DataAccess.Factory
             return new Survey
             {
                 Title = surveyForRegistration.Title,
+                ImagePath = "surveyDefault.jpg",
                 Description = surveyForRegistration.Description,
                 TopicId = surveyForRegistration.TopicId,
-                Questions = surveyForRegistration.Questions
+                Questions = surveyForRegistration.Questions,
             };
         }
     }

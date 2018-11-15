@@ -89,7 +89,7 @@ namespace OAuth.Config
                         {
                             new Secret("E3090F57-D45A-4B95-9420-ED5C62B61725".Sha256())
                         },
-                        ClientName = "Survey online implicit",
+                        ClientName = "SurveyOnline",
                         Flow = Flows.Implicit,
                         AllowedScopes = new List<string>
                         {

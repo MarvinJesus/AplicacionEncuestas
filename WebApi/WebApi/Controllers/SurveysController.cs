@@ -163,7 +163,10 @@ namespace WebApi.Controllers
 
                 var survey = SurveyFactory.CreateSurvey(surveyForRegistration);
 
-                survey.ImagePath = new CreatePictures().CreatePicture(surveyForRegistration.Picture);
+                if (surveyForRegistration.Picture != null)
+                {
+                    survey.ImagePath = new CreatePictures().CreatePicture(surveyForRegistration.Picture);
+                }
 
                 var result = _manager.RegisterSurvey(topicId, survey);
 
@@ -223,7 +226,10 @@ namespace WebApi.Controllers
 
                 var survey = SurveyFactory.CreateSurvey(surveyForRegistration);
 
-                survey.ImagePath = new CreatePictures().CreatePicture(surveyForRegistration.Picture);
+                if (surveyForRegistration.Picture != null)
+                {
+                    survey.ImagePath = new CreatePictures().CreatePicture(surveyForRegistration.Picture);
+                }
 
                 var result = _manager.EditSurvey(survey);
 

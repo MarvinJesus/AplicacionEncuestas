@@ -67,10 +67,11 @@
                     <li class="media background-secondary topic-item" data-topic-id="@topic.Id">
                         <div class="media-left">
                             <img class="media-object" src="@topic.ImagePath" alt="topic-picture">
+                            <div class="overlay"></div>
                         </div>
                         <div class="media-body">
                             <a href="@Url.Action("Details","Topic",new { id = topic.Id})" class="media-heading font-size-2">@topic.Title</a>
-                            <h6>@topic.TotalSurvey</h6>
+                            <h6>Encuestas @topic.TotalSurvey</h6>
                         </div>
                         <div class="overlay"></div>
                     </li>

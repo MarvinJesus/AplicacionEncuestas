@@ -1,0 +1,210 @@
+﻿@model SurveyOnline.Web.ViewModels.SurveyFormViewModel
+@{
+    ViewBag.Title = "SurveyForm";
+    Layout = "~/Views/Shared/_LoginPartial.cshtml";
+}
+
+
+
+<div class="container" id="register-survey">
+
+    <div id="survey-form">
+        <div class="alert alert-danger hide-container" role="alert" id="survey-alert"></div>
+        <form>
+            <h3>Agregar encuesta</h3>
+            <div class="input-group input-group-lg">
+                <label for="question-type">Escoge un tema</label>
+                <select class="form-control" id="topic-id">
+                    <option value="0"></option>
+                    @if (Model.Topics != null)
+                    {
+                        foreach (var topic in @Model.Topics)
+                        {
+                            <option value="@topic.Id">@topic.Title</option>
+                            }
+                        }
+                </select>
+            </div>
+            <a href="#" class="pull-right btn-link">Agregar tema</a>
+            <div class="input-group input-group-lg">
+                <label for="txtTitle">Titulo</label>
+                <input type="text" class="form-control" id="txtTitle" placeholder="Titulo de la encuesta">
+            </div>
+            <div class="input-group input-group-lg">
+                <label for="txtDescription">Descripción</label>
+                <textarea class="form-control" id="txtDescription" rows="4" placeholder="Descripción de la encuesta"></textarea>
+            </div>
+            <button type="button" class="btn btn-primary btn-lg primary-background font-size-3 app-btn-primary" id="add-question">
+                <i class="fas fa-plus icon"></i>Agregar pregunta
+            </button>
+
+            <h4>Preguntas agregadas:</h4>
+
+
+            <div class="question-container" id="question-container"></div>
+
+            <input type="button" class="btn btn-lg btn-primary tertiary-background app-btn-secondary" id="btn-cancel-survey" value="Cancelar">
+            <input type="button" class="btn btn-lg btn-primary pull-right primary-background app-btn-primary" id="btn-save-survey" value="Guardar">
+
+        </form>
+    </div>
+
+
+    <div class="hide-container" id="question-form">
+        <div class="animated bounceInRight">
+            <div class="alert alert-danger question-error-message hide-container" role="alert"></div>
+            <h3>Agregar Pregunta</h3>
+
+            <div class="input-group input-group-lg">
+                <label for="question-type">Tipo de pregunta</label>
+                <select class="form-control" id="question-type">
+                    <option value="0"></option>
+                    <option value="1">Seleción multiple</option>
+                    <option value="2">Seleción unica</option>
+                </select>
+            </div>
+           
+            <div class="input-group input-group-lg">
+                <label for="question-title">¿Qué es lo que le gustaría preguntar?</label>
+                <input type="text" class="form-control" id="question-title" placeholder="Ingrese el titulo">
+            </div>
+            <button type="button" class="btn btn-primary btn-lg primary-background font-size-3 app-btn-primary" id="add-new-answer" data-toggle="modal" data-target="#myModal">
+                <i class="fas fa-plus icon"></i>Agregar respuesta
+            </button>
+
+            <h4>Respuestas agregadas:</h4>
+
+            <div class="answer-container" id="answer-container" data-question-number="-1"></div>
+
+            <input type="button" class="btn btn-lg btn-primary tertiary-background app-btn-secondary" id="btn-cancel-question" value="Cancelar">
+            <input type="button" class="btn btn-lg btn-primary pull-right primary-background app-btn-primary" id="btn-save-question" value="Guardar">
+
+        </div>
+    </div>
+
+
+
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Agregar respuesta</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger" role="alert">Campo es <strong>requerido</strong></div>
+                    <div class="input-group input-group-lg">
+                        <label>Respuesta</label>
+                        <input type="text" class="form-control" id="input-answer" placeholder="Ingrese la respuesta">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary tertiary-background app-btn-secondary" data-dismiss="modal" id="btn-close-modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary primary-background app-btn-primary" id="add-answer">Agregar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+
+            SurveyController.init("#question-container", "#answer-container");
+
+            $("#add-question").click(function () {
+                SurveyController.showQuestionForm();
+            });
+
+            $("#btn-cancel-question").click(function () {
+                SurveyController.hideQuestionForm();
+                SurveyController.clearQuestionForm();
+            });
+
+
+            $("#btn-save-survey").click(function (event) {
+                var error = false;
+                var errorMessage = "";
+
+                if ($("#topic-id").val() == 0) {
+                    error = true;
+                    errorMessage = errorMessage.concat("tema,");
+                }
+
+                if ($("#txtTitle").val().length == 0) {
+                    error = true;
+                    errorMessage = errorMessage.concat("titulo,");
+                }
+
+                if ($("#txtDescription").val().length == 0) {
+                    error = true;
+                    errorMessage = errorMessage.concat("descipción,");
+                }
+
+                if ($("#question-container").children().length == 0) {
+                    error = true;
+                    errorMessage = errorMessage.concat("pregunta");
+                }
+
+                if (error) {
+                    $("#survey-alert").empty()
+                        .append("<p>Los campo(s): <strong>" + errorMessage + "</strong> son requeridos.</p>").show();
+                } else {
+                    SurveyController.registerSurvey();
+                }
+            });
+
+            /*
+             * ADD NEW ANSWER TO ANSWER_CONTAINER IN CREATING PROCESS
+             */
+            $("#add-answer").click(function () {
+
+                if ($("#input-answer").val().length > 0) {
+                    SurveyController.addAnswer();
+                    $("#myModal").modal("hide");
+                    $("#input-answer").val("");
+                }
+            });
+
+            /*
+             * REGISTER NEW QUESTION TO QUESTION_CONTAINER
+             */
+            $("#btn-save-question").click(function () {
+                var error = false;
+                var errorMessage = "";
+
+                if ($("#question-title").val().length == 0) {
+                    error = true;
+                    errorMessage = errorMessage.concat("titulo, ");
+                }
+
+                if ($("#question-type").val() == 0) {
+                    error = true;
+                    errorMessage = errorMessage.concat("tipo de pregunta, ");
+                }
+
+                if ($("#answer-container").children().length == 0) {
+                    error = true;
+                    errorMessage = errorMessage.concat("respuestas");
+                }
+
+                if (error) {
+                    $(".question-error-message").empty()
+                        .append("<p>Los campo(s) <strong>" + errorMessage + "</strong> son requeridos</p>").show();
+                } else {
+
+                    SurveyController.addQuestion();
+
+                    SurveyController.hideQuestionForm();
+                    SurveyController.clearQuestionForm();
+                }
+            });
+        });
+
+    </script>
+}
+

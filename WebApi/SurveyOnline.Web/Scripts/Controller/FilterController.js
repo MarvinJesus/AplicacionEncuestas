@@ -5,8 +5,8 @@
 		$(this).fadeOut(function () {
 			$(this).remove();
 			$('#search-filters-container').append(filterNotSelectedTemplate($(e.target)
-                .attr('data-filter-id'), $(this).text()));
-            removeFromList($(this).text());
+				.attr('data-filter-id'), $(this).text()));
+			removeFromList($(this).text());
 		});
 	};
 
@@ -14,22 +14,22 @@
 		$(this).fadeOut(function () {
 			$(this).parents("li").remove();
 			$('#selected-filters').append(applyfilterTemplate($(e.target)
-                .attr('data-filter-id'), $(this).text()));
-            addToList($(this).text());
+				.attr('data-filter-id'), $(this).text()));
+			addToList($(this).text());
 		});
 	};
 
-    var addToList = function (categoryName) {
-        var value = $(".categoryList").val();
-        var result = value.concat(categoryName, ",");
-        $(".categoryList").val(result.replace(/\s/g, ""));
-    };
+	var addToList = function (categoryName) {
+		var value = $(".categoryList").val();
+		var result = value.concat(categoryName, ",");
+		$(".categoryList").val(result.replace(/\s/g, ""));
+	};
 
-    var removeFromList = function (categoryName) {
-        var cleanValue = categoryName.replace(/\s/g, "");
-        var result = $(".categoryList").val().replace(cleanValue + ",", "");
-        $(".categoryList").val(result.replace(/\s/g, ""));
-    };
+	var removeFromList = function (categoryName) {
+		var cleanValue = categoryName.replace(/\s/g, "");
+		var result = $(".categoryList").val().replace(cleanValue + ",", "");
+		$(".categoryList").val(result.replace(/\s/g, ""));
+	};
 
 	var applyfilterTemplate = function (id, name) {
 		return `<label class="label label-default font-size-3 selected-filter js-remove-filter" data-filter-id="${id}">${name}

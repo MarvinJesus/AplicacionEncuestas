@@ -14,6 +14,9 @@
 .secondary-color {
 	color: #fff;
 }
+.tertiary-color {
+	color: #16171b;
+}
 
 .primary-background {
 	background: #488aff;
@@ -22,7 +25,9 @@
 .secondary-background {
 	background-color: #fff;
 }
-
+.tertiary-background {
+	background: #16171b;
+}
 .font-1 {
 	font-family: 'Raleway', sans-serif;
 }
@@ -54,7 +59,29 @@
 .font-weight-1 {
 	font-weight: bold;
 }
+.app-btn-primary {
+	border-radius: 0;
+	border: 1px solid #488aff;
+	font-size: 16px;
+}
 
+	.app-btn-primary:hover {
+		background-color: #659bfc;
+		border-color: #488aff;
+	}
+
+.app-btn-secondary {
+	border-radius: 0;
+	border-color: #16171b;
+	font-size: 16px;
+}
+
+	.app-btn-secondary:hover {
+		background-color: #24262a;
+	}
+.icon {
+	margin: 0 10px;
+}
 .navbar {
 	background: #488aff;
 }
@@ -165,22 +192,22 @@
 	display: none;
 }
 .input-search {
-    border: 1px solid #fff;
-    height: 40px;
-    border-radius: 0;
+	border: 1px solid #fff;
+	height: 40px;
+	border-radius: 0;
 }
 
 .btn-search {
-    padding-top: 0;
-    padding-bottom: 0;
-    padding-right: 0;
+	padding-top: 0;
+	padding-bottom: 0;
+	padding-right: 0;
 }
 
 .btn-primary {
-    border-radius: 0;
-    border: 1px solid #488aff;
-    font-size: 16px;
-    padding: 7px 16px;
+	border-radius: 0;
+	border: 1px solid #488aff;
+	font-size: 16px;
+	padding: 7px 16px;
 }
 
 .selected-filters {
@@ -214,12 +241,17 @@
 	}
 
 .topic-item {
+	background-color:#fff;
 	position: relative;
 	height: 60px;
 }
 
 	.topic-item:hover {
+		background: #c7c7c7;
 		cursor: pointer;
+	}
+	.topic-item a{
+		color:#000;
 	}
 
 .overlay {
@@ -244,7 +276,121 @@
 	padding: 0;
 	margin: 0;
 }
+/*--------------------------------------------------------------
+		START STYLE SURVEY FORM PAGE
+  --------------------------------------------------------------
+*/
 
+#register-survey h3, h4 {
+	margin-bottom: 3%;
+}
+
+#register-survey .input-group {
+	width: 100%;
+	margin: 15px 0 5px 0;
+}
+
+	#register-survey .input-group input {
+		height: 40px;
+		font-size: 14px;
+		border: 2px solid #ddd;
+	}
+
+	#register-survey .input-group select {
+		height: 40px;
+		font-size: 14px;
+		border: 2px solid #ddd;
+	}
+	#register-survey .input-group textarea {
+		font-size: 14px;
+		border: 2px solid #ddd;
+		width: 100%;
+	}
+
+#add-question, #add-new-answer {
+	margin-bottom: 30px;
+	padding: 5px 15px;
+}
+
+#survey-form .question-container {
+	margin-bottom: 10%;
+}
+
+#survey-form .question-item {
+	position: relative;
+	width: 100%;
+	border-radius: 10px;
+	background-color: #f1f1f1;
+	padding: 10px 15px;
+	margin-bottom: 15px;
+}
+
+	#survey-form .question-item .btn-edit-delete {
+		position: absolute;
+		right: 10px;
+		top: 10px;
+	}
+
+	#survey-form .question-item .answer {
+		margin-left: 3%;
+	}
+
+	#survey-form .question-item .answer-number {
+		margin-right: 5px;
+	}
+
+#question-form .input-answer {
+	border-radius: 20px;
+	border-color: #ddd;
+}
+
+#question-form .input-group-addon {
+	padding: 0px 0 0 5px;
+}
+
+	#question-form .input-group-addon button {
+		border: 2px solid #ddd;
+		padding: 2px 15px;
+	}
+
+		#question-form .input-group-addon button:first-child {
+			border-bottom-left-radius: 5px;
+			border-top-left-radius: 5px;
+		}
+
+		#question-form .input-group-addon button:last-child {
+			border-bottom-right-radius: 5px;
+			border-top-right-radius: 5px;
+		}
+
+#question-form #btn-save-question {
+	border-radius: 0;
+}
+
+#question-form #btn-cancel-question, #btn-close-modal {
+	border-radius: 0;
+	border-color: #16171b;
+}
+
+#question-form .answer-container {
+	margin-bottom: 10%;
+}
+
+#question-form #answer-container .input-group {
+	margin-top: 10px;
+}
+
+.modal-content {
+	top: 120px;
+}
+
+.hide-container {
+	display: none;
+}
+/*--------------------------------------------------------------
+		START STYLE TOPIC FORM PAGE
+  --------------------------------------------------------------
+*/
 @media (max-width: 1024px) {
 	.panel-body h4 {
 		font-size: 16px;
@@ -255,12 +401,16 @@
 	}
 }
 @media (max-width: 892px) {
-    .container-body {
-        margin-top: 100px;
-        padding: 10px;
-    }
+	.container-body {
+		margin-top: 100px;
+		padding: 10px;
+	}
 }
 @media (max-width: 768px) {
+	.app-btn-secondary, .app-btn-primary {
+		font-size: 14px;
+		padding: 7px 15px;
+	}
 	.user-session {
 		font-weight: bold;
 	}
@@ -269,10 +419,10 @@
 			margin-left: 60px;
 		}
 
-    .container-body {
-        margin-top: 70px;
-        padding: 1px;
-    }
+	.container-body {
+		margin-top: 70px;
+		padding: 1px;
+	}
 
 	.topics-container h4 {
 		font-size: 13px;
@@ -295,6 +445,50 @@
 	.topic-item {
 		height: 40px;
 	}
+	/*--------------------------------------------------------
+		START STYLES OF TOPIC FORM PAGE
+	--------------------------------------------------------*/
+	#register-survey h3, h4 {
+		margin-bottom: 10%;
+	}
+
+	#register-survey h3 {
+		font-size: 18px;
+	}
+
+	#register-survey .input-group {
+		margin: 10px 0 8px 0;
+	}
+
+	#add-question, #add-new-answer {
+		margin-bottom: 20px;
+		padding: 6px 10px;
+	}
+
+	#survey-form .question-item {
+		padding: 20px 15px;
+	}
+
+		#survey-form .question-item .btn-edit-delete {
+			right: 5px;
+			top: 5px;
+		}
+
+			#survey-form .question-item .btn-edit-delete button {
+				padding: 2px 8px;
+				font-size: 10px;
+			}
+
+		#survey-form .question-item .question-title {
+			font-size: 15px;
+		}
+
+	#question-form .input-group-addon button {
+		padding: 2px 8px;
+	}
+	/*--------------------------------------------------------
+		END STYLES OF TOPIC FORM PAGE
+	--------------------------------------------------------*/
 }
 
 @media (max-width: 468px) {
@@ -307,7 +501,7 @@
 	}
 }
 @media (max-width: 268px) {
-    .input-search {
-        padding-left:2px;
-    }
+	.input-search {
+		padding-left:2px;
+	}
 }
