@@ -8,10 +8,12 @@ namespace SurveyOnline.Web
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/bundles/app").Include(
-                "~/Scripts/Controller/FilterController.js"));
-
-            bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
-                        "~/Scripts/jquery-{version}.js"));
+                "~/Scripts/Models/Models.js",
+                "~/Scripts/Helper/SurveyHelper.js",
+                "~/Scripts/Services/SurveyService.js",
+                "~/Scripts/Controller/FilterController.js",
+                "~/Scripts/Controller/SurveyController.js"
+                ));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
@@ -21,12 +23,15 @@ namespace SurveyOnline.Web
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
                         "~/Scripts/modernizr-*"));
 
-            bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
-                      "~/Scripts/bootstrap.js"));
+            bundles.Add(new ScriptBundle("~/bundles/lib").Include(
+                      "~/Scripts/bootstrap.js",
+                      "~/Scripts/jquery-{version}.js",
+                      "~/Scripts/bootbox.min.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
-                      "~/Content/site.css"));
+                      "~/Content/site.css",
+                      "~/Content/animate.css"));
         }
     }
 }

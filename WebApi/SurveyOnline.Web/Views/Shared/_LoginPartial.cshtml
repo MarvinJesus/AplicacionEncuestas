@@ -30,7 +30,7 @@
             <div class="collapse navbar-collapse" id="collapse-toggle-main">
                 <ul class="nav navbar-nav navbar-right">
                     <li class="first-menu-item"><a href="#" class="Active">Inicio</a></li>
-                    <li><a href="#">Crear encuesta</a></li>
+                    <li>@Html.ActionLink("Crear encuesta","SurveyForm","Survey")</li>
                     <li>@Html.ActionLink("Mis temas", "Mine", "Topic")</li>
                     <li><a href="#">Aplicar encuesta</a></li>
                     <li class="second-last-item">@Html.ActionLink("Cerrar sesión", "Logout", "Home")</li>
@@ -44,8 +44,7 @@
         @RenderBody()
     </div>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/lib")
     @Scripts.Render("~/bundles/app")
     @RenderSection("scripts", required: false)
 
