@@ -17,7 +17,7 @@ namespace WebApi.Controllers
     {
         private IProfileManager _profileManager { get; set; }
         private IList<string> AllowedFilesExtensions = new List<string> { ".png", ".jpg", ".jpeg", ".gif" };
-        private readonly int MaxContentLength = 39072;
+        private readonly int MaxContentLength = 3907299;
 
         public PicturesController(IProfileManager profileManager)
         {

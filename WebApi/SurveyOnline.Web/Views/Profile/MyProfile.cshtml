@@ -1,0 +1,62 @@
+﻿@model SurveyOnline.Web.ViewModels.ProfileViewModel
+@{
+	ViewBag.Title = "Mi perfil";
+	Layout = "~/Views/Shared/_LoginPartial.cshtml";
+}
+	<div class="row">
+		<div class="col-sm-3 text-center secondary-background" id="profile-picture-container">
+			<h3>Foto de perfil</h3>
+
+			<div class="image-container">
+				<img src="@Model.Profile.ImagePath" picture-src="@Model.Profile.ImagePath" id="profile-picture" class="img-responsive img-circle" alt="Profile picture">
+			</div>
+			@using (Html.BeginForm("ChangePicture", "Profile", FormMethod.Post, new { enctype = "multipart/form-data" }))
+			{
+				<label for="bnt-change-picture" id="picture-label" class="btn btn-lg btn-primary primary-background app-btn-primary app-element-label">
+					Cambiar foto de perfil
+					<input type="file" id="bnt-change-picture" name="file">
+				</label>
+				<div class="hide-container" id="button-container-for-picture">
+					<input type="button" value="Cancelar" class="btn btn-lg btn-primary app-btn-secondary tertiary-background" id="cancel-change-picture">
+					<input type="submit" value="Guardar" class="btn btn-lg btn-primary app-btn-primary primary-background">
+				</div>
+			}
+		</div>
+
+		<div class="col-sm-9 secondary-background">
+
+		</div>
+	</div>
+
+@section Scripts{
+	<script>
+		$(document).ready(function(){
+			$("#bnt-change-picture").change(function(){
+
+				var inputFile = $(this);
+
+				if($(inputFile).get(0).files.length > 0){
+
+					$(inputFile).parent().hide();
+					$("#button-container-for-picture").show();
+
+					var reader = new FileReader();
+					reader.onload = function(e){
+						$("#profile-picture").attr("src",e.target.result);
+					};
+					reader.readAsDataURL($(this).get(0).files[0]);
+				}
+			});
+
+			$("#cancel-change-picture").click(function(){
+
+					$("#picture-label").show();
+					$("#button-container-for-picture").hide();
+
+					var src = $("#profile-picture").attr("picture-src");
+					$("#profile-picture").attr("src",src);
+			});
+		});
+	</script>
+}
+

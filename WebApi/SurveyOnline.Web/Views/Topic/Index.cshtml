@@ -81,7 +81,7 @@
     </div>
 </div>
 <div class="text-center">
-    @Html.PagedListPager(Model.Topics, page => Url.Action("Topic", "Topic", new { query = Model.SearchTeam, filters = Model.CategoriesInList, page = page }))
+    @Html.PagedListPager(Model.Topics, page => Url.Action("Index", "Topic", new { query = Model.SearchTeam, filters = Model.CategoriesInList, page = page }))
 
 </div>
 

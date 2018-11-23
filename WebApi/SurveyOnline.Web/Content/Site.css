@@ -106,6 +106,8 @@
 
 	.navbar .navbar-collapse ul .user-session img {
 		margin-left: 10px;
+		width:45px;
+		height:45px;
 	}
 
 .input-group-addon {
@@ -391,6 +393,36 @@
 		START STYLE TOPIC FORM PAGE
   --------------------------------------------------------------
 */
+
+
+/*--------------------------------------------------------------
+		START STYLES EDIT PROFILE PAGE
+  --------------------------------------------------------------
+*/
+
+.image-container {
+	margin: 0 auto;
+	width: 200px;
+	height: 200px;
+	border-radius: 100%;
+	border: 2px solid #ddd;
+	overflow: hidden;
+}
+
+.app-element-label {
+	padding-top: 5px;
+	padding-bottom: 5px;
+	width: 100%;
+}
+
+	.app-element-label input[type="file"] {
+		display: none;
+	}
+/*--------------------------------------------------------------
+		END STYLES EDIT PROFILE PAGE
+  --------------------------------------------------------------
+*/
+
 @media (max-width: 1024px) {
 	.panel-body h4 {
 		font-size: 16px;
@@ -399,6 +431,31 @@
 	.panel-body .filter {
 		font-size: 14px;
 	}
+
+	/*--------------------------------------------------------------
+		START STYLES EDIT PROFILE PAGE
+	  --------------------------------------------------------------
+	*/
+	#profile-picture-container {
+		padding-top: 10px;
+	}
+
+		#profile-picture-container h3 {
+			font-size: 18px;
+		}
+
+		#profile-picture-container .image-container {
+			width: 150px;
+			height: 150px;
+		}
+
+		#profile-picture-container label {
+			font-size: 14px;
+		}
+	/*--------------------------------------------------------------
+		END STYLES EDIT PROFILE PAGE
+	  --------------------------------------------------------------
+	*/
 }
 @media (max-width: 892px) {
 	.container-body {
