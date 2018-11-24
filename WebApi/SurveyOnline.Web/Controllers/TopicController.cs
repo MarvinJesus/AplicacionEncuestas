@@ -15,7 +15,7 @@ namespace SurveyOnline.Web.Controllers
     public class TopicController : Controller
     {
         [Authorize]
-        public async Task<ActionResult> Topic(string query = null, string filters = null, int? page = 1)
+        public async Task<ActionResult> Index(string query = null, string filters = null, int? page = 1)
         {
             var claims = User as ClaimsPrincipal;
             var viewModel = new TopicViewModel();
@@ -65,7 +65,7 @@ namespace SurveyOnline.Web.Controllers
         [HttpPost]
         public ActionResult Search(TopicViewModel viewModel)
         {
-            return RedirectToAction("Topic", "Topic", new
+            return RedirectToAction("Index", "Topic", new
             {
                 query = viewModel.SearchTeam,
                 filters = viewModel.CategoriesInList

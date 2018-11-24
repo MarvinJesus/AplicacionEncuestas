@@ -1,4 +1,5 @@
 ﻿using CoreApi;
+using CoreApi.ActionResult;
 using DataAccess.Factory;
 using Entities_POJO;
 using Exceptions;
@@ -46,6 +47,37 @@ namespace WebApi.Controllers
                 {
                     return Ok(factory.CreateDataShapeObject(profile));
                 }
+            }
+            catch (Exception ex)
+            {
+                ExceptionManager.GetInstance().Process(ex);
+                return InternalServerError();
+            }
+        }
+
+        [HttpPut]
+        [ScopeAuthorize("write")]
+        [Route("profiles/{userId}")]
+        public IHttpActionResult PutProfile(Guid userId, Profile profile)
+        {
+            try
+            {
+                if (!userId.Equals(GetProfileId())) return Unauthorized();
+
+                if (profile == null) return BadRequest();
+
+                ManagerActionResult<Profile> result = _manager.EditProfile(profile);
+
+                if (result.Status == ManagerActionStatus.Updated) return Ok(result.Entity);
+
+                if (result.Status == ManagerActionStatus.NotFound) return NotFound();
+
+                if (result.Status == ManagerActionStatus.Error)
+                {
+                    return BadRequest(result.Exception?.AppMessage.Message);
+                }
+
+                return BadRequest();
             }
             catch (Exception ex)
             {

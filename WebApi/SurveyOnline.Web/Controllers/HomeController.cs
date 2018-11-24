@@ -19,9 +19,10 @@ namespace SurveyOnline.Web.Controllers
         [Authorize]
         public ActionResult Login()
         {
-            return Redirect("/Topic");
+            return Redirect("/Profile");
         }
 
+        [Authorize]
         public ActionResult Logout()
         {
             Request.GetOwinContext().Authentication.SignOut();

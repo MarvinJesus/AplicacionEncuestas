@@ -44,6 +44,7 @@
     <Compile Include="ApplicationMessage.cs" />
     <Compile Include="BaseEntity.cs" />
     <Compile Include="Category.cs" />
+    <Compile Include="Enums\QuestionType.cs" />
     <Compile Include="PictureForEntity.cs" />
     <Compile Include="Profile.cs" />
     <Compile Include="ProfileForRegistration.cs" />

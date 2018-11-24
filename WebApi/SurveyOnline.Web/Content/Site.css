@@ -72,11 +72,11 @@
 
 .app-btn-secondary {
 	border-radius: 0;
-	border-color: #16171b;
+	border-color: #16171b !important;
 	font-size: 16px;
 }
 
-	.app-btn-secondary:hover {
+	.app-btn-secondary:hover, .app-btn-secondary:focus {
 		background-color: #24262a;
 	}
 .icon {
@@ -106,6 +106,8 @@
 
 	.navbar .navbar-collapse ul .user-session img {
 		margin-left: 10px;
+		width:45px;
+		height:45px;
 	}
 
 .input-group-addon {
@@ -345,7 +347,7 @@
 }
 
 #question-form .input-group-addon {
-	padding: 0px 0 0 5px;
+	padding: 0 0 0 5px;
 }
 
 	#question-form .input-group-addon button {
@@ -391,6 +393,74 @@
 		START STYLE TOPIC FORM PAGE
   --------------------------------------------------------------
 */
+
+
+/*--------------------------------------------------------------
+		START STYLES EDIT PROFILE PAGE
+  --------------------------------------------------------------
+*/
+
+.image-container {
+	margin: 0 auto;
+	width: 200px;
+	height: 200px;
+	border-radius: 100%;
+	border: 2px solid #ddd;
+	overflow: hidden;
+}
+
+.app-element-label {
+	padding-top: 6px;
+	padding-bottom: 6px;
+	width: 100%;
+	margin-top: 50px;
+}
+
+	.app-element-label input[type="file"] {
+		display: none;
+	}
+
+.user-information{
+	padding-right:0px;
+}
+.user-information h3 {
+	margin-top: 0;
+	margin-bottom: 20px;
+	padding-top: 20px;
+	padding-left: 20px;
+}
+
+.user-information i {
+	margin-right: 10px;
+}
+
+.user-information div.input-group {
+	margin-bottom: 20px;
+	margin-left: 50px;
+}
+
+.user-information input[disabled] {
+	border-color: #FFF;
+	background-color: #fff;
+	cursor: default;
+}
+
+.equal {
+	overflow: hidden;
+}
+
+[class*="col-"] {
+	margin-bottom: -99999px;
+	padding-bottom: 99999px;
+}
+
+.my-topics-container{
+	margin-top: 15px;
+}
+/*--------------------------------------------------------------
+		END STYLES EDIT PROFILE PAGE
+  --------------------------------------------------------------
+*/
 @media (max-width: 1024px) {
 	.panel-body h4 {
 		font-size: 16px;
@@ -399,109 +469,170 @@
 	.panel-body .filter {
 		font-size: 14px;
 	}
-}
-@media (max-width: 892px) {
-	.container-body {
-		margin-top: 100px;
-		padding: 10px;
-	}
-}
-@media (max-width: 768px) {
-	.app-btn-secondary, .app-btn-primary {
-		font-size: 14px;
-		padding: 7px 15px;
-	}
-	.user-session {
-		font-weight: bold;
-	}
 
-		.user-session img {
-			margin-left: 60px;
+	/*--------------------------------------------------------------
+		START STYLES EDIT PROFILE PAGE
+	--------------------------------------------------------------*/
+		#profile-picture-container {
+			padding-top: 10px;
 		}
 
-	.container-body {
-		margin-top: 70px;
-		padding: 1px;
-	}
-
-	.topics-container h4 {
-		font-size: 13px;
-	}
-
-	.list-filters {
-		display: none;
-	}
-
-	.panel-default > .panel-heading {
-		color: #000;
-		background-color: transparent;
-		border-bottom-color: #488aff;
-	}
-
-	.caret {
-		visibility: visible;
-	}
-
-	.topic-item {
-		height: 40px;
-	}
-	/*--------------------------------------------------------
-		START STYLES OF TOPIC FORM PAGE
-	--------------------------------------------------------*/
-	#register-survey h3, h4 {
-		margin-bottom: 10%;
-	}
-
-	#register-survey h3 {
-		font-size: 18px;
-	}
-
-	#register-survey .input-group {
-		margin: 10px 0 8px 0;
-	}
-
-	#add-question, #add-new-answer {
-		margin-bottom: 20px;
-		padding: 6px 10px;
-	}
-
-	#survey-form .question-item {
-		padding: 20px 15px;
-	}
-
-		#survey-form .question-item .btn-edit-delete {
-			right: 5px;
-			top: 5px;
+		.change-user-information-container h3 {
+			font-size: 18px;
 		}
 
-			#survey-form .question-item .btn-edit-delete button {
-				padding: 2px 8px;
-				font-size: 10px;
+		#profile-picture-container .image-container {
+			width: 150px;
+			height: 150px;
+		}
+
+		#profile-picture-container label {
+			font-size: 14px;
+			margin-top: 90px;
+		}
+		/*--------------------------------------------------------------
+		END STYLES EDIT PROFILE PAGE
+	  --------------------------------------------------------------
+	*/
+	}
+
+	@media (max-width: 892px) {
+		.container-body {
+			margin-top: 100px;
+			padding: 10px;
+		}
+	}
+
+	@media (max-width: 768px) {
+		.app-btn-secondary, .app-btn-primary {
+			font-size: 14px;
+			padding: 7px 15px;
+		}
+
+		.user-session {
+			font-weight: bold;
+		}
+
+			.user-session img {
+				margin-left: 60px;
 			}
 
-		#survey-form .question-item .question-title {
-			font-size: 15px;
+		.container-body {
+			margin-top: 70px;
+			padding: 1px;
 		}
 
-	#question-form .input-group-addon button {
-		padding: 2px 8px;
-	}
-	/*--------------------------------------------------------
+		.topics-container h4 {
+			font-size: 13px;
+		}
+
+		.list-filters {
+			display: none;
+		}
+
+		.panel-default > .panel-heading {
+			color: #000;
+			background-color: transparent;
+			border-bottom-color: #488aff;
+		}
+
+		.caret {
+			visibility: visible;
+		}
+
+		.topic-item {
+			height: 40px;
+		}
+			.topic-item h6 {
+				margin-top: 0;
+			}
+		/*--------------------------------------------------------
+			START STYLES OF SURVEY FORM PAGE
+		--------------------------------------------------------*/
+		#register-survey h3, h4 {
+			margin-bottom: 10%;
+		}
+
+		#register-survey h3 {
+			font-size: 18px;
+		}
+
+		#register-survey .input-group {
+			margin: 10px 0 8px 0;
+		}
+
+		#add-question, #add-new-answer {
+			margin-bottom: 20px;
+			padding: 6px 10px;
+		}
+
+		#survey-form .question-item {
+			padding: 20px 15px;
+		}
+
+			#survey-form .question-item .btn-edit-delete {
+				right: 5px;
+				top: 5px;
+			}
+
+				#survey-form .question-item .btn-edit-delete button {
+					padding: 2px 8px;
+					font-size: 10px;
+				}
+
+			#survey-form .question-item .question-title {
+				font-size: 15px;
+			}
+
+		#question-form .input-group-addon button {
+			padding: 2px 8px;
+		}
+		/*--------------------------------------------------------
 		END STYLES OF TOPIC FORM PAGE
 	--------------------------------------------------------*/
-}
 
-@media (max-width: 468px) {
-	.media-left {
-		width: 20%;
+		/*--------------------------------------------------------
+		START STYLES EDIT PROFILE PAGE
+	--------------------------------------------------------*/
+		#profile-picture-container label {
+			margin-top: 10px;
+		}
+
+		.user-information div.input-group {
+			margin-bottom: 15px;
+			margin-left: 20px;
+		}
+
+		.user-information #btn-change-user-info, #btn-save-user-info {
+			float: right;
+		}
+		/*--------------------------------------------------------
+		END STYLES EDIT PROFILE PAGE
+	--------------------------------------------------------*/
 	}
 
-	.user-session img {
-		margin-left: 10%;
+	@media (max-width: 468px) {
+		.media-left {
+			width: 20%;
+		}
+
+		.user-session img {
+			margin-left: 10%;
+		}
+
+		/*--------------------------------------------------------
+		START STYLES EDIT PROFILE PAGE
+	--------------------------------------------------------*/
+		.user-information #btn-change-user-info, #btn-change-password {
+			width: 100%;
+		}
+		/*--------------------------------------------------------
+		END STYLES EDIT PROFILE PAGE
+	--------------------------------------------------------*/
 	}
-}
-@media (max-width: 268px) {
-	.input-search {
-		padding-left:2px;
+
+	@media (max-width: 268px) {
+		.input-search {
+			padding-left: 2px;
+		}
 	}
-}

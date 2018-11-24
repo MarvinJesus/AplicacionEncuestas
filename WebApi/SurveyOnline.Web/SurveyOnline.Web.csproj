@@ -203,6 +203,7 @@
     <Compile Include="App_Start\Startup.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Controllers\SurveyController.cs" />
     <Compile Include="Controllers\TopicController.cs" />
     <Compile Include="Global.asax.cs">
@@ -214,9 +215,11 @@
     <Compile Include="Helper\SurveyOnlineHttpClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\CategoryService.cs" />
+    <Compile Include="Services\ProfileService.cs" />
     <Compile Include="Services\Service.cs" />
     <Compile Include="Services\SurveyService.cs" />
     <Compile Include="Services\TopicService.cs" />
+    <Compile Include="ViewModels\ProfileViewModel.cs" />
     <Compile Include="ViewModels\SurveyFormViewModel.cs" />
     <Compile Include="ViewModels\TopicViewModel.cs" />
   </ItemGroup>
@@ -230,6 +233,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\defaultProfilePicture.png" />
     <Content Include="Images\eviroment.jpg" />
     <Content Include="Images\pets.jpg" />
     <Content Include="Images\ProfilePicture_4.png" />
@@ -271,9 +275,10 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Topic\Topic.cshtml" />
+    <Content Include="Views\Topic\Index.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Survey\SurveyForm.cshtml" />
+    <Content Include="Views\Profile\MyProfile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

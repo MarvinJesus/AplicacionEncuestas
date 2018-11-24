@@ -162,6 +162,25 @@ GO
 
 
 
+/**************** UPDATE USER ****************/
+/********************************************/
+CREATE PROCEDURE UPD_PROFILE
+	@P_IDENTIFICATION		VARCHAR(15),
+	@P_NAME					VARCHAR(100),
+	@P_EMAIL				VARCHAR(100),
+	@P_USER_ID				UNIQUEIDENTIFIER
+
+AS
+	BEGIN
+		SET NOCOUNT ON;
+		 UPDATE TBL_PROFILE
+		 SET IDENTIFICATION = @P_IDENTIFICATION, NAME = @P_NAME, EMAIL = @P_EMAIL
+		 WHERE USER_ID = @P_USER_ID
+	END
+GO
+
+
+
 /**************************************************************************************************
 								STORE PROCEDURES FOR ROLE BY PROFILE
 **************************************************************************************************/
@@ -465,7 +484,7 @@ BEGIN
 END
 GO
 
-EXEC CRE_SURVEY 'Los animales salvajes','Los animales salvajes son muy peligrosos y debemos protejerlos','animales.png','B8025776-064E-4B22-9866-CA4B7986E3BF'
+
 
 /*********** UPDATE SURVEY ***********/
 /************************************/
@@ -542,13 +561,14 @@ GO
 /**************************************/
 CREATE PROCEDURE CRE_QUESTION
 	@P_QUESTION_DESCRIPTION	VARCHAR(500),
+	@P_QUESTION_TYPE		INT,
 	@P_SURVEY_ID			UNIQUEIDENTIFIER
 
 AS
 BEGIN
 	SET NOCOUNT ON;
 
-	INSERT INTO TBL_QUESTION VALUES (@P_QUESTION_DESCRIPTION, @P_SURVEY_ID);
+	INSERT INTO TBL_QUESTION VALUES (@P_QUESTION_DESCRIPTION, @P_SURVEY_ID,@P_QUESTION_TYPE);
 
 	DECLARE @P_QUESTION_ID INT = (SELECT IDENT_CURRENT( 'TBL_QUESTION' ));
 	EXEC dbo.RET_QUESTION @P_QUESTION_ID;
@@ -574,6 +594,7 @@ GO
 /***********************************/
 CREATE PROCEDURE UPD_QUESTION
 	@P_QUESTION_ID			INT,
+	@P_QUESTION_TYPE		INT,
 	@P_QUESTION_DESCRIPTION	VARCHAR(500)
 
 AS
@@ -581,7 +602,7 @@ BEGIN
 	SET NOCOUNT ON;
 
 	UPDATE TBL_QUESTION
-	SET QUESTION_DESCRIPTION = @P_QUESTION_DESCRIPTION
+	SET QUESTION_DESCRIPTION = @P_QUESTION_DESCRIPTION, QUESTION_TYPE = @P_QUESTION_TYPE
 	WHERE QUESTION_ID = @P_QUESTION_ID
 
 END

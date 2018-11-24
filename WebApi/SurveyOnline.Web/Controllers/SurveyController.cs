@@ -46,7 +46,7 @@ namespace SurveyOnline.Web.Controllers
                 return Content("La encuesta no pudo ser registrada");
             }
 
-            return Json(Url.Action("Topic", "Topic"));
+            return Json(Url.Action("Index", "Topic"));
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿@using Microsoft.AspNet.Identity
+﻿@using SurveyOnline.Web.Controllers
+@using System.Threading.Tasks
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -22,19 +23,28 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a href="#" class="navbar-brand font-1">
+                <a href="@Url.Action("Index","Topic")" class="navbar-brand font-1">
                     <span class="brand-part-one font-size-1">SURVEY</span>
                     <span class="brand-part-two font-size-2">ONLINE</span>
                 </a>
             </div>
             <div class="collapse navbar-collapse" id="collapse-toggle-main">
                 <ul class="nav navbar-nav navbar-right">
-                    <li class="first-menu-item"><a href="#" class="Active">Inicio</a></li>
-                    <li>@Html.ActionLink("Crear encuesta","SurveyForm","Survey")</li>
+                    <li class="first-menu-item"><a href="@Url.Action("Index","Topic")" class="active">Inicio</a></li>
+                    <li>@Html.ActionLink("Crear encuesta", "SurveyForm", "Survey")</li>
                     <li>@Html.ActionLink("Mis temas", "Mine", "Topic")</li>
                     <li><a href="#">Aplicar encuesta</a></li>
                     <li class="second-last-item">@Html.ActionLink("Cerrar sesión", "Logout", "Home")</li>
-                    <li class="last-menu-item" item-position="last"><a href="#" class="user-session font-size-2">Karina Madrigal<img src="~/Images/ProfilePicture_4.png" class=" img-reponsive img-circle" alt="Profile picture"></a></li>
+                    @{ if(Session["Username"] == null && Session["Picture"] == null){
+                                ((ProfileController)this.ViewContext.Controller).ProfileSession();
+                        }
+                    }
+                    <li class="last-menu-item" item-position="last">
+                        <a href="@Url.Action("MyProfile", "Profile")" class="user-session font-size-2">
+                            @Session["Username"].ToString()
+                            <img src="@Session["Picture"].ToString()" class=" img-reponsive img-circle" alt="Profile picture">
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

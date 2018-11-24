@@ -1,0 +1,159 @@
+﻿@model SurveyOnline.Web.ViewModels.ProfileViewModel
+@{
+	ViewBag.Title = "Mi perfil";
+	Layout = "~/Views/Shared/_LoginPartial.cshtml";
+}
+<div change-user-information-container>
+	<div class="row equal">
+		<div class="col-sm-3 text-center secondary-background" id="profile-picture-container">
+			<h3>Foto de perfil</h3>
+
+			<div class="image-container">
+				<img src="@Model.Profile.ImagePath" picture-src="@Model.Profile.ImagePath" id="profile-picture" class="img-responsive img-circle" alt="Profile picture">
+			</div>
+			@using (Html.BeginForm("ChangePicture", "Profile", FormMethod.Post, new { enctype = "multipart/form-data" }))
+			{
+				<label for="bnt-change-picture" id="picture-label" class="btn btn-lg btn-primary primary-background app-btn-primary app-element-label">
+					Cambiar foto de perfil
+					<input type="file" id="bnt-change-picture" name="file">
+				</label>
+				<div class="hide-container" id="button-container-for-picture">
+					<input type="button" value="Cancelar" class="btn btn-lg btn-primary app-btn-secondary tertiary-background" id="cancel-change-picture">
+					<input type="submit" value="Guardar" class="btn btn-lg btn-primary app-btn-primary primary-background">
+				</div>
+			}
+		</div>
+
+		<div class="col-sm-9 user-information">
+			<div class="secondary-background">
+				<h3>Datos personales</h3>
+				@using (Html.BeginForm("EditUserInfo", "Profile", FormMethod.Post, new { enctype = "application/json" }))
+				{
+					<div class="form-group">
+						<div class="input-group">
+							<label for="name-text"><i class="fas fa-user primary-color"></i>Nombre</label>
+							@Html.TextBoxFor(p => Model.Profile.Name, new { @class = "form-control", data_recovery = Model.Profile.Name, placeholder = "Nombre", id = "name-text", disabled = "false" })
+						</div>
+						<div class="input-group">
+							<label for="email-text"><i class="fas fa-envelope primary-color"></i>Correo</label>
+							@Html.TextBoxFor(p => Model.Profile.Email, new { @class = "form-control", data_recovery = Model.Profile.Email, placeholder = "Correo", id = "email-text", disabled = "false" })
+						</div>
+						<div class="input-group">
+							<label for="identification-text"><i class="fas fa-id-card primary-color"></i>Cedula</label>
+							@Html.TextBoxFor(p => Model.Profile.Identification, new { @class = "form-control", data_recovery = Model.Profile.Identification, placeholder = "Cédula", id = "identification-text", disabled = "false" })
+						</div>
+					</div>
+					<div id="btn-change-password-container" class="show">
+						<a href="#" id="btn-change-password" class="btn btn-md btn-primary tertiary-background app-btn-secondary">Cambiar contraseña</a>
+						<input type="button" id="btn-change-user-info" class="btn btn-md btn-primary primary-background app-btn-primary" value="Editar información">
+					</div>
+					<div id="bnt-edit-user-container" class="hide">
+						<input type="button" id="btn-cancel-changing" class="btn btn-md btn-primary tertiary-background app-btn-secondary" value="Cancelar">
+						<input type="submit" id="btn-save-user-info" class="btn btn-md btn-primary primary-background app-btn-primary" value="Guardar">
+					</div>
+				}
+
+			</div>
+		</div>
+	</div>
+
+	<div class="container-fluid my-topics-container">
+		<h3>Mis temas</h3>
+		<ul class="media-list  topics-container">
+			@if (Model.Topics != null)
+			{
+				foreach (var topic in Model.Topics)
+				{
+					<li class="media background-secondary topic-item" data-topic-id="@topic.Id">
+						<div class="media-left">
+							<img class="media-object" src="@topic.ImagePath" alt="topic-picture">
+							<div class="overlay"></div>
+						</div>
+						<div class="media-body">
+							<a href="@Url.Action("Details","Topic",new { id = topic.Id})" class="media-heading font-size-2">@topic.Title</a>
+							<h6>Encuestas @topic.TotalSurvey</h6>
+						</div>
+						<div class="overlay"></div>
+					</li>
+				}
+			}
+		</ul>
+	</div>
+</div>
+	
+
+@section Scripts{
+	<script>
+		$(document).ready(function(){
+			$("#bnt-change-picture").change(function(){
+
+				var inputFile = $(this);
+
+				if($(inputFile).get(0).files.length > 0){
+
+					$(inputFile).parent().hide();
+					$("#button-container-for-picture").show();
+
+					var reader = new FileReader();
+					reader.onload = function(e){
+						$("#profile-picture").attr("src",e.target.result);
+					};
+					reader.readAsDataURL($(this).get(0).files[0]);
+				}
+			});
+
+			$("#cancel-change-picture").click(function(){
+
+					$("#picture-label").show();
+					$("#button-container-for-picture").hide();
+
+					var src = $("#profile-picture").attr("picture-src");
+					$("#profile-picture").attr("src",src);
+			});
+
+			$("#btn-change-user-info").click(function () {
+				disabledInputs();
+				showButtons();
+			});
+
+			$("#btn-cancel-changing").click(function () {
+				disabledInputs();
+				dataRecoveryFromInputs();
+				showButtons();
+			});
+			function dataRecoveryFromInputs() {
+				var inputs = extractInputs();
+
+				inputs.forEach(element => {
+					var data = $(element).attr("data-recovery");
+					$(element).val(data);
+				});
+			}
+			function disabledInputs() {
+				var inputs = extractInputs();
+				inputs.forEach(element => {
+					if ($(element).prop("disabled") == false) {
+						$(element).prop("disabled", true);
+					} else {
+						$(element).prop("disabled", false);
+					}
+				});
+			}
+
+			function extractInputs() {
+				var children = $(".form-group").children();
+				var inputs = [];
+
+				for (var i = 0; i < children.length; i++) {
+					inputs.push($(children[i]).children()[1]);
+				}
+				return inputs;
+			}
+			function showButtons() {
+				$("#btn-change-password-container").toggleClass("show").toggleClass("hide");
+				$("#bnt-edit-user-container").toggleClass("hide").toggleClass("show");
+			}
+		});
+	</script>
+}
+

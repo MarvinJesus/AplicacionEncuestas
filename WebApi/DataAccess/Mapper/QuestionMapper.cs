@@ -9,6 +9,7 @@ namespace DataAccess.Mapper
         private const string DB_COL_ID = "QUESTION_ID";
         private const string DB_COL_DESCRIPTION = "QUESTION_DESCRIPTION";
         private const string DB_COL_SURVEY_ID = "SURVEY_ID";
+        private const string DB_COL_QUESTION_TYPE = "QUESTION_TYPE";
 
 
         public SqlOperation GetCreateStatement(BaseEntity entity)
@@ -19,6 +20,7 @@ namespace DataAccess.Mapper
 
             operation.AddVarcharParam(DB_COL_DESCRIPTION, question.Description);
             operation.AddGuidParam(DB_COL_SURVEY_ID, question.SurveyId);
+            operation.AddIntParam(DB_COL_QUESTION_TYPE, ((int)question.Type));
 
             return operation;
         }
@@ -56,6 +58,7 @@ namespace DataAccess.Mapper
 
             operation.AddIntParam(DB_COL_ID, question.Id);
             operation.AddVarcharParam(DB_COL_DESCRIPTION, question.Description);
+            operation.AddIntParam(DB_COL_QUESTION_TYPE, ((int)question.Type));
 
             return operation;
         }
@@ -93,7 +96,8 @@ namespace DataAccess.Mapper
             {
                 Id = GetIntValue(row, DB_COL_ID),
                 Description = GetStringValue(row, DB_COL_DESCRIPTION),
-                SurveyId = GetGuidValue(row, DB_COL_SURVEY_ID)
+                SurveyId = GetGuidValue(row, DB_COL_SURVEY_ID),
+                Type = GetQuestionType(row, DB_COL_QUESTION_TYPE),
             };
             return Question;
         }
