@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Entities_POJO.Enums;
+using System;
 using System.Collections.Generic;
 
 namespace Entities_POJO
@@ -9,7 +10,7 @@ namespace Entities_POJO
 
         public string Description { get; set; }
 
-        public int Type { get; set; }
+        public QuestionType Type { get; set; }
 
         public Guid SurveyId { get; set; }
 

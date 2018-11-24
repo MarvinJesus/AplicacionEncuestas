@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Entities_POJO.Enums;
+using System;
 using System.Collections.Generic;
 
 namespace DataAccess.Mapper
@@ -53,6 +54,15 @@ namespace DataAccess.Mapper
                 return (Guid)dic[attName];
 
             return new Guid("00000000-0000-0000-0000-000000000000");
+        }
+
+        protected QuestionType GetQuestionType(Dictionary<string, object> dic, string attName)
+        {
+            var val = dic[attName];
+            if (dic.ContainsKey(attName) && val is int)
+                return (QuestionType)dic[attName];
+
+            return QuestionType.Undifined;
         }
     }
 }

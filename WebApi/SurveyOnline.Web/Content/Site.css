@@ -543,9 +543,12 @@
 		.topic-item {
 			height: 40px;
 		}
+			.topic-item h6 {
+				margin-top: 0;
+			}
 		/*--------------------------------------------------------
-		START STYLES OF TOPIC FORM PAGE
-	--------------------------------------------------------*/
+			START STYLES OF SURVEY FORM PAGE
+		--------------------------------------------------------*/
 		#register-survey h3, h4 {
 			margin-bottom: 10%;
 		}
