@@ -420,6 +420,9 @@
 		display: none;
 	}
 
+.user-information{
+	padding-right:0px;
+}
 .user-information h3 {
 	margin-top: 0;
 	margin-bottom: 20px;
@@ -450,11 +453,14 @@
 	margin-bottom: -99999px;
 	padding-bottom: 99999px;
 }
+
+.my-topics-container{
+	margin-top: 15px;
+}
 /*--------------------------------------------------------------
 		END STYLES EDIT PROFILE PAGE
   --------------------------------------------------------------
 */
-
 @media (max-width: 1024px) {
 	.panel-body h4 {
 		font-size: 16px;
@@ -463,30 +469,6 @@
 	.panel-body .filter {
 		font-size: 14px;
 	}
-	/*--------------------------------------------------------------
-		START STYLES EDIT PROFILE PAGE
-	  --------------------------------------------------------------
-	*/
-	#profile-picture-container {
-		padding-top: 10px;
-	}
-
-	.change-user-information-container h3 {
-		font-size: 18px;
-	}
-
-	#profile-picture-container .image-container {
-		width: 150px;
-		height: 150px;
-	}
-
-	#profile-picture-container label {
-		font-size: 14px;
-		margin-top: 90px;
-	}
-	/*--------------------------------------------------------------
-		END STYLES EDIT PROFILE PAGE
-	--------------------------------------------------------------*/
 
 	/*--------------------------------------------------------------
 		START STYLES EDIT PROFILE PAGE

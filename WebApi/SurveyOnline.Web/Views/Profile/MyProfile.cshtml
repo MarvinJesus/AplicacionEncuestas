@@ -3,7 +3,8 @@
 	ViewBag.Title = "Mi perfil";
 	Layout = "~/Views/Shared/_LoginPartial.cshtml";
 }
-	<div class="row equal change-user-information-container">
+<div change-user-information-container>
+	<div class="row equal">
 		<div class="col-sm-3 text-center secondary-background" id="profile-picture-container">
 			<h3>Foto de perfil</h3>
 
@@ -31,15 +32,15 @@
 					<div class="form-group">
 						<div class="input-group">
 							<label for="name-text"><i class="fas fa-user primary-color"></i>Nombre</label>
-							@Html.TextBoxFor(p => Model.Profile.Name,new { @class= "form-control", data_recovery=Model.Profile.Name, placeholder = "Nombre",id= "name-text", disabled="false" })
+							@Html.TextBoxFor(p => Model.Profile.Name, new { @class = "form-control", data_recovery = Model.Profile.Name, placeholder = "Nombre", id = "name-text", disabled = "false" })
 						</div>
 						<div class="input-group">
 							<label for="email-text"><i class="fas fa-envelope primary-color"></i>Correo</label>
-							@Html.TextBoxFor(p => Model.Profile.Email, new { @class = "form-control", data_recovery=Model.Profile.Email, placeholder = "Correo", id = "email-text", disabled = "false" })
+							@Html.TextBoxFor(p => Model.Profile.Email, new { @class = "form-control", data_recovery = Model.Profile.Email, placeholder = "Correo", id = "email-text", disabled = "false" })
 						</div>
 						<div class="input-group">
 							<label for="identification-text"><i class="fas fa-id-card primary-color"></i>Cedula</label>
-							@Html.TextBoxFor(p => Model.Profile.Identification, new { @class = "form-control", data_recovery=Model.Profile.Identification, placeholder = "Cédula", id = "identification-text", disabled = "false" })
+							@Html.TextBoxFor(p => Model.Profile.Identification, new { @class = "form-control", data_recovery = Model.Profile.Identification, placeholder = "Cédula", id = "identification-text", disabled = "false" })
 						</div>
 					</div>
 					<div id="btn-change-password-container" class="show">
@@ -55,6 +56,31 @@
 			</div>
 		</div>
 	</div>
+
+	<div class="container-fluid my-topics-container">
+		<h3>Mis temas</h3>
+		<ul class="media-list  topics-container">
+			@if (Model.Topics != null)
+			{
+				foreach (var topic in Model.Topics)
+				{
+					<li class="media background-secondary topic-item" data-topic-id="@topic.Id">
+						<div class="media-left">
+							<img class="media-object" src="@topic.ImagePath" alt="topic-picture">
+							<div class="overlay"></div>
+						</div>
+						<div class="media-body">
+							<a href="@Url.Action("Details","Topic",new { id = topic.Id})" class="media-heading font-size-2">@topic.Title</a>
+							<h6>Encuestas @topic.TotalSurvey</h6>
+						</div>
+						<div class="overlay"></div>
+					</li>
+				}
+			}
+		</ul>
+	</div>
+</div>
+	
 
 @section Scripts{
 	<script>

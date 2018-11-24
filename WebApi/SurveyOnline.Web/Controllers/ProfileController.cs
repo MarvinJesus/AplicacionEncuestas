@@ -3,6 +3,7 @@ using Microsoft.AspNet.Identity;
 using SurveyOnline.Web.Services;
 using SurveyOnline.Web.ViewModels;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -16,13 +17,25 @@ namespace SurveyOnline.Web.Controllers
     {
         public async Task<ActionResult> MyProfile()
         {
-            var viewModel = new ProfileViewModel();
             Profile profile = null;
 
-            var claims = User as ClaimsPrincipal;
-            var services = new ProfileService(claims.FindFirst("access_token").Value);
+            var viewModel = new ProfileViewModel();
 
-            profile = await services.GetProfileAsync(Guid.Parse(User.Identity.GetUserId()));
+            var claims = User as ClaimsPrincipal;
+            var accessToken = claims.FindFirst("access_token").Value;
+
+            var services = new ProfileService(accessToken);
+            var topicService = new TopicService(accessToken);
+
+            var userId = Guid.Parse(User.Identity.GetUserId());
+            var paramList = new Dictionary<string, string>
+            {
+                { "sort", "id" },
+                { "fields","id,title,imagepath,totalSurvey"}
+            };
+
+            profile = await services.GetProfileAsync(userId);
+            viewModel.Topics = await topicService.GetUserTopicsAsync(userId, paramList);
 
             if (profile == null) profile = new Profile();
 
