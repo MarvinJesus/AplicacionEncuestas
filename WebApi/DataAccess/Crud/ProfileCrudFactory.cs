@@ -81,7 +81,8 @@ namespace DataAccess.Crud
 
         public override int Update(BaseEntity entity)
         {
-            throw new System.NotImplementedException();
+            var profile = (Profile)entity;
+            return dao.ExecuteProcedure(_mapper.GetUpdateStatement(profile));
         }
     }
 }

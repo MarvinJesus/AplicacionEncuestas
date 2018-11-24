@@ -91,9 +91,17 @@ namespace DataAccess.Mapper
             return operation;
         }
 
-        SqlOperation ISqlStaments.GetUpdateStatement(BaseEntity entity)
+        public SqlOperation GetUpdateStatement(BaseEntity entity)
         {
-            throw new NotImplementedException();
+            var Profile = (Profile)entity;
+            var operation = new SqlOperation { ProcedureName = "UPD_PROFILE" };
+
+            operation.AddVarcharParam(DB_COL_IDENTIFICATION, Profile.Identification);
+            operation.AddVarcharParam(DB_COL_EMAIL, Profile.Email);
+            operation.AddVarcharParam(DB_COL_NAME, Profile.Name);
+            operation.AddGuidParam(DB_COL_USERID, Profile.UserId);
+
+            return operation;
         }
     }
 }

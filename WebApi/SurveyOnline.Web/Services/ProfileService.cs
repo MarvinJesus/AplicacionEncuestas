@@ -6,6 +6,7 @@ using System;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SurveyOnline.Web.Services
@@ -30,6 +31,25 @@ namespace SurveyOnline.Web.Services
                 var content = await result.Content.ReadAsStringAsync();
 
                 profile = JsonConvert.DeserializeObject<Profile>(content);
+            }
+
+            return profile;
+        }
+
+        public Profile GetProfile(Guid profileId)
+        {
+            var client = SurveyOnlineHttpClient.GetHttpClient(_accessToken);
+            Profile profile = null;
+
+            var result = client.GetAsync(string.Format($"api/{PROFILE_CONTROLLER}?userId={profileId.ToString()}"));
+            Task.WhenAll(result);
+
+            if (result.Result.IsSuccessStatusCode)
+            {
+                var content = result.Result.Content.ReadAsStringAsync();
+                Task.WhenAll(content);
+
+                profile = JsonConvert.DeserializeObject<Profile>(content.Result);
             }
 
             return profile;
@@ -61,6 +81,26 @@ namespace SurveyOnline.Web.Services
             }
 
             return profile;
+        }
+
+        public async Task<Profile> EditProfileAsync(Profile profile)
+        {
+            if (profile == null) return profile;
+
+            var client = SurveyOnlineHttpClient.GetHttpClient(_accessToken);
+            Profile profileEdited = null;
+
+            var result = await client.PutAsync(string.Format($"api/{PROFILE_CONTROLLER}/{profile.UserId.ToString()}"),
+                new StringContent(JsonConvert.SerializeObject(profile), Encoding.Unicode, "application/json"));
+
+            if (result.IsSuccessStatusCode)
+            {
+                var content = await result.Content.ReadAsStringAsync();
+
+                profileEdited = JsonConvert.DeserializeObject<Profile>(content);
+            }
+
+            return profileEdited;
         }
     }
 }

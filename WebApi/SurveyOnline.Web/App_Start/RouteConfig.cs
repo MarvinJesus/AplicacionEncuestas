@@ -17,7 +17,7 @@ namespace SurveyOnline.Web
             routes.MapRoute(
                 name: "Profile",
                 url: "Profile",
-                defaults: new { controller = "Profile", action = "ProfileSession" }
+                defaults: new { controller = "Profile", action = "MyProfile" }
                 );
             routes.MapRoute(
                 name: "Logout",

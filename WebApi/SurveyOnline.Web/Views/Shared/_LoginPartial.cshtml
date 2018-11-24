@@ -1,4 +1,5 @@
-﻿@using Microsoft.AspNet.Identity
+﻿@using SurveyOnline.Web.Controllers
+@using System.Threading.Tasks
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -34,6 +35,10 @@
                     <li>@Html.ActionLink("Mis temas", "Mine", "Topic")</li>
                     <li><a href="#">Aplicar encuesta</a></li>
                     <li class="second-last-item">@Html.ActionLink("Cerrar sesión", "Logout", "Home")</li>
+                    @{ if(Session["Username"] == null && Session["Picture"] == null){
+                                ((ProfileController)this.ViewContext.Controller).ProfileSession();
+                        }
+                    }
                     <li class="last-menu-item" item-position="last">
                         <a href="@Url.Action("MyProfile", "Profile")" class="user-session font-size-2">
                             @Session["Username"].ToString()

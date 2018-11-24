@@ -112,6 +112,46 @@ namespace CoreApi
                 throw ex;
             }
         }
+
+        public ManagerActionResult<Profile> EditProfile(Profile profile)
+        {
+            try
+            {
+                if (profile == null) return new ManagerActionResult<Profile>(null, ManagerActionStatus.Error);
+
+                var existingProfile = _crudFactory.Retrieve<Profile>(profile);
+
+                if (existingProfile == null) return new ManagerActionResult<Profile>(profile, ManagerActionStatus.NotFound);
+
+                var profileEdited = _crudFactory.Update(profile);
+
+                if (profileEdited != 0) return new ManagerActionResult<Profile>(_crudFactory.Retrieve<Profile>(profile)
+                    , ManagerActionStatus.Updated);
+
+                return new ManagerActionResult<Profile>(profile, ManagerActionStatus.NothingModified);
+            }
+            catch (System.Data.SqlClient.SqlException sqlEx)
+            {
+                BussinessException exception;
+
+                switch (sqlEx.Number)
+                {
+                    case 201:
+                        exception = ExceptionManager.GetInstance().Process(new BussinessException(2));//Missing parameters
+                        break;
+                    case 2627:
+                        exception = ExceptionManager.GetInstance().Process(new BussinessException(3));//Existing user
+                        break;
+                    default:
+                        throw sqlEx;//Uncontrolled exception
+                }
+                return new ManagerActionResult<Profile>(null, ManagerActionStatus.Error, exception);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 
     public interface IProfileManager
@@ -121,5 +161,6 @@ namespace CoreApi
         ManagerActionResult<Profile> RegisterProfile(ProfileForRegistration profileForRegistration);
         Profile GetProfile(string userName, string password);
         ICollection<Role> GetProfileRoles(Guid userId);
+        ManagerActionResult<Profile> EditProfile(Profile profile);
     }
 }

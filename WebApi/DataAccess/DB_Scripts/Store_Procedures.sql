@@ -162,6 +162,25 @@ GO
 
 
 
+/**************** UPDATE USER ****************/
+/********************************************/
+CREATE PROCEDURE UPD_PROFILE
+	@P_IDENTIFICATION		VARCHAR(15),
+	@P_NAME					VARCHAR(100),
+	@P_EMAIL				VARCHAR(100),
+	@P_USER_ID				UNIQUEIDENTIFIER
+
+AS
+	BEGIN
+		SET NOCOUNT ON;
+		 UPDATE TBL_PROFILE
+		 SET IDENTIFICATION = @P_IDENTIFICATION, NAME = @P_NAME, EMAIL = @P_EMAIL
+		 WHERE USER_ID = @P_USER_ID
+	END
+GO
+
+
+
 /**************************************************************************************************
 								STORE PROCEDURES FOR ROLE BY PROFILE
 **************************************************************************************************/

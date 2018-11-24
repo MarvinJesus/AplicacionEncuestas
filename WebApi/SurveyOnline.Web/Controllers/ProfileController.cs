@@ -31,12 +31,12 @@ namespace SurveyOnline.Web.Controllers
             return View(viewModel);
         }
 
-        public async Task<ActionResult> ProfileSession()
+        public ActionResult ProfileSession()
         {
             var claims = User as ClaimsPrincipal;
             var service = new ProfileService(claims.FindFirst("access_token").Value);
 
-            var profile = await service.GetProfileAsync(Guid.Parse(User.Identity.GetUserId()));
+            Profile profile = service.GetProfile(Guid.Parse(User.Identity.GetUserId()));
 
             if (profile == null)
             {
@@ -73,6 +73,22 @@ namespace SurveyOnline.Web.Controllers
                 file.ContentLength, Guid.Parse(User.Identity.GetUserId()));
 
             if (profile != null) Session["Picture"] = profile.ImagePath;
+
+            return RedirectToAction("MyProfile", "Profile");
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> EditUserInfo(Profile profile)
+        {
+            if (profile == null) return RedirectToAction("MyProfile", "Profile");
+            var claims = User as ClaimsPrincipal;
+            var services = new ProfileService(claims.FindFirst("access_token").Value);
+
+            profile.UserId = Guid.Parse(User.Identity.GetUserId());
+
+            var profileEdited = await services.EditProfileAsync(profile);
+
+            if (profileEdited != null) Session["Username"] = profileEdited.Name;
 
             return RedirectToAction("MyProfile", "Profile");
         }
