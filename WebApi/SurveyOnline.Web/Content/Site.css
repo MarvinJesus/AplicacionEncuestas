@@ -2,7 +2,9 @@
 	background: #f9f9f9;
 	font-family: 'Lato', sans-serif;
 }
-
+.heading {
+	margin-bottom: 30px;
+}
 .clear-fix {
 	clear: both;
 }
@@ -500,12 +502,20 @@
 #add-topic-picture {
 	margin-top: 15px;
 }
+#add-topic-container .heading {
+	margin-left: 2%;
+	margin-bottom: 2%;
+}
 /*--------------------------------------------------------------
 		END STYLES CREATE TOPIC PAGE
   --------------------------------------------------------------
 */
 
 @media (max-width: 1024px) {
+	.navbar .navbar-collapse ul li a {
+		padding-left: 10px;
+		padding-right: 10px;
+	}
 	.panel-body h4 {
 		font-size: 16px;
 	}
@@ -665,6 +675,14 @@
 		.input-group .form-control {
 			height: 30px;
 			font-size: 14px;
+		}
+		.heading {
+			font-size: 20px;
+			margin-bottom: 20px;
+		}
+		#add-topic-container .heading {
+			margin-left: 6%;
+			margin-bottom: 6%;
 		}
 		/*--------------------------------------------------------------
 		START STYLES CREATE TOPIC PAGE

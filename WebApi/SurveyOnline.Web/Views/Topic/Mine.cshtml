@@ -1,0 +1,34 @@
+﻿@model ICollection<Entities_POJO.Topic>
+@{
+    ViewBag.Title = "Mine";
+    Layout = "~/Views/Shared/_LoginPartial.cshtml";
+}
+
+<div class="container">
+    <h3 class="heading">Mis temas</h3>
+
+    @if (Model != null)
+    {
+        <ul class="media-list  topics-container">
+            @foreach (var topic in Model)
+            {
+                <li class="media background-secondary topic-item" data-topic-id="@topic.Id">
+                    <div class="media-left">
+                        <img class="media-object" src="@topic.ImagePath" alt="topic-picture">
+                        <div class="overlay"></div>
+                    </div>
+                    <div class="media-body">
+                        <a href="@Url.Action("Details", "Topic", new { id = topic.Id })" class="media-heading font-size-2">@topic.Title</a>
+                        <h6>Encuestas @topic.TotalSurvey</h6>
+                    </div>
+                    <div class="overlay"></div>
+                 </li>
+            }
+        </ul>
+     }else
+     {
+        <h4>No encontramos temas registrados.</h4>
+        @Html.ActionLink("Crear tema", "TopicForm", "Topic")
+     }
+</div>
+

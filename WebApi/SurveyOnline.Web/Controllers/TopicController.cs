@@ -82,9 +82,18 @@ namespace SurveyOnline.Web.Controllers
         }
 
         [Authorize]
-        public ActionResult Mine()
+        public async Task<ActionResult> Mine()
         {
-            return View();
+            var service = new TopicService(GetAccessToken());
+
+            var param = new Dictionary<string, string>
+            {
+                { "sort", "id" },
+                { "fields","id,title,imagepath,totalSurvey"},
+            };
+
+            var topics = await service.GetUserTopicsAsync(GetUserId(), param);
+            return View(topics);
         }
 
         public async Task<ActionResult> TopicForm(string selectedCategories = null, string title = null)

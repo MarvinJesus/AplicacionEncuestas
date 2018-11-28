@@ -41,7 +41,7 @@ namespace SurveyOnline.Web.Services
 
             return topics;
         }
-        public async Task<ICollection<Topic>> GetTopicsAsync(Dictionary<string, string> param)
+        public async Task<ICollection<Topic>> GetTopicsAsync(Dictionary<string, string> param = null)
         {
             var client = SurveyOnlineHttpClient.GetHttpClient(_accessToken);
             ICollection<Topic> topics = null;

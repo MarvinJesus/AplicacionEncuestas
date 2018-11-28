@@ -282,6 +282,7 @@
     <Content Include="Views\Survey\SurveyForm.cshtml" />
     <Content Include="Views\Profile\MyProfile.cshtml" />
     <Content Include="Views\Topic\TopicForm.cshtml" />
+    <Content Include="Views\Topic\Mine.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
