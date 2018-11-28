@@ -1,23 +1,18 @@
 ﻿using Entities_POJO;
-using Microsoft.AspNet.Identity;
 using SurveyOnline.Web.Services;
 using SurveyOnline.Web.ViewModels;
-using System;
 using System.Collections.Generic;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace SurveyOnline.Web.Controllers
 {
-    public class SurveyController : Controller
+    [Authorize]
+    public class SurveyController : SurveyOnlineController
     {
         public async Task<ActionResult> SurveyForm()
         {
-            var userId = User.Identity.GetUserId();
-
-            var user = User as ClaimsPrincipal;
-            var topicService = new TopicService(user.FindFirst("access_token").Value);
+            var topicService = new TopicService(GetAccessToken());
 
             var paramList = new Dictionary<string, string>
             {
@@ -27,7 +22,7 @@ namespace SurveyOnline.Web.Controllers
 
             var model = new SurveyFormViewModel
             {
-                Topics = await topicService.GetUserTopicsAsync(Guid.Parse(userId), paramList)
+                Topics = await topicService.GetUserTopicsAsync(GetUserId(), paramList)
             };
 
             return View(model);
@@ -36,8 +31,7 @@ namespace SurveyOnline.Web.Controllers
         [HttpPost]
         public async Task<ActionResult> RegisterSurvey(Survey survey)
         {
-            var user = User as ClaimsPrincipal;
-            var service = new SurveyService(user.FindFirst("access_token").Value);
+            var service = new SurveyService(GetAccessToken());
 
             var newSurvey = await service.RegisterSurveyAsync(survey);
 

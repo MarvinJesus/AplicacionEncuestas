@@ -449,7 +449,7 @@
 	overflow: hidden;
 }
 
-[class*="col-"] {
+.equal [class*="col-"] {
 	margin-bottom: -99999px;
 	padding-bottom: 99999px;
 }
@@ -461,6 +461,50 @@
 		END STYLES EDIT PROFILE PAGE
   --------------------------------------------------------------
 */
+
+
+/*--------------------------------------------------------------
+		START STYLES CREATE TOPIC PAGE
+  --------------------------------------------------------------
+*/
+.filter-container {
+	position: relative;
+	width: 100%;
+	padding: 10px;
+	margin-top: 20px;
+	overflow: auto;
+}
+
+.app-label-primary {
+	padding-top: 6px;
+	padding-bottom: 6px;
+}
+
+	.app-label-primary input[type="file"] {
+		display: none;
+	}
+
+.app-label-primary {
+	padding: 3px 10px;
+}
+
+#add-topic-container .icon {
+	margin-left: 0;
+	margin-right: 10px;
+}
+
+#add-topic-container .container {
+	margin-top: 20px;
+}
+
+#add-topic-picture {
+	margin-top: 15px;
+}
+/*--------------------------------------------------------------
+		END STYLES CREATE TOPIC PAGE
+  --------------------------------------------------------------
+*/
+
 @media (max-width: 1024px) {
 	.panel-body h4 {
 		font-size: 16px;
@@ -609,6 +653,23 @@
 		/*--------------------------------------------------------
 		END STYLES EDIT PROFILE PAGE
 	--------------------------------------------------------*/
+
+		/*--------------------------------------------------------------
+		START STYLES CREATE TOPIC PAGE
+	  --------------------------------------------------------------
+	*/
+		.filters-selected-title {
+			font-size: 14px;
+		}
+
+		.input-group .form-control {
+			height: 30px;
+			font-size: 14px;
+		}
+		/*--------------------------------------------------------------
+		START STYLES CREATE TOPIC PAGE
+	  --------------------------------------------------------------
+	*/
 	}
 
 	@media (max-width: 468px) {

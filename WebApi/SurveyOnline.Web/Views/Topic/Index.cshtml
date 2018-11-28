@@ -88,7 +88,7 @@
 @section Scripts{
     <script>
         $(document).ready(function () {
-            FilterController.init('#search-filters-container', '#selected-filters');
+            FilterController.init('#search-filters-container', '#selected-filters',".categoryList");
 
             $('#display-filters').click(function () {
                 $('.list-filters').toggle(300);

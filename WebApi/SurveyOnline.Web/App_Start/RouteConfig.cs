@@ -9,16 +9,11 @@ namespace SurveyOnline.Web
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
-            //routes.MapRoute(
-            //    name: "Topic",
-            //    url: "Topic",
-            //    defaults: new { controller = "Topic", action = "Topic" }
-            //    );
             routes.MapRoute(
                 name: "Profile",
                 url: "Profile",
-                defaults: new { controller = "Profile", action = "MyProfile" }
-                );
+                defaults: new { controller = "Profile", action = "MyProfile" });
+
             routes.MapRoute(
                 name: "Logout",
                 url: "Logout",

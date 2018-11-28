@@ -1,5 +1,4 @@
 ﻿@using SurveyOnline.Web.Controllers
-@using System.Threading.Tasks
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -36,7 +35,7 @@
                     <li><a href="#">Aplicar encuesta</a></li>
                     <li class="second-last-item">@Html.ActionLink("Cerrar sesión", "Logout", "Home")</li>
                     @{ if(Session["Username"] == null && Session["Picture"] == null){
-                                ((ProfileController)this.ViewContext.Controller).ProfileSession();
+                                ((SurveyOnlineController)this.ViewContext.Controller).ProfileSession();
                         }
                     }
                     <li class="last-menu-item" item-position="last">
