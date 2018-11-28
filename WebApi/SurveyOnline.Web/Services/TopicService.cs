@@ -3,7 +3,9 @@ using Newtonsoft.Json;
 using SurveyOnline.Web.Helper;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SurveyOnline.Web.Services
@@ -89,6 +91,26 @@ namespace SurveyOnline.Web.Services
             }
 
             return paramToInsertValue;
+        }
+
+        public async Task<Topic> RegisterTopicAsync(Guid userId, TopicForRegistration topicForRegistration)
+        {
+            if (topicForRegistration == null) return null;
+
+            var client = SurveyOnlineHttpClient.GetHttpClient(_accessToken);
+            var objectSerialized = JsonConvert.SerializeObject(topicForRegistration);
+            Topic topic = null;
+
+            var result = await client.PostAsync($"api/{PROFILE_CONTROLLER_NAME}/{userId.ToString()}/{TOPIC_CONTROLLER_NAME}",
+                new StringContent(objectSerialized, Encoding.Unicode, "application/json"));
+
+            if (result.IsSuccessStatusCode)
+            {
+                var content = await result.Content.ReadAsStringAsync();
+                topic = JsonConvert.DeserializeObject<Topic>(content);
+            }
+
+            return topic;
         }
     }
 }

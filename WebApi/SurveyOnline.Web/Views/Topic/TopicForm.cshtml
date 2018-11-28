@@ -1,0 +1,157 @@
+﻿@model SurveyOnline.Web.ViewModels.ViewModelForTopicForm
+@{
+	ViewBag.Title = "Registrar Tema";
+	Layout = "~/Views/Shared/_LoginPartial.cshtml";
+}
+
+<div id="add-topic-container">
+	<div class="alert alert-danger hidden" role="alert" id="alert-topic-error">
+		<h6 id="error-text"></h6>
+	</div>
+	@using (Html.BeginForm("RegisterTopic", "Topic", FormMethod.Post,new {enctype = "multipart/form-data" }))
+	{
+		<div class="row">
+			<div class="col-sm-3 col-md-3 col-lg-2">
+				<div class="panel panel-default">
+					<div class="panel-heading" id="display-filters">
+						<h3 class="panel-title">
+							Agregar filtros:
+							<span class="pull-right">
+								<span class="caret"></span>
+							</span>
+						</h3>
+					</div>
+					<div class="panel-body list-filters">
+						<h4 class="list-group-heading"><strong>Categorias:</strong></h4>
+						<ul class="list-group filters-container" id="search-filters-container">
+							@foreach (var category in Model.Categories)
+							{
+								<li class="list-group-item">
+									<a href="#" class="filter font-size-2 js-apply-filter" data-filter-id="@category.Id">@category.Name</a>
+								</li>
+							}
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-8 col-md-9">
+				<div class="input-group">
+					<label for="txt-topic-title"><i class="fas fa-poll-h primary-color icon"></i>Titulo del tema</label>
+					@Html.TextBoxFor(t => Model.Title, new { type = "text", @class = "form-control font-size-2", id = "txt-topic-title", placeholder = "Tema" })
+					@*<input type="text" id="txt-topic-title" class="form-control font-size-2" placeholder="Tema">*@
+				</div>
+				<div class="">
+					<label class="btn btn-sm btn-primary primary-background app-btn-primary app-label-primary" id="add-topic-picture">
+						<i class="fas fa-plus icon"></i>Agregar imagen
+						@Html.TextBoxFor(t => Model.Image, new { type = "file", id = "input-file",accept = "image/*" })
+						@*<input type="file" name="file" id="input-file">*@
+					</label>
+
+					<h5 class="picture-name">No ha seleccionado ninguna imagen</h5>
+				</div>
+
+				@Html.TextBoxFor(t => Model.SelectedCategories, new { @class = "hidden categoryList" })
+				@*<input type="text" class="categoryList hidden">*@
+
+				<div class="secondary-background filter-container">
+					<h4 class="filters-selected-title">Filtros seleccionados:</h4>
+					<div class="selected-filters secondary-background" id="selected-filters"></div>
+				</div>
+			</div>
+		</div>
+		<div class="clear-fix"></div>
+		<div class="container">
+			<a href="Homepage.html" class="btn btn-md btn-primary tertiary-background app-btn-secondary">Cancelar</a>
+			<input type="submit" class="btn btn-lg btn-primary primary-background app-btn-primary pull-right" value="Guardar">
+		</div>
+	}
+</div>
+
+@section Scripts{
+	<script>
+		$(document).ready(function() {
+			FilterController.init('#search-filters-container','#selected-filters',".categoryList");
+
+			$('#display-filters').click(function() {
+				$('.list-filters').toggle(300);
+			});
+
+			$("form").submit(function(event){
+				var error = true;
+				var title = $("#txt-topic-title").val();
+				var file = $("#input-file").get(0).files;
+				var errorMessage = "";
+
+				if(title.length > 0 ){
+					if (file.length > 0) {
+						$(".categoryList").val(FilterController.getCategoriesId());
+						error = false;
+					}else{
+						errorMessage = "Imagen"
+					}
+				}else{
+					errorMessage = "Title";
+				}
+
+				if(error){
+					showError("El campo: <strong>" + errorMessage + "</strong> es requerido.");
+					event.preventDefault();
+				}
+				return;
+			});
+
+			$("#add-topic-picture").change(function(){
+				var input = $(this).children()[1];
+
+				if($(input).get(0).files.length > 0){
+					if (validateFormat(getFormat(input))) {
+						hideError();
+						$(".picture-name").text(getFilename(input));
+					}else{
+						$(input).val("");
+						$(".picture-name").text("No ha seleccionado ninguna imagen");
+						showError("Imagen no es permitida, seleccione una imagen con formato: <strong> png, jpg or jpeg</strong>");
+					}
+				}
+			});
+
+			function hideError() {
+				$("#alert-topic-error").addClass("hidden");
+			}
+
+			function showError(text){
+				var alert = $("#alert-topic-error");
+
+				if($(alert).hasClass("hidden")){
+					$(alert).removeClass("hidden");
+				}
+				$(alert).empty();
+				$(alert).append("<p>"+ text +"</p>");
+				$("html, body").animate({scrollTop:0}, "fast");
+			}
+
+			function validateFormat(format){
+				var error = true;
+				var extensionAllowed = [".png",".jpg",".jpeg"];
+
+				if(!extensionAllowed.includes(format)){
+					error = false;
+				}
+				return error;
+			}
+
+			function getFormat(input){
+				var path = input.value;
+				var indexOf = path.lastIndexOf('.');
+
+				return path.substr(indexOf, path.length).toLowerCase();
+			}
+
+			function getFilename(input){
+				var path =  input.value;
+				var partsOfpath = path.split('\\');
+				return partsOfpath[partsOfpath.length - 1];
+			}
+		});
+	</script>
+}

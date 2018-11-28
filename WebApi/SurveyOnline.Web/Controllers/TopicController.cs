@@ -1,10 +1,12 @@
 ﻿using Entities_POJO;
+using Microsoft.AspNet.Identity;
 using PagedList;
 using SurveyOnline.Web.Helper;
 using SurveyOnline.Web.Services;
 using SurveyOnline.Web.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -12,7 +14,8 @@ using System.Web.Mvc;
 
 namespace SurveyOnline.Web.Controllers
 {
-    public class TopicController : Controller
+    [Authorize]
+    public class TopicController : SurveyOnlineController
     {
         [Authorize]
         public async Task<ActionResult> Index(string query = null, string filters = null, int? page = 1)
@@ -82,6 +85,70 @@ namespace SurveyOnline.Web.Controllers
         public ActionResult Mine()
         {
             return View();
+        }
+
+        public async Task<ActionResult> TopicForm(string selectedCategories = null, string title = null)
+        {
+            var claims = User as ClaimsPrincipal;
+            var categoryService = new CategoryService(claims.FindFirst("access_token").Value);
+            var model = new ViewModelForTopicForm
+            {
+                Categories = await categoryService.GetCategoriesAsync()
+            };
+
+            if (selectedCategories != null) model.SelectedCategories = selectedCategories;
+
+            if (title != null) model.Title = title;
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> RegisterTopic(ViewModelForTopicForm model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("TopicForm", "Topic",
+                new { model.SelectedCategories, model.Title });
+            }
+
+            var claims = User as ClaimsPrincipal;
+            var userId = Guid.Parse(User.Identity.GetUserId());
+            var topicService = new TopicService(claims.FindFirst("access_token").Value);
+            List<Category> categories = null;
+
+            var uploadedImage = new byte[model.Image.InputStream.Length];
+            model.Image.InputStream.Read(uploadedImage, 0, uploadedImage.Length);
+
+            if (model.SelectedCategories != null)
+            {
+                categories = new List<Category>();
+
+                foreach (var categoryId in model.SelectedCategories.Split(','))
+                {
+                    if (int.TryParse(categoryId, out int id))
+                    {
+                        categories.Add(new Category { Id = id });
+                    }
+                }
+            }
+
+            var topicForRegistration = new TopicForRegistration
+            {
+                Title = model.Title,
+                Categories = categories,
+                UserId = userId,
+                Description = " ",
+                Picture = new PictureForEntity
+                {
+                    Extension = Path.GetExtension(model.Image.FileName),
+                    Picture = uploadedImage,
+                }
+            };
+
+            await topicService.RegisterTopicAsync(userId, topicForRegistration);
+
+            return RedirectToAction("Index", "Topic");
         }
     }
 }
