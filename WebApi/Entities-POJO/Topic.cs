@@ -19,6 +19,8 @@ namespace Entities_POJO
 
         public ICollection<Category> Categories { get; set; }
 
+        public ICollection<Survey> Surveys { get; set; }
+
         public Topic()
         {
         }

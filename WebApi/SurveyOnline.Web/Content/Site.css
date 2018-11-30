@@ -251,7 +251,6 @@
 }
 
 	.topic-item:hover {
-		background: #c7c7c7;
 		cursor: pointer;
 	}
 	.topic-item a{
@@ -268,8 +267,7 @@
 	width: 100%;
 	opacity: 0;
 	transition: .5s ease;
-	background: #c7c7c7;
-	background: rgba(0, 0, 0, .2);
+	background: rgba(0, 0, 0, 0.2);
 }
 
 .topic-item:hover .overlay {
@@ -511,6 +509,55 @@
   --------------------------------------------------------------
 */
 
+
+/*--------------------------------------------------------------
+	START STYLES OF TOPIC DETAILS PAGE
+  --------------------------------------------------------------
+*/
+.topic-details-container .image {
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+	.topic-details-container .image img {
+		width: 100%;
+	}
+
+.topic-details-container .topic-surveys-container {
+	margin-top: 20px;
+}
+
+.topic-details-container .heading {
+	margin-bottom: 10px;
+	padding: 15px 10px;
+}
+
+.topic-details-container .media {
+	margin-top: 0;
+}
+
+	.topic-details-container .media:hover .survey-actions a {
+		color: #337ab7;
+	}
+
+.topic-details-container .media-left {
+	padding-top: 1.2%;
+}
+
+.topic-details-container .survey-title {
+	font-weight: bold;
+}
+
+.topic-details-container .survey-actions a {
+	font-size: 13px;
+	margin-right: 8px;
+	color: #fff;
+}
+/*--------------------------------------------------------------
+	END STYLES OF TOPIC DETAILS PAGE
+  --------------------------------------------------------------
+*/
+
 @media (max-width: 1024px) {
 	.navbar .navbar-collapse ul li a {
 		padding-left: 10px;
@@ -685,9 +732,36 @@
 			margin-bottom: 6%;
 		}
 		/*--------------------------------------------------------------
-		START STYLES CREATE TOPIC PAGE
-	  --------------------------------------------------------------
-	*/
+			START STYLES CREATE TOPIC PAGE
+		--------------------------------------------------------------
+		*/
+
+
+		/*--------------------------------------------------------------
+			START STYLES OF TOPIC DETAILS PAGE
+		--------------------------------------------------------------
+		*/
+		.topic-details-container .image {
+			height: 200px;
+			overflow: hidden;
+		}
+
+		.topic-details-container .survey-title {
+			font-size: 15px;
+		}
+
+		.topic-details-container .topic-title {
+			font-size: 18px;
+		}
+
+		.topic-details-container .heading {
+			padding: 10px 10px;
+			font-size: 14px;
+		}
+		/*--------------------------------------------------------------
+			END STYLES OF TOPIC DETAILS PAGE
+		--------------------------------------------------------------
+		*/
 	}
 
 	@media (max-width: 468px) {
@@ -700,14 +774,26 @@
 		}
 
 		/*--------------------------------------------------------
-		START STYLES EDIT PROFILE PAGE
-	--------------------------------------------------------*/
+			START STYLES EDIT PROFILE PAGE
+		--------------------------------------------------------*/
 		.user-information #btn-change-user-info, #btn-change-password {
 			width: 100%;
 		}
 		/*--------------------------------------------------------
-		END STYLES EDIT PROFILE PAGE
-	--------------------------------------------------------*/
+			END STYLES EDIT PROFILE PAGE
+		--------------------------------------------------------*/
+
+		/*--------------------------------------------------------------
+			END STYLES OF TOPIC DETAILS PAGE
+		--------------------------------------------------------------
+		*/
+		.topic-details-container .media-left {
+			padding-top: 2%;
+		}
+		/*--------------------------------------------------------------
+			END STYLES OF TOPIC DETAILS PAGE
+		--------------------------------------------------------------
+		*/
 	}
 
 	@media (max-width: 268px) {

@@ -64,7 +64,7 @@
 			{
 				foreach (var topic in Model.Topics)
 				{
-					<li class="media background-secondary topic-item" data-topic-id="@topic.Id">
+					<li class="media background-secondary topic-item" data-topic-id="@topic.Id" data-topic-link="@Url.Action("Details","Topic", new { id = topic.Id })">
 						<div class="media-left">
 							<img class="media-object" src="@topic.ImagePath" alt="topic-picture">
 							<div class="overlay"></div>
@@ -84,7 +84,10 @@
 
 @section Scripts{
 	<script>
-		$(document).ready(function(){
+		$(document).ready(function () {
+
+			TopicController.init(".topics-container");
+
 			$("#bnt-change-picture").change(function(){
 
 				var inputFile = $(this);

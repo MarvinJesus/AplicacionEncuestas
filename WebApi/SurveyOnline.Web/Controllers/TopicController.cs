@@ -76,9 +76,21 @@ namespace SurveyOnline.Web.Controllers
         }
 
         [Authorize]
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(Guid id)
         {
-            return View();
+            var topicService = new TopicService(GetAccessToken());
+            var param = new Dictionary<string, string>
+            {
+                { "sort", "id" },
+                { "fields","id,title,imagepath,totalSurvey"},
+            };
+            var topic = await topicService.GetTopicAsync(id, param);
+
+            if (topic == null) return new HttpNotFoundResult();
+
+            topic.Surveys = await (new SurveyService(GetAccessToken())).GetTopiSurveys(id);
+
+            return View(topic);
         }
 
         [Authorize]

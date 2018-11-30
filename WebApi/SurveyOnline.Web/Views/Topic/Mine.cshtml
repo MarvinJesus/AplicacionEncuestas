@@ -12,7 +12,7 @@
         <ul class="media-list  topics-container">
             @foreach (var topic in Model)
             {
-                <li class="media background-secondary topic-item" data-topic-id="@topic.Id">
+                <li class="media background-secondary topic-item" data-topic-id="@topic.Id" data-topic-link="@Url.Action("Details","Topic",new { id = topic.Id})">
                     <div class="media-left">
                         <img class="media-object" src="@topic.ImagePath" alt="topic-picture">
                         <div class="overlay"></div>
@@ -31,4 +31,12 @@
         @Html.ActionLink("Crear tema", "TopicForm", "Topic")
      }
 </div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            TopicController.init(".topics-container");
+        });
+    </script>
+}
 

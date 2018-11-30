@@ -60,6 +60,22 @@ namespace SurveyOnline.Web.Services
             return topics;
         }
 
+        public async Task<Topic> GetTopicAsync(Guid id, Dictionary<string, string> param)
+        {
+            var client = SurveyOnlineHttpClient.GetHttpClient(_accessToken);
+            Topic topic = null;
+
+            var result = await client.GetAsync($"api/{TOPIC_CONTROLLER_NAME}/{id.ToString()}?{InsertParams(param)}");
+
+            if (result.IsSuccessStatusCode)
+            {
+                var content = await result.Content.ReadAsStringAsync();
+                topic = JsonConvert.DeserializeObject<Topic>(content);
+            }
+
+            return topic;
+        }
+
         private string InsertParams(Dictionary<string, string> paramsForRequest)
         {
             var paramList = string.Empty;

@@ -64,7 +64,7 @@
             {
                 foreach (var topic in Model.Topics)
                 {
-                    <li class="media background-secondary topic-item" data-topic-id="@topic.Id">
+                    <li class="media background-secondary topic-item" data-topic-id="@topic.Id" data-topic-link="@Url.Action("Details","Topic",new { id = topic.Id})">
                         <div class="media-left">
                             <img class="media-object" src="@topic.ImagePath" alt="topic-picture">
                             <div class="overlay"></div>
@@ -89,6 +89,7 @@
     <script>
         $(document).ready(function () {
             FilterController.init('#search-filters-container', '#selected-filters',".categoryList");
+            TopicController.init(".topics-container");
 
             $('#display-filters').click(function () {
                 $('.list-filters').toggle(300);
