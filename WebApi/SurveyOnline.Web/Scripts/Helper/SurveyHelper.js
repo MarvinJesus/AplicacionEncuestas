@@ -123,9 +123,9 @@
 	 * RETURN AN ANSWER TEMPLATE IN THE PROCESS OF CREATING A QUESTION
 	 */
 	var answerTemplate = function (answer, number, type) {
-		var answerType = "radio";
+		var answerType = "checkbox";
 
-		if (type == 1) answerType = "checkbox";
+		if (type == 1) answerType = "radio";
 
 		return `<div class="${answerType} answer" data-answer-id="${answer.Id}">
 								<label><input type="${answerType}" name="${number}">${answer.Description}</label>

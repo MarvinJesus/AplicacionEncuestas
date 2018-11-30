@@ -12,7 +12,8 @@ namespace SurveyOnline.Web
                 "~/Scripts/Helper/SurveyHelper.js",
                 "~/Scripts/Services/SurveyService.js",
                 "~/Scripts/Controller/FilterController.js",
-                "~/Scripts/Controller/SurveyController.js"
+                "~/Scripts/Controller/SurveyController.js",
+                "~/Scripts/Controller/TopicController.js"
                 ));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(

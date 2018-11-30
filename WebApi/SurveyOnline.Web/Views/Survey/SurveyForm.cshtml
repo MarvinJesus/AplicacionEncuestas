@@ -25,7 +25,7 @@
                         }
                 </select>
             </div>
-            <a href="#" class="pull-right btn-link">Agregar tema</a>
+            <a href="@Url.Action("TopicForm","Topic")" class="pull-right btn-link">Agregar tema</a>
             <div class="input-group input-group-lg">
                 <label for="txtTitle">Titulo</label>
                 <input type="text" class="form-control" id="txtTitle" placeholder="Titulo de la encuesta">
@@ -59,8 +59,8 @@
                 <label for="question-type">Tipo de pregunta</label>
                 <select class="form-control" id="question-type">
                     <option value="0"></option>
-                    <option value="1">Seleción multiple</option>
-                    <option value="2">Seleción unica</option>
+                    <option value="1">Seleción unica</option>
+                    <option value="2">Seleción multiple</option>
                 </select>
             </div>
            

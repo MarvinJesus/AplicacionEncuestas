@@ -250,6 +250,7 @@
     <Content Include="Scripts\bootbox.min.js" />
     <Content Include="Scripts\Controller\FilterController.js" />
     <Content Include="Scripts\Controller\SurveyController.js" />
+    <Content Include="Scripts\Controller\TopicController.js" />
     <Content Include="Scripts\Helper\SurveyHelper.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -282,6 +283,8 @@
     <Content Include="Views\Survey\SurveyForm.cshtml" />
     <Content Include="Views\Profile\MyProfile.cshtml" />
     <Content Include="Views\Topic\TopicForm.cshtml" />
+    <Content Include="Views\Topic\Mine.cshtml" />
+    <Content Include="Views\Topic\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

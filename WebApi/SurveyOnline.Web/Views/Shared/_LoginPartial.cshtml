@@ -31,6 +31,7 @@
                 <ul class="nav navbar-nav navbar-right">
                     <li class="first-menu-item"><a href="@Url.Action("Index","Topic")" class="active">Inicio</a></li>
                     <li>@Html.ActionLink("Crear encuesta", "SurveyForm", "Survey")</li>
+                    <li>@Html.ActionLink("Crear tema","TopicForm","Topic")</li>
                     <li>@Html.ActionLink("Mis temas", "Mine", "Topic")</li>
                     <li><a href="#">Aplicar encuesta</a></li>
                     <li class="second-last-item">@Html.ActionLink("Cerrar sesión", "Logout", "Home")</li>

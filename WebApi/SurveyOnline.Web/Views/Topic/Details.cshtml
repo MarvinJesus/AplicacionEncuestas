@@ -1,0 +1,55 @@
+﻿@model Entities_POJO.Topic
+@{
+    ViewBag.Title = "Detalles";
+    Layout = "~/Views/Shared/_LoginPartial.cshtml";
+}
+
+<div class="container topic-details-container">
+
+    <div class="row secondary-background">
+        <div class="col-sm-2 image">
+            <img src="@Model.ImagePath" class="img-reponsive" alt="topic-picture">
+        </div>
+        <div class="col-sm-10">
+            <div class="topic-details-container">
+                <h3 class="topic-title">@Model.Title</h3>
+                <h6>Encuestas: @Model.TotalSurvey</h6>
+            </div>
+        </div>
+    </div>
+
+    <div class="topic-surveys-container">
+
+        <h4 class="heading primary-background secondary-color">Encuestas:</h4>
+
+        @if (Model.Surveys != null)
+        {
+        <ul class="media-list">
+            @{int count = 1;}
+            @foreach (var survey in Model.Surveys)
+            {
+                <li class="media secondary-background">
+                    <div class="media-left text-center">
+                        <label class="label primary-background">@count</label>
+                    </div>
+                    <div class="media-body">
+                        <h5 class="font-size-2 survey-title">@survey.Title</h5>
+                        <div class="survey-actions">
+                            <a href="#">Ver</a>
+                            <a href="#">Aplicar</a>
+                        </div>
+                    </div>
+                </li>
+                {count++;}
+            }
+        </ul>
+        }
+        else {
+            <h4>No hay encuestas registradas. <a href="@Url.Action("SurveyForm","Survey")" class="font-size-3">Crear encuesta</a></h4>
+        }
+            
+
+        </div>
+
+</div>
+
